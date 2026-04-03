@@ -101,11 +101,16 @@
 ## 5단계: 최신 베스트 프랙티스 반영
 
 아래 자료를 검색해서 내 세팅에 반영할 만한 최신 팁이 있는지 확인해:
-- 공식: code.claude.com/docs (agents, hooks, skills, settings)
+- 공식: code.claude.com/docs (agents, hooks, skills, settings) — 최우선
 - GitHub: VoltAgent/awesome-claude-code-subagents, hesreallyhim/awesome-claude-code
 - 블로그: alexop.dev claude code guide, blog.sshh.io claude code features
 
-6개월 이상 된 글은 API 변경 가능성 있으니 공식 문서와 대조할 것.
+추가로 WebSearch로 더 찾아봐도 좋지만, 아래 기준을 지켜:
+- 공식 문서/Anthropic 블로그가 최우선
+- GitHub 스타 100+ 이상의 레포만 신뢰
+- 실제 설정 파일/코드가 포함된 글만 참고 (말만 하는 글 무시)
+- 6개월 이상 된 글은 공식 문서와 대조 필수 (API가 자주 바뀜)
+- AI 생성 요약 글, SEO 리스트 기사("Top 10 Tips" 류) 무시
 
 ---
 
