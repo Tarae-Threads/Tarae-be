@@ -101,7 +101,7 @@
 ## 5단계: 최신 베스트 프랙티스 반영
 
 아래 자료를 검색해서 내 세팅에 반영할 만한 최신 팁이 있는지 확인해:
-- 공식: docs.anthropic.com/en/docs/claude-code (agents, hooks, skills, settings)
+- 공식: code.claude.com/docs (agents, hooks, skills, settings)
 - GitHub: VoltAgent/awesome-claude-code-subagents, hesreallyhim/awesome-claude-code
 - 블로그: alexop.dev claude code guide, blog.sshh.io claude code features
 
