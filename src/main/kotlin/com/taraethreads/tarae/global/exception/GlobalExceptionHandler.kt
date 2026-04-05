@@ -26,6 +26,13 @@ class GlobalExceptionHandler {
             .body(ErrorResponse.of(ErrorCode.INVALID_REQUEST_BODY))
     }
 
+    @ExceptionHandler(CustomException::class)
+    fun handleCustomException(e: CustomException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(e.errorCode.status)
+            .body(ErrorResponse.of(e.errorCode))
+    }
+
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<ErrorResponse> {
         val message = e.message ?: ErrorCode.NOT_FOUND.message

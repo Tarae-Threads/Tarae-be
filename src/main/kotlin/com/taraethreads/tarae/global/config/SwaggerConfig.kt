@@ -1,0 +1,19 @@
+package com.taraethreads.tarae.global.config
+
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+
+@Configuration
+class SwaggerConfig {
+
+    @Bean
+    fun openAPI(): OpenAPI = OpenAPI()
+        .info(
+            Info()
+                .title("Tarae API")
+                .description("타래 — 뜨개 커뮤니티 서비스 API")
+                .version("v1")
+        )
+}
