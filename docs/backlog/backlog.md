@@ -4,11 +4,11 @@
 
 | ID | 기능 | 설명 | 등록일 | 상태 |
 |----|------|------|--------|------|
-| B-01 | Phase 0: 프로젝트 셋업 | docker-compose(MySQL), build.gradle 의존성, application.yml, BaseEntity, SecurityConfig(임시 permitAll), GlobalExceptionHandler | 2026-04-04 | 대기 |
-| B-02 | Place 도메인 | categories 테이블, places + 관련 테이블 DDL, Entity/Repository/Service/Controller, DataLoader(초기 데이터) | 2026-04-04 | 대기 |
-| B-03 | Event 도메인 | events 테이블 DDL, Entity/Repository/Service/Controller | 2026-04-04 | 대기 |
-| B-04 | 제보 스키마 설계 | place_submissions, event_submissions 스키마 확정 및 DDL — B-02/B-03 완료 후 진행 | 2026-04-04 | 대기 |
-| B-05 | 제보 API 구현 | POST /api/v1/submissions/places, POST /api/v1/submissions/events, 관리자 승인 흐름 | 2026-04-04 | 대기 |
+| B-01 | Phase 0: 프로젝트 셋업 | docker-compose(MySQL), build.gradle 의존성, application.yml, BaseEntity, SecurityConfig(임시 permitAll), GlobalExceptionHandler | 2026-04-04 | ✅ 완료 |
+| B-02 | Place 도메인 | categories 테이블, places + 관련 테이블 DDL, Entity/Repository/Service/Controller | 2026-04-04 | ✅ 완료 |
+| B-03 | Event 도메인 | events 테이블 DDL, Entity/Repository/Service/Controller | 2026-04-04 | ✅ 완료 |
+| B-04 | 제보 스키마 설계 | place_submissions, event_submissions 스키마 확정 및 DDL | 2026-04-04 | ✅ 완료 |
+| B-05 | 제보 API 구현 | POST /api/submissions/places, POST /api/submissions/events | 2026-04-04 | ✅ 완료 |
 
 ## 📋 Medium Priority
 

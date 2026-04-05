@@ -46,7 +46,7 @@
     - tagId 필터 쿼리 테스트 통과
   - 완료일: 2026-04-05
 
-- [x] T4. PlaceService 구현
+- [ ] T4. PlaceService 구현
   - 목적: 비즈니스 로직 처리
   - 작업 내용:
     - `PlaceService.kt`
@@ -60,9 +60,9 @@
   - 완료 기준:
     - 목록 조회 서비스 테스트 통과
     - 없는 id 예외 처리 테스트 통과
-  - 완료일: 2026-04-05
+  - 완료일: -
 
-- [x] T5. PlaceController + DTO 구현
+- [ ] T5. PlaceController + DTO 구현
   - 목적: API 엔드포인트 노출
   - 작업 내용:
     - `PlaceListResponse.kt`, `PlaceDetailResponse.kt`
@@ -75,4 +75,4 @@
     - `GET /api/places` 200 + 응답 필드 검증 테스트 통과
     - `GET /api/places/{id}` 200 + 응답 필드 검증 테스트 통과
     - `GET /api/places/999` 404 테스트 통과
-  - 완료일: 2026-04-05
+  - 완료일: -

@@ -98,12 +98,12 @@
 | created_at | DATETIME | BaseEntity |
 | updated_at | DATETIME | BaseEntity |
 
-### place_submissions (장소 제보)
+### place_requests (장소 등록 요청)
 
 | 컬럼 | 타입 | 비고 |
 |------|------|------|
 | id | BIGINT AUTO_INCREMENT | PK |
-| submission_type | ENUM(NEW, UPDATE) | 새 장소 / 기존 장소 업데이트 |
+| request_type | ENUM(NEW, UPDATE) | 새 장소 / 기존 장소 업데이트 |
 | place_id | BIGINT | FK → places, UPDATE일 때만 |
 | name | VARCHAR(100) | nullable |
 | address | VARCHAR(255) | nullable |
@@ -125,7 +125,7 @@
 | created_at | DATETIME | BaseEntity |
 | updated_at | DATETIME | BaseEntity |
 
-### event_submissions (일정 제보)
+### event_requests (이벤트 등록 요청)
 
 | 컬럼 | 타입 | 비고 |
 |------|------|------|
@@ -149,6 +149,6 @@ places ──< place_categories >── categories
 places ──< place_tags >── tags
 places ──< place_brands >── brands
 places ──o< events
-place_submissions (독립)
-event_submissions (독립)
+place_requests (독립)
+event_requests (독립)
 ```

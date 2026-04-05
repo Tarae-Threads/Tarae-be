@@ -33,3 +33,5 @@ com.taraethreads.tarae.
 | 도메인 | 설명 | 주요 Entity |
 |--------|------|------------|
 | place | 뜨개 관련 장소 | Place, Category, Tag, Brand |
+| event | 뜨개 관련 이벤트/팝업/세일 | Event, EventType |
+| request | 사용자 등록 요청 (관리자 승인 대기) | PlaceRequest, EventRequest |
