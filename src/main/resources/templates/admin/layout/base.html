@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' | Tarae Admin'">Tarae Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/admin.css}"/>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">🧶 Tarae</span>
+            <span class="sidebar-subtitle">관리자</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a th:href="@{/admin}" class="nav-item">대시보드</a>
+            <a th:href="@{/admin/requests?type=place&amp;status=PENDING}" class="nav-item">제보 관리</a>
+        </nav>
+    </aside>
+    <div class="main">
+        <header class="topbar">
+            <h1 class="topbar-title" th:text="${title}">페이지</h1>
+        </header>
+        <main class="content">
+            <th:block th:replace="${content}"/>
+        </main>
+    </div>
+</div>
+</body>
+</html>

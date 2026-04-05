@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('제보 관리', ~{::body})}">
+<body>
+
+<!-- 탭 -->
+<div class="tabs">
+    <a th:href="@{/admin/requests(type='place')}"
+       th:classappend="${type == 'place'} ? 'active'"
+       class="tab">장소 제보</a>
+    <a th:href="@{/admin/requests(type='event')}"
+       th:classappend="${type == 'event'} ? 'active'"
+       class="tab">이벤트 제보</a>
+</div>
+
+<!-- 상태 필터 -->
+<div class="filter-bar">
+    <a th:href="@{/admin/requests(type=${type})}"
+       th:classappend="${status == null} ? 'active'"
+       class="filter-btn">전체</a>
+    <a th:each="s : ${allStatuses}"
+       th:href="@{/admin/requests(type=${type}, status=${s})}"
+       th:classappend="${status == s} ? 'active'"
+       th:text="${s}"
+       class="filter-btn">STATUS</a>
+</div>
+
+<!-- 목록 테이블 -->
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(requests)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th th:if="${type == 'place'}">장소명</th>
+            <th th:if="${type == 'event'}">이벤트명</th>
+            <th>상태</th>
+            <th>등록일</th>
+            <th>상세</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requests}">
+            <td th:text="${req.id}">1</td>
+            <td th:if="${type == 'place'}" th:text="${req.name ?: '-'}">장소명</td>
+            <td th:if="${type == 'event'}" th:text="${req.title}">이벤트명</td>
+            <td>
+                <span th:classappend="'badge-' + ${#strings.toLowerCase(req.status)}"
+                      th:text="${req.status}"
+                      class="badge">PENDING</span>
+            </td>
+            <td th:text="${#temporals.format(req.createdAt, 'yyyy-MM-dd')}">2026-01-01</td>
+            <td>
+                <a th:if="${type == 'place'}"
+                   th:href="@{/admin/requests/place/{id}(id=${req.id})}"
+                   class="btn btn-secondary btn-sm">검수</a>
+                <a th:if="${type == 'event'}"
+                   th:href="@{/admin/requests/event/{id}(id=${req.id})}"
+                   class="btn btn-secondary btn-sm">검수</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(requests)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        제보가 없습니다.
+    </p>
+</div>
+
+</body>
+</html>

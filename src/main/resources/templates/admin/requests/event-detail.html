@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('이벤트 제보 검수', ~{::body})}">
+<body>
+
+<!-- 처리된 제보 안내 -->
+<div th:if="${request.status != T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
+     class="alert alert-warning">
+    이미 <strong th:text="${request.status}">처리됨</strong> 상태인 제보입니다. 재처리할 수 없습니다.
+</div>
+
+<div class="detail-grid">
+
+    <!-- 좌측: 제보 원본 -->
+    <div class="card">
+        <div class="detail-section-title">제보 원본</div>
+
+        <div class="field-group">
+            <div class="field-label">이벤트명</div>
+            <div class="field-value" th:text="${request.title}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">이벤트 유형</div>
+            <div class="field-value" th:text="${request.eventType}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">시작일</div>
+            <div class="field-value" th:text="${#temporals.format(request.startDate, 'yyyy-MM-dd')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">종료일</div>
+            <div class="field-value"
+                 th:text="${request.endDate != null ? #temporals.format(request.endDate, 'yyyy-MM-dd') : '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">장소</div>
+            <div class="field-value" th:text="${request.locationText ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-label">설명</div>
+            <div class="field-value" th:text="${request.description ?: '-'}">-</div>
+        </div>
+    </div>
+
+    <!-- 우측: Event 입력 폼 -->
+    <div class="card">
+        <div class="detail-section-title">이벤트 등록 폼</div>
+
+        <form th:action="@{/admin/requests/event/{id}/approve(id=${request.id})}" method="post">
+            <div class="form-group">
+                <label>이벤트명 *</label>
+                <input type="text" name="title" th:value="${form.title}" required/>
+            </div>
+            <div class="form-group">
+                <label>이벤트 유형 *</label>
+                <select name="eventType" required>
+                    <option value="">선택</option>
+                    <option th:each="et : ${eventTypes}"
+                            th:value="${et}"
+                            th:text="${et}"
+                            th:selected="${form.eventType == et}">TYPE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>시작일 *</label>
+                <input type="date" name="startDate"
+                       th:value="${form.startDate != null ? #temporals.format(form.startDate, 'yyyy-MM-dd') : ''}"
+                       required/>
+            </div>
+            <div class="form-group">
+                <label>종료일</label>
+                <input type="date" name="endDate"
+                       th:value="${form.endDate != null ? #temporals.format(form.endDate, 'yyyy-MM-dd') : ''}"/>
+            </div>
+            <div class="form-group">
+                <label>장소 (텍스트)</label>
+                <input type="text" name="locationText" th:value="${form.locationText}"/>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <textarea name="description" th:text="${form.description}"></textarea>
+            </div>
+            <div class="form-group">
+                <label>위도</label>
+                <input type="text" name="lat" th:value="${form.lat}"/>
+            </div>
+            <div class="form-group">
+                <label>경도</label>
+                <input type="text" name="lng" th:value="${form.lng}"/>
+            </div>
+            <div class="form-group">
+                <label>링크 (JSON)</label>
+                <textarea name="links" th:text="${form.links}"></textarea>
+            </div>
+
+            <div class="form-actions" th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}">
+                <button type="submit" class="btn btn-primary">승인</button>
+            </div>
+        </form>
+
+        <!-- 거절 폼 -->
+        <form th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
+              th:action="@{/admin/requests/event/{id}/reject(id=${request.id})}"
+              method="post"
+              style="margin-top: 8px; text-align: right;">
+            <button type="submit" class="btn btn-destructive"
+                    onclick="return confirm('정말 거절하시겠습니까?')">거절</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
