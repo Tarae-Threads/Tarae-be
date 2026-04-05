@@ -51,11 +51,16 @@ class GlobalExceptionHandlerTest {
     inner class `Validation 실패` {
         @Test
         fun `@Valid 검증 실패 시 400을 반환한다`() {
+            // given
+            val invalidBody = objectMapper.writeValueAsString(mapOf("name" to ""))
+
+            // when & then
             mockMvc.post("/test-exceptions/validation") {
                 contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(mapOf("name" to ""))
+                content = invalidBody
             }.andExpect {
                 status { isBadRequest() }
+                jsonPath("$.code") { value("INVALID_INPUT") }
                 jsonPath("$.status") { value(400) }
                 jsonPath("$.message") { exists() }
             }
@@ -66,8 +71,10 @@ class GlobalExceptionHandlerTest {
     inner class `리소스 없음` {
         @Test
         fun `NoSuchElementException 발생 시 404를 반환한다`() {
+            // when & then
             mockMvc.get("/test-exceptions/not-found").andExpect {
                 status { isNotFound() }
+                jsonPath("$.code") { value("NOT_FOUND") }
                 jsonPath("$.status") { value(404) }
                 jsonPath("$.message") { exists() }
             }
@@ -78,8 +85,10 @@ class GlobalExceptionHandlerTest {
     inner class `서버 오류` {
         @Test
         fun `처리되지 않은 예외 발생 시 500을 반환한다`() {
+            // when & then
             mockMvc.get("/test-exceptions/server-error").andExpect {
                 status { isInternalServerError() }
+                jsonPath("$.code") { value("INTERNAL_ERROR") }
                 jsonPath("$.status") { value(500) }
                 jsonPath("$.message") { exists() }
             }

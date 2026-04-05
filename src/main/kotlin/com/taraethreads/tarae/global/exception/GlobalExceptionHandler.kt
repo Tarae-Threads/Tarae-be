@@ -13,30 +13,31 @@ class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidation(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val message = e.bindingResult.fieldErrors
-            .firstOrNull()?.defaultMessage ?: "잘못된 요청입니다"
+            .firstOrNull()?.defaultMessage ?: ErrorCode.INVALID_INPUT.message
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(400, message))
+            .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, message))
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleNotReadable(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(ErrorResponse(400, "요청 형식이 올바르지 않습니다"))
+            .body(ErrorResponse.of(ErrorCode.INVALID_REQUEST_BODY))
     }
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<ErrorResponse> {
+        val message = e.message ?: ErrorCode.NOT_FOUND.message
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(ErrorResponse(404, e.message ?: "리소스를 찾을 수 없습니다"))
+            .body(ErrorResponse.of(ErrorCode.NOT_FOUND, message))
     }
 
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ErrorResponse(500, "서버 오류가 발생했습니다"))
+            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR))
     }
 }
