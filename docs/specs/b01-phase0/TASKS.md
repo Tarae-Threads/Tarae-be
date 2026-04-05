@@ -10,18 +10,18 @@
 # TASKS: B-01 Phase 0 셋업
 - 작성일: 2026-04-05
 
-- [ ] T1. BaseEntity 구현
+- [x] T1. BaseEntity 구현
   - 목적: 모든 Entity가 공통으로 상속할 auditing 필드 제공
   - 작업 내용:
     - `global/common/BaseEntity.kt` 작성 (`createdAt`, `updatedAt`)
-    - `@EnableJpaAuditing` 활성화 (TaraeApplication 또는 JpaConfig)
+    - `@EnableJpaAuditing` 활성화 (JpaConfig로 분리)
   - 예상 변경 파일:
     - `src/main/kotlin/.../global/common/BaseEntity.kt` (신규)
-    - `src/main/kotlin/.../TaraeApplication.kt` (어노테이션 추가)
+    - `src/main/kotlin/.../global/config/JpaConfig.kt` (신규)
   - 완료 기준: 빌드 성공, `@EnableJpaAuditing` 적용 확인
-  - 완료일: -
+  - 완료일: 2026-04-05
 
-- [ ] T2. SecurityConfig 구현
+- [x] T2. SecurityConfig 구현
   - 목적: `/admin/**` 인증 필요, 나머지 전체 공개
   - 작업 내용:
     - `global/config/SecurityConfig.kt` 작성
@@ -31,17 +31,19 @@
   - 완료 기준:
     - `GET /api/test` → 200
     - `GET /admin/anything` → 401
-  - 완료일: -
+  - 완료일: 2026-04-05
 
-- [ ] T3. GlobalExceptionHandler 구현
+- [x] T3. GlobalExceptionHandler 구현
   - 목적: 예외 발생 시 일관된 JSON 응답
   - 작업 내용:
+    - `global/exception/ErrorCode.kt` (enum)
     - `global/exception/ErrorResponse.kt` (data class)
     - `global/exception/GlobalExceptionHandler.kt` (`@RestControllerAdvice`)
     - 처리: `MethodArgumentNotValidException`, `HttpMessageNotReadableException`, `NoSuchElementException`, `Exception`
   - 예상 변경 파일:
+    - `src/main/kotlin/.../global/exception/ErrorCode.kt` (신규)
     - `src/main/kotlin/.../global/exception/ErrorResponse.kt` (신규)
     - `src/main/kotlin/.../global/exception/GlobalExceptionHandler.kt` (신규)
   - 완료 기준:
-    - 각 예외 케이스별 올바른 status + message JSON 응답
-  - 완료일: -
+    - 각 예외 케이스별 올바른 code + status + message JSON 응답
+  - 완료일: 2026-04-05

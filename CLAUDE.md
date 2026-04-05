@@ -49,5 +49,6 @@ Requires JDK 17.
 - `test-conventions.md` → `src/test/**/*.kt`
 - `jpa-entity-rules.md` → `src/main/**/domain/**/*.kt`
 - `swagger-conventions.md` → `src/main/**/controller/**/*.kt`, `src/main/**/dto/**/*.kt`
+- `docs-maintenance.md` → 항상 적용 (Task 완료, 문서 동기화)
 
 @docs/architecture/overview.md
