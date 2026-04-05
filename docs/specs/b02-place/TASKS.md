@@ -20,7 +20,7 @@
   - 완료 기준: 로컬 DB에 테이블 생성 확인
   - 완료일: 2026-04-05
 
-- [ ] T2. Place 도메인 Entity 구현
+- [x] T2. Place 도메인 Entity 구현
   - 목적: JPA Entity 정의
   - 작업 내용:
     - `Place.kt`, `PlaceStatus.kt`
@@ -30,7 +30,7 @@
   - 예상 변경 파일:
     - `src/main/kotlin/.../place/domain/` 하위 신규 파일들
   - 완료 기준: 빌드 성공, 앱 기동 시 Entity 인식 확인
-  - 완료일: -
+  - 완료일: 2026-04-05
 
 - [ ] T3. PlaceRepository 구현
   - 목적: 목록 필터 쿼리 구현 및 검증

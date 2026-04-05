@@ -30,4 +30,6 @@ com.taraethreads.tarae.
 
 ## 도메인
 
-(도메인 추가 시 업데이트)
+| 도메인 | 설명 | 주요 Entity |
+|--------|------|------------|
+| place | 뜨개 관련 장소 | Place, Category, Tag, Brand |
