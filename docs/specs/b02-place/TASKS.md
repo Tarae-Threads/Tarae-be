@@ -10,7 +10,7 @@
 # TASKS: B-02 Place 도메인
 - 작성일: 2026-04-05
 
-- [ ] T1. DDL 작성 및 로컬 DB 적용
+- [x] T1. DDL 작성 및 로컬 DB 적용
   - 목적: 장소 관련 테이블을 실제 DB에 생성
   - 작업 내용:
     - `src/main/resources/db/schema.sql` 작성 (places, categories, place_categories, tags, place_tags, brands, place_brands)
@@ -18,7 +18,7 @@
   - 예상 변경 파일:
     - `src/main/resources/db/schema.sql` (신규)
   - 완료 기준: 로컬 DB에 테이블 생성 확인
-  - 완료일: -
+  - 완료일: 2026-04-05
 
 - [ ] T2. Place 도메인 Entity 구현
   - 목적: JPA Entity 정의
