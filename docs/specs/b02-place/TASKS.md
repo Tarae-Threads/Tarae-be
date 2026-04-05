@@ -32,7 +32,7 @@
   - 완료 기준: 빌드 성공, 앱 기동 시 Entity 인식 확인
   - 완료일: 2026-04-05
 
-- [ ] T3. PlaceRepository 구현
+- [x] T3. PlaceRepository 구현
   - 목적: 목록 필터 쿼리 구현 및 검증
   - 작업 내용:
     - `PlaceRepository.kt` (Spring Data JPA)
@@ -44,7 +44,7 @@
     - region 필터 쿼리 테스트 통과
     - categoryId 필터 쿼리 테스트 통과
     - tagId 필터 쿼리 테스트 통과
-  - 완료일: -
+  - 완료일: 2026-04-05
 
 - [ ] T4. PlaceService 구현
   - 목적: 비즈니스 로직 처리
