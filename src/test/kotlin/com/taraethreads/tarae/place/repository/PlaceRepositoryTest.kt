@@ -49,12 +49,16 @@ class PlaceRepositoryTest {
         name: String = "테스트장소",
         region: String = "서울",
         district: String = "성수",
+        address: String = "서울 성동구 테스트로 1",
+        description: String? = null,
         categories: List<Category> = emptyList(),
         tags: List<Tag> = emptyList(),
+        brands: List<Brand> = emptyList(),
     ): Place {
-        val place = Place(name = name, region = region, district = district, address = "서울 성동구 테스트로 1")
+        val place = Place(name = name, region = region, district = district, address = address, description = description)
         place.categories.addAll(categories)
         place.tags.addAll(tags)
+        place.brands.addAll(brands)
         return placeRepository.save(place)
     }
 
@@ -140,6 +144,119 @@ class PlaceRepositoryTest {
             // then
             assertThat(result).hasSize(1)
             assertThat(result[0].name).isEqualTo("서울뜨개샵")
+        }
+    }
+
+    @Nested
+    inner class `키워드 검색` {
+        @Test
+        fun `keyword가 없으면 전체 반환된다`() {
+            // given
+            createPlace(name = "장소A")
+            createPlace(name = "장소B")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = null)
+
+            // then
+            assertThat(result).hasSize(2)
+        }
+
+        @Test
+        fun `장소명으로 검색된다`() {
+            // given
+            createPlace(name = "실과바늘")
+            createPlace(name = "공방마을")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "실과")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("실과바늘")
+        }
+
+        @Test
+        fun `주소로 검색된다`() {
+            // given
+            createPlace(name = "장소A", address = "서울 성동구 뚝섬로 100")
+            createPlace(name = "장소B", address = "부산 해운대구 해운대로 1")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "뚝섬로")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("장소A")
+        }
+
+        @Test
+        fun `태그명으로 검색된다`() {
+            // given
+            createPlace(name = "주차가능장소", tags = listOf(tagParking))
+            createPlace(name = "태그없는장소")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "주차")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("주차가능장소")
+        }
+
+        @Test
+        fun `브랜드명으로 검색된다`() {
+            // given
+            createPlace(name = "산네스취급장소", brands = listOf(brandSandnes))
+            createPlace(name = "브랜드없는장소")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "산네스")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("산네스취급장소")
+        }
+
+        @Test
+        fun `공백으로 구분된 여러 토큰은 AND 조건으로 적용된다`() {
+            // given
+            createPlace(name = "서울실과바늘", region = "서울", address = "서울 성동구 실과로 1")
+            createPlace(name = "부산실과바늘", region = "부산", address = "부산 해운대구 테스트로 1")
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "서울 실과")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("서울실과바늘")
+        }
+
+        @Test
+        fun `keyword와 region 필터를 함께 사용할 수 있다`() {
+            // given
+            createPlace(name = "서울뜨개샵", region = "서울")
+            createPlace(name = "부산뜨개샵", region = "부산")
+
+            // when
+            val result = placeRepository.findAllWithFilters(region = "서울", null, null, keyword = "뜨개")
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].name).isEqualTo("서울뜨개샵")
+        }
+
+        @Test
+        fun `동일 장소가 여러 태그에 매칭되어도 중복 반환되지 않는다`() {
+            // given
+            val tag2 = tagRepository.save(Tag(name = "주차편리"))
+            createPlace(name = "주차장소", tags = listOf(tagParking, tag2))
+
+            // when
+            val result = placeRepository.findAllWithFilters(null, null, null, keyword = "주차")
+
+            // then
+            assertThat(result).hasSize(1)
         }
     }
 }

@@ -40,7 +40,7 @@ class PlaceControllerTest {
         @Test
         fun `200과 장소 목록을 반환한다`() {
             // given
-            every { placeService.getPlaces(null, null, null) } returns listOf(place())
+            every { placeService.getPlaces(null, null, null, null) } returns listOf(place())
 
             // when & then
             mockMvc.get("/api/places").andExpect {
@@ -57,7 +57,7 @@ class PlaceControllerTest {
         @Test
         fun `region 파라미터를 서비스에 전달한다`() {
             // given
-            every { placeService.getPlaces("서울", null, null) } returns listOf(place())
+            every { placeService.getPlaces("서울", null, null, null) } returns listOf(place())
 
             // when & then
             mockMvc.get("/api/places?region=서울").andExpect {
@@ -68,11 +68,23 @@ class PlaceControllerTest {
         @Test
         fun `categoryId, tagId 파라미터를 서비스에 전달한다`() {
             // given
-            every { placeService.getPlaces(null, 1L, 2L) } returns emptyList()
+            every { placeService.getPlaces(null, 1L, 2L, null) } returns emptyList()
 
             // when & then
             mockMvc.get("/api/places?categoryId=1&tagId=2").andExpect {
                 status { isOk() }
+            }
+        }
+
+        @Test
+        fun `keyword 파라미터를 서비스에 전달한다`() {
+            // given
+            every { placeService.getPlaces(null, null, null, "실과") } returns listOf(place())
+
+            // when & then
+            mockMvc.get("/api/places?keyword=실과").andExpect {
+                status { isOk() }
+                jsonPath("$.data[0].name") { value("실과 바늘") }
             }
         }
     }

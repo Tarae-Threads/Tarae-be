@@ -29,12 +29,13 @@ class PlaceController(
     )
     @GetMapping
     fun getPlaces(
+        @Parameter(description = "검색어 (장소명, 주소, 태그, 브랜드 통합 검색)") @RequestParam keyword: String?,
         @Parameter(description = "지역 필터 (예: 서울, 경기)") @RequestParam region: String?,
         @Parameter(description = "카테고리 ID") @RequestParam categoryId: Long?,
         @Parameter(description = "태그 ID") @RequestParam tagId: Long?,
     ): ResponseEntity<ApiResponse<List<PlaceListResponse>>> =
         ApiResponse.ok(
-            placeService.getPlaces(region, categoryId, tagId)
+            placeService.getPlaces(region, categoryId, tagId, keyword)
                 .map { PlaceListResponse.from(it) }
         )
 

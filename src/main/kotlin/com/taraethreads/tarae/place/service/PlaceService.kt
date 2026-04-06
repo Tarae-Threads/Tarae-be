@@ -11,8 +11,8 @@ class PlaceService(
     private val placeRepository: PlaceRepository,
 ) {
 
-    fun getPlaces(region: String?, categoryId: Long?, tagId: Long?): List<Place> =
-        placeRepository.findAllWithFilters(region, categoryId, tagId)
+    fun getPlaces(region: String?, categoryId: Long?, tagId: Long?, keyword: String? = null): List<Place> =
+        placeRepository.findAllWithFilters(region, categoryId, tagId, keyword)
 
     fun getPlace(id: Long): Place =
         placeRepository.findById(id)

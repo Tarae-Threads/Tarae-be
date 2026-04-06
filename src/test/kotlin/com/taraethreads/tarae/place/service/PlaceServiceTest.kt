@@ -25,23 +25,37 @@ class PlaceServiceTest {
         fun `필터 파라미터를 repository에 그대로 전달한다`() {
             // given
             val places = listOf(Place(name = "장소A", region = "서울", district = "성수", address = "서울 성동구"))
-            every { placeRepository.findAllWithFilters("서울", 1L, null) } returns places
+            every { placeRepository.findAllWithFilters("서울", 1L, null, null) } returns places
 
             // when
-            val result = placeService.getPlaces(region = "서울", categoryId = 1L, tagId = null)
+            val result = placeService.getPlaces(region = "서울", categoryId = 1L, tagId = null, keyword = null)
 
             // then
             assertThat(result).hasSize(1)
-            verify { placeRepository.findAllWithFilters("서울", 1L, null) }
+            verify { placeRepository.findAllWithFilters("서울", 1L, null, null) }
+        }
+
+        @Test
+        fun `keyword를 포함한 파라미터를 repository에 그대로 전달한다`() {
+            // given
+            val places = listOf(Place(name = "실과바늘", region = "서울", district = "성수", address = "서울 성동구"))
+            every { placeRepository.findAllWithFilters(null, null, null, "실과") } returns places
+
+            // when
+            val result = placeService.getPlaces(region = null, categoryId = null, tagId = null, keyword = "실과")
+
+            // then
+            assertThat(result).hasSize(1)
+            verify { placeRepository.findAllWithFilters(null, null, null, "실과") }
         }
 
         @Test
         fun `필터 없이 전체 조회한다`() {
             // given
-            every { placeRepository.findAllWithFilters(null, null, null) } returns emptyList()
+            every { placeRepository.findAllWithFilters(null, null, null, null) } returns emptyList()
 
             // when
-            val result = placeService.getPlaces(null, null, null)
+            val result = placeService.getPlaces(null, null, null, null)
 
             // then
             assertThat(result).isEmpty()
