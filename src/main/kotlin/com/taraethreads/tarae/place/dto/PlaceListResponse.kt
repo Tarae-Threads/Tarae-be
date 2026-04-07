@@ -2,6 +2,7 @@ package com.taraethreads.tarae.place.dto
 
 import com.taraethreads.tarae.place.domain.Place
 import io.swagger.v3.oas.annotations.media.Schema
+import java.math.BigDecimal
 
 @Schema(description = "장소 목록 응답")
 data class PlaceListResponse(
@@ -10,6 +11,8 @@ data class PlaceListResponse(
     @Schema(description = "지역", example = "서울") val region: String,
     @Schema(description = "동네", example = "성수") val district: String,
     @Schema(description = "주소", example = "서울 성동구 연무장길 1") val address: String,
+    @Schema(description = "위도") val lat: BigDecimal?,
+    @Schema(description = "경도") val lng: BigDecimal?,
     @Schema(description = "운영 상태", example = "OPEN") val status: String,
     val categories: List<CategoryInfo>,
     val tags: List<TagInfo>,
@@ -26,6 +29,8 @@ data class PlaceListResponse(
             region = place.region,
             district = place.district,
             address = place.address,
+            lat = place.lat,
+            lng = place.lng,
             status = place.status.name,
             categories = place.categories.map { CategoryInfo(it.id, it.name) },
             tags = place.tags.map { TagInfo(it.id, it.name) },
