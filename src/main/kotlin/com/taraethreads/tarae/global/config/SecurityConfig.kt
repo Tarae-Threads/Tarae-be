@@ -30,6 +30,7 @@ class SecurityConfig {
         val config = CorsConfiguration()
         config.allowedOrigins = listOf(
             "https://taraethreads.com",
+            "https://www.taraethreads.com",
             "http://localhost:3000",
             "http://localhost:3001",
         )
