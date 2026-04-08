@@ -1,9 +1,11 @@
 package com.taraethreads.tarae.request.domain
 
 import com.taraethreads.tarae.global.common.BaseEntity
+import com.taraethreads.tarae.global.config.LongListJsonConverter
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -37,8 +39,9 @@ class PlaceRequest(
     @Column(precision = 10, scale = 7)
     val lng: BigDecimal? = null,
 
-    @Column(columnDefinition = "TEXT")
-    val categoryIds: String? = null,
+    @Convert(converter = LongListJsonConverter::class)
+    @Column(columnDefinition = "JSON")
+    val categoryIds: List<Long> = emptyList(),
 
     @Column(length = 255)
     val hoursText: String? = null,
