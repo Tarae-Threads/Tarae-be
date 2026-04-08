@@ -34,7 +34,7 @@ data class PlaceRequestInput(
         addressDetail = addressDetail,
         lat = lat,
         lng = lng,
-        categoryIds = categoryIds?.joinToString(","),
+        categoryIds = categoryIds ?: emptyList(),
         hoursText = hoursText,
         closedDays = closedDays,
         brandsYarn = brandsYarn,

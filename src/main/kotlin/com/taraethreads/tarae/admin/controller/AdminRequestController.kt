@@ -61,6 +61,7 @@ class AdminRequestController(
             instagramUrl = placeRequest.instagramUrl,
             websiteUrl = placeRequest.websiteUrl,
             naverMapUrl = placeRequest.naverMapUrl,
+            categoryIds = placeRequest.categoryIds,
         ))
         model.addAttribute("categories", categoryRepository.findAll())
         model.addAttribute("tags", tagRepository.findAll())
