@@ -25,7 +25,5 @@ class CategoryController(
     )
     @GetMapping
     fun getCategories(): ResponseEntity<ApiResponse<List<CategoryResponse>>> =
-        ApiResponse.ok(
-            categoryService.getCategories().map { CategoryResponse.from(it) }
-        )
+        ApiResponse.ok(categoryService.getCategories())
 }

@@ -8,8 +8,6 @@ import jakarta.persistence.Converter
 @Converter
 class LongListJsonConverter : AttributeConverter<List<Long>, String> {
 
-    private val objectMapper = ObjectMapper()
-
     override fun convertToDatabaseColumn(attribute: List<Long>?): String? {
         if (attribute.isNullOrEmpty()) return null
         return objectMapper.writeValueAsString(attribute)
@@ -18,5 +16,9 @@ class LongListJsonConverter : AttributeConverter<List<Long>, String> {
     override fun convertToEntityAttribute(dbData: String?): List<Long> {
         if (dbData.isNullOrBlank()) return emptyList()
         return objectMapper.readValue(dbData, object : TypeReference<List<Long>>() {})
+    }
+
+    companion object {
+        private val objectMapper = ObjectMapper()
     }
 }

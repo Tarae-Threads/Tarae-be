@@ -18,6 +18,7 @@ abstract class BaseEntity {
         protected set
 
     @LastModifiedDate
+    @Column(nullable = false)
     lateinit var updatedAt: LocalDateTime
         protected set
 }

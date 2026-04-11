@@ -2,7 +2,7 @@ package com.taraethreads.tarae.place.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import com.taraethreads.tarae.global.exception.GlobalExceptionHandler
-import com.taraethreads.tarae.place.domain.Category
+import com.taraethreads.tarae.place.dto.CategoryResponse
 import com.taraethreads.tarae.place.service.CategoryService
 import io.mockk.every
 import org.junit.jupiter.api.Nested
@@ -33,8 +33,8 @@ class CategoryControllerTest {
         fun `200과 카테고리 목록을 반환한다`() {
             // given
             every { categoryService.getCategories() } returns listOf(
-                Category("뜨개카페"),
-                Category("털실가게"),
+                CategoryResponse(id = 1L, name = "뜨개카페"),
+                CategoryResponse(id = 2L, name = "털실가게"),
             )
 
             // when & then

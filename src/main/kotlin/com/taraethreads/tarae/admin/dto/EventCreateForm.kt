@@ -6,8 +6,8 @@ import java.time.LocalDate
 
 data class EventCreateForm(
     val title: String = "",
-    val eventType: EventType? = null,
-    val startDate: LocalDate? = null,
+    val eventType: EventType = EventType.EVENT_POPUP,
+    val startDate: LocalDate = LocalDate.now(),
     val endDate: LocalDate? = null,
     val locationText: String? = null,
     val description: String? = null,

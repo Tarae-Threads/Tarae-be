@@ -24,10 +24,6 @@ data class PlaceDetailResponse(
     @Schema(description = "웹사이트 URL") val websiteUrl: String?,
     @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
 ) {
-    data class CategoryInfo(val id: Long, val name: String)
-    data class TagInfo(val id: Long, val name: String)
-    data class BrandInfo(val id: Long, val name: String, val type: String)
-
     companion object {
         fun from(place: Place) = PlaceDetailResponse(
             id = place.id,
@@ -41,9 +37,9 @@ data class PlaceDetailResponse(
             closedDays = place.closedDays,
             description = place.description,
             status = place.status.name,
-            categories = place.categories.map { CategoryInfo(it.id, it.name) },
-            tags = place.tags.map { TagInfo(it.id, it.name) },
-            brands = place.brands.map { BrandInfo(it.id, it.name, it.type.name) },
+            categories = place.placeCategories.map { CategoryInfo(it.category.id, it.category.name) },
+            tags = place.placeTags.map { TagInfo(it.tag.id, it.tag.name) },
+            brands = place.placeBrands.map { BrandInfo(it.brand.id, it.brand.name, it.brand.type.name) },
             instagramUrl = place.instagramUrl,
             websiteUrl = place.websiteUrl,
             naverMapUrl = place.naverMapUrl,
