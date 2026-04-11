@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class AdminRequestService(
     private val placeRequestRepository: PlaceRequestRepository,
     private val eventRequestRepository: EventRequestRepository,
@@ -41,7 +42,7 @@ class AdminRequestService(
             .orElseThrow { CustomException(ErrorCode.PLACE_REQUEST_NOT_FOUND) }
 
     @Transactional
-    fun approvePlaceRequest(id: Long, form: PlaceCreateForm): Place {
+    fun approvePlaceRequest(id: Long, form: PlaceCreateForm) {
         val placeRequest = getPlaceRequest(id)
         placeRequest.approve()
 
@@ -70,7 +71,7 @@ class AdminRequestService(
             brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
         }
 
-        return placeRepository.save(place)
+        placeRepository.save(place)
     }
 
     @Transactional
@@ -90,19 +91,14 @@ class AdminRequestService(
             .orElseThrow { CustomException(ErrorCode.EVENT_REQUEST_NOT_FOUND) }
 
     @Transactional
-    fun approveEventRequest(id: Long, form: EventCreateForm): Event {
+    fun approveEventRequest(id: Long, form: EventCreateForm) {
         val eventRequest = getEventRequest(id)
         eventRequest.approve()
 
-        val startDate = form.startDate
-            ?: throw CustomException(ErrorCode.INVALID_INPUT)
-        val eventType = form.eventType
-            ?: throw CustomException(ErrorCode.INVALID_INPUT)
-
         val event = Event(
             title = form.title,
-            eventType = eventType,
-            startDate = startDate,
+            eventType = form.eventType,
+            startDate = form.startDate,
             endDate = form.endDate,
             locationText = form.locationText,
             description = form.description,
@@ -111,7 +107,7 @@ class AdminRequestService(
             links = form.links,
         )
 
-        return eventRepository.save(event)
+        eventRepository.save(event)
     }
 
     @Transactional

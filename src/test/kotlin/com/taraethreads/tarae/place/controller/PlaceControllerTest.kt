@@ -4,7 +4,8 @@ import com.ninjasquad.springmockk.MockkBean
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.global.exception.GlobalExceptionHandler
-import com.taraethreads.tarae.place.domain.Place
+import com.taraethreads.tarae.place.dto.PlaceDetailResponse
+import com.taraethreads.tarae.place.dto.PlaceListResponse
 import com.taraethreads.tarae.place.service.PlaceService
 import io.mockk.every
 import org.junit.jupiter.api.Nested
@@ -28,11 +29,49 @@ class PlaceControllerTest {
     @MockkBean
     lateinit var placeService: PlaceService
 
-    private fun place(
+    private fun placeListResponse(
         name: String = "실과 바늘",
         region: String = "서울",
         district: String = "성수",
-    ) = Place(name = name, region = region, district = district, address = "서울 성동구 테스트로 1")
+    ) = PlaceListResponse(
+        id = 1L,
+        name = name,
+        region = region,
+        district = district,
+        address = "서울 성동구 테스트로 1",
+        lat = null,
+        lng = null,
+        status = "OPEN",
+        categories = emptyList(),
+        tags = emptyList(),
+        brands = emptyList(),
+        instagramUrl = null,
+        naverMapUrl = null,
+    )
+
+    private fun placeDetailResponse(
+        name: String = "실과 바늘",
+        region: String = "서울",
+        district: String = "성수",
+    ) = PlaceDetailResponse(
+        id = 1L,
+        name = name,
+        region = region,
+        district = district,
+        address = "서울 성동구 테스트로 1",
+        lat = null,
+        lng = null,
+        hoursText = null,
+        closedDays = null,
+        description = null,
+        status = "OPEN",
+        categories = emptyList(),
+        tags = emptyList(),
+        brands = emptyList(),
+        instagramUrl = null,
+        websiteUrl = null,
+        naverMapUrl = null,
+    )
 
     @Nested
     inner class `GET 목록 조회` {
@@ -40,7 +79,7 @@ class PlaceControllerTest {
         @Test
         fun `200과 장소 목록을 반환한다`() {
             // given
-            every { placeService.getPlaces(null, null, null, null) } returns listOf(place())
+            every { placeService.getPlaces(null, null, null, null) } returns listOf(placeListResponse())
 
             // when & then
             mockMvc.get("/api/places").andExpect {
@@ -58,7 +97,7 @@ class PlaceControllerTest {
         @Test
         fun `region 파라미터를 서비스에 전달한다`() {
             // given
-            every { placeService.getPlaces("서울", null, null, null) } returns listOf(place())
+            every { placeService.getPlaces("서울", null, null, null) } returns listOf(placeListResponse())
 
             // when & then
             mockMvc.get("/api/places?region=서울").andExpect {
@@ -80,7 +119,7 @@ class PlaceControllerTest {
         @Test
         fun `keyword 파라미터를 서비스에 전달한다`() {
             // given
-            every { placeService.getPlaces(null, null, null, "실과") } returns listOf(place())
+            every { placeService.getPlaces(null, null, null, "실과") } returns listOf(placeListResponse())
 
             // when & then
             mockMvc.get("/api/places?keyword=실과").andExpect {
@@ -96,7 +135,7 @@ class PlaceControllerTest {
         @Test
         fun `200과 장소 상세를 반환한다`() {
             // given
-            every { placeService.getPlace(1L) } returns place()
+            every { placeService.getPlace(1L) } returns placeDetailResponse()
 
             // when & then
             mockMvc.get("/api/places/1").andExpect {

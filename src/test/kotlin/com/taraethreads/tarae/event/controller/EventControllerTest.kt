@@ -1,8 +1,9 @@
 package com.taraethreads.tarae.event.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import com.taraethreads.tarae.event.domain.Event
 import com.taraethreads.tarae.event.domain.EventType
+import com.taraethreads.tarae.event.dto.EventDetailResponse
+import com.taraethreads.tarae.event.dto.EventListResponse
 import com.taraethreads.tarae.event.service.EventService
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
@@ -30,10 +31,32 @@ class EventControllerTest {
     @MockkBean
     lateinit var eventService: EventService
 
-    private fun event(title: String = "뜨개 팝업") = Event(
+    private fun eventListResponse(title: String = "뜨개 팝업") = EventListResponse(
+        id = 1L,
         title = title,
-        eventType = EventType.EVENT_POPUP,
+        eventType = "EVENT_POPUP",
         startDate = LocalDate.of(2026, 5, 1),
+        endDate = null,
+        locationText = null,
+        lat = null,
+        lng = null,
+        active = true,
+        links = null,
+    )
+
+    private fun eventDetailResponse(title: String = "뜨개 팝업") = EventDetailResponse(
+        id = 1L,
+        title = title,
+        description = null,
+        eventType = "EVENT_POPUP",
+        startDate = LocalDate.of(2026, 5, 1),
+        endDate = null,
+        placeId = null,
+        locationText = null,
+        lat = null,
+        lng = null,
+        active = true,
+        links = null,
     )
 
     @Nested
@@ -42,7 +65,7 @@ class EventControllerTest {
         @Test
         fun `active 파라미터 없이 호출하면 active=true 기본값으로 조회한다`() {
             // given
-            every { eventService.getEvents(null, true) } returns listOf(event())
+            every { eventService.getEvents(null, true) } returns listOf(eventListResponse())
 
             // when & then
             mockMvc.get("/api/events").andExpect {
@@ -67,7 +90,7 @@ class EventControllerTest {
         @Test
         fun `active 파라미터를 서비스에 전달한다`() {
             // given
-            every { eventService.getEvents(null, true) } returns listOf(event())
+            every { eventService.getEvents(null, true) } returns listOf(eventListResponse())
 
             // when & then
             mockMvc.get("/api/events?active=true").andExpect {
@@ -82,7 +105,7 @@ class EventControllerTest {
         @Test
         fun `200과 이벤트 상세를 반환한다`() {
             // given
-            every { eventService.getEvent(1L) } returns event()
+            every { eventService.getEvent(1L) } returns eventDetailResponse()
 
             // when & then
             mockMvc.get("/api/events/1").andExpect {

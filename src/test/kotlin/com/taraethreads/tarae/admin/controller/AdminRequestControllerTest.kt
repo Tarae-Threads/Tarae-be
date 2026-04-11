@@ -1,23 +1,20 @@
 package com.taraethreads.tarae.admin.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import com.taraethreads.tarae.admin.dto.EventCreateForm
-import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.admin.service.AdminRequestService
 import com.taraethreads.tarae.event.domain.EventType
-import com.taraethreads.tarae.place.domain.Brand
-import com.taraethreads.tarae.place.domain.BrandType
-import com.taraethreads.tarae.place.domain.Category
-import com.taraethreads.tarae.place.domain.Tag
-import com.taraethreads.tarae.place.repository.BrandRepository
-import com.taraethreads.tarae.place.repository.CategoryRepository
-import com.taraethreads.tarae.place.repository.TagRepository
+import com.taraethreads.tarae.place.dto.BrandResponse
+import com.taraethreads.tarae.place.dto.CategoryResponse
+import com.taraethreads.tarae.place.dto.TagResponse
+import com.taraethreads.tarae.place.service.BrandService
+import com.taraethreads.tarae.place.service.CategoryService
+import com.taraethreads.tarae.place.service.TagService
 import com.taraethreads.tarae.request.domain.EventRequest
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestStatus
 import com.taraethreads.tarae.request.domain.RequestType
 import io.mockk.every
-import io.mockk.verify
+import io.mockk.justRun
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,13 +40,13 @@ class AdminRequestControllerTest {
     lateinit var adminRequestService: AdminRequestService
 
     @MockkBean
-    lateinit var categoryRepository: CategoryRepository
+    lateinit var categoryService: CategoryService
 
     @MockkBean
-    lateinit var tagRepository: TagRepository
+    lateinit var tagService: TagService
 
     @MockkBean
-    lateinit var brandRepository: BrandRepository
+    lateinit var brandService: BrandService
 
     @Nested
     inner class `GET 제보 목록` {
@@ -92,9 +89,9 @@ class AdminRequestControllerTest {
             // given
             every { adminRequestService.getPlaceRequest(1L) } returns
                 PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")
-            every { categoryRepository.findAll() } returns emptyList()
-            every { tagRepository.findAll() } returns emptyList()
-            every { brandRepository.findAll() } returns emptyList()
+            every { categoryService.getCategories() } returns listOf(CategoryResponse(id = 1L, name = "뜨개샵"))
+            every { tagService.getAll() } returns listOf(TagResponse(id = 1L, name = "주차가능"))
+            every { brandService.getAll() } returns listOf(BrandResponse(id = 1L, name = "산네스간", type = "YARN"))
 
             // when & then
             mockMvc.get("/admin/requests/place/1").andExpect {
@@ -112,10 +109,7 @@ class AdminRequestControllerTest {
         @Test
         fun `승인 후 PENDING 목록으로 리다이렉트한다`() {
             // given
-            val place = com.taraethreads.tarae.place.domain.Place(
-                name = "실과 바늘", region = "서울", district = "성수", address = "서울 성동구"
-            )
-            every { adminRequestService.approvePlaceRequest(1L, any()) } returns place
+            justRun { adminRequestService.approvePlaceRequest(1L, any()) }
 
             // when & then
             mockMvc.post("/admin/requests/place/1/approve") {
@@ -136,7 +130,7 @@ class AdminRequestControllerTest {
         @Test
         fun `거절 후 PENDING 목록으로 리다이렉트한다`() {
             // given
-            every { adminRequestService.rejectPlaceRequest(1L) } returns Unit
+            justRun { adminRequestService.rejectPlaceRequest(1L) }
 
             // when & then
             mockMvc.post("/admin/requests/place/1/reject").andExpect {
@@ -174,12 +168,7 @@ class AdminRequestControllerTest {
         @Test
         fun `승인 후 PENDING 목록으로 리다이렉트한다`() {
             // given
-            val event = com.taraethreads.tarae.event.domain.Event(
-                title = "뜨개 팝업",
-                eventType = EventType.EVENT_POPUP,
-                startDate = LocalDate.of(2026, 5, 1),
-            )
-            every { adminRequestService.approveEventRequest(1L, any()) } returns event
+            justRun { adminRequestService.approveEventRequest(1L, any()) }
 
             // when & then
             mockMvc.post("/admin/requests/event/1/approve") {
@@ -199,7 +188,7 @@ class AdminRequestControllerTest {
         @Test
         fun `거절 후 PENDING 목록으로 리다이렉트한다`() {
             // given
-            every { adminRequestService.rejectEventRequest(1L) } returns Unit
+            justRun { adminRequestService.rejectEventRequest(1L) }
 
             // when & then
             mockMvc.post("/admin/requests/event/1/reject").andExpect {

@@ -2,6 +2,8 @@ package com.taraethreads.tarae.event.service
 
 import com.taraethreads.tarae.event.domain.Event
 import com.taraethreads.tarae.event.domain.EventType
+import com.taraethreads.tarae.event.dto.EventDetailResponse
+import com.taraethreads.tarae.event.dto.EventListResponse
 import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
@@ -30,15 +32,17 @@ class EventServiceTest {
     inner class `목록 조회` {
 
         @Test
-        fun `필터 파라미터를 repository에 그대로 전달한다`() {
+        fun `필터 파라미터를 repository에 그대로 전달하고 EventListResponse 목록을 반환한다`() {
             // given
             every { eventRepository.findAllWithFilters(EventType.SALE, true) } returns listOf(event())
 
             // when
-            val result = eventService.getEvents(EventType.SALE, true)
+            val result: List<EventListResponse> = eventService.getEvents(EventType.SALE, true)
 
             // then
             assertThat(result).hasSize(1)
+            assertThat(result[0].title).isEqualTo("테스트 이벤트")
+            assertThat(result[0].eventType).isEqualTo("SALE")
             verify { eventRepository.findAllWithFilters(EventType.SALE, true) }
         }
 
@@ -48,7 +52,7 @@ class EventServiceTest {
             every { eventRepository.findAllWithFilters(null, null) } returns emptyList()
 
             // when
-            val result = eventService.getEvents(null, null)
+            val result: List<EventListResponse> = eventService.getEvents(null, null)
 
             // then
             assertThat(result).isEmpty()
@@ -59,15 +63,17 @@ class EventServiceTest {
     inner class `상세 조회` {
 
         @Test
-        fun `존재하는 id로 조회하면 Event를 반환한다`() {
+        fun `존재하는 id로 조회하면 EventDetailResponse를 반환한다`() {
             // given
             every { eventRepository.findById(1L) } returns Optional.of(event())
 
             // when
-            val result = eventService.getEvent(1L)
+            val result: EventDetailResponse = eventService.getEvent(1L)
 
             // then
             assertThat(result.title).isEqualTo("테스트 이벤트")
+            assertThat(result.eventType).isEqualTo("SALE")
+            assertThat(result.active).isTrue()
         }
 
         @Test

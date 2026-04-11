@@ -33,10 +33,7 @@ class EventController(
         @Parameter(description = "이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP)") @RequestParam eventType: EventType?,
         @Parameter(description = "활성 여부 (기본값: true)") @RequestParam active: Boolean? = true,
     ): ResponseEntity<ApiResponse<List<EventListResponse>>> =
-        ApiResponse.ok(
-            eventService.getEvents(eventType, active)
-                .map { EventListResponse.from(it) }
-        )
+        ApiResponse.ok(eventService.getEvents(eventType, active))
 
     @Operation(summary = "이벤트 상세 조회")
     @ApiResponses(
@@ -47,5 +44,5 @@ class EventController(
     fun getEvent(
         @Parameter(description = "이벤트 ID") @PathVariable id: Long,
     ): ResponseEntity<ApiResponse<EventDetailResponse>> =
-        ApiResponse.ok(EventDetailResponse.from(eventService.getEvent(id)))
+        ApiResponse.ok(eventService.getEvent(id))
 }

@@ -34,10 +34,7 @@ class PlaceController(
         @Parameter(description = "카테고리 ID") @RequestParam categoryId: Long?,
         @Parameter(description = "태그 ID") @RequestParam tagId: Long?,
     ): ResponseEntity<ApiResponse<List<PlaceListResponse>>> =
-        ApiResponse.ok(
-            placeService.getPlaces(region, categoryId, tagId, keyword)
-                .map { PlaceListResponse.from(it) }
-        )
+        ApiResponse.ok(placeService.getPlaces(region, categoryId, tagId, keyword))
 
     @Operation(summary = "장소 상세 조회")
     @ApiResponses(
@@ -48,5 +45,5 @@ class PlaceController(
     fun getPlace(
         @Parameter(description = "장소 ID") @PathVariable id: Long,
     ): ResponseEntity<ApiResponse<PlaceDetailResponse>> =
-        ApiResponse.ok(PlaceDetailResponse.from(placeService.getPlace(id)))
+        ApiResponse.ok(placeService.getPlace(id))
 }

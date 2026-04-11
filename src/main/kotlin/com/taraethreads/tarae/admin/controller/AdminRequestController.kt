@@ -4,9 +4,9 @@ import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.admin.service.AdminRequestService
 import com.taraethreads.tarae.event.domain.EventType
-import com.taraethreads.tarae.place.repository.BrandRepository
-import com.taraethreads.tarae.place.repository.CategoryRepository
-import com.taraethreads.tarae.place.repository.TagRepository
+import com.taraethreads.tarae.place.service.BrandService
+import com.taraethreads.tarae.place.service.CategoryService
+import com.taraethreads.tarae.place.service.TagService
 import com.taraethreads.tarae.request.domain.RequestStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/admin/requests")
 class AdminRequestController(
     private val adminRequestService: AdminRequestService,
-    private val categoryRepository: CategoryRepository,
-    private val tagRepository: TagRepository,
-    private val brandRepository: BrandRepository,
+    private val categoryService: CategoryService,
+    private val tagService: TagService,
+    private val brandService: BrandService,
 ) {
 
     @GetMapping
@@ -36,10 +36,10 @@ class AdminRequestController(
         model.addAttribute("status", status)
         model.addAttribute("allStatuses", RequestStatus.entries)
 
-        if (type == "event") {
-            model.addAttribute("requests", adminRequestService.getEventRequests(status))
-        } else {
-            model.addAttribute("requests", adminRequestService.getPlaceRequests(status))
+        when (type.lowercase()) {
+            "event" -> model.addAttribute("requests", adminRequestService.getEventRequests(status))
+            "place" -> model.addAttribute("requests", adminRequestService.getPlaceRequests(status))
+            else -> model.addAttribute("requests", emptyList<Any>())
         }
 
         return "admin/requests/list"
@@ -63,9 +63,9 @@ class AdminRequestController(
             naverMapUrl = placeRequest.naverMapUrl,
             categoryIds = placeRequest.categoryIds,
         ))
-        model.addAttribute("categories", categoryRepository.findAll())
-        model.addAttribute("tags", tagRepository.findAll())
-        model.addAttribute("brands", brandRepository.findAll())
+        model.addAttribute("categories", categoryService.getCategories())
+        model.addAttribute("tags", tagService.getAll())
+        model.addAttribute("brands", brandService.getAll())
         return "admin/requests/place-detail"
     }
 
