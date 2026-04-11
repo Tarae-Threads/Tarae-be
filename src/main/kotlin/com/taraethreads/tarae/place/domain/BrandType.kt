@@ -1,5 +1,5 @@
 package com.taraethreads.tarae.place.domain
 
 enum class BrandType {
-    YARN, NEEDLE, NOTIONS
+    YARN, NEEDLE, NOTIONS, PATTERNBOOK
 }
