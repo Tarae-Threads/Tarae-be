@@ -16,11 +16,13 @@ data class PlaceListResponse(
     @Schema(description = "운영 상태", example = "OPEN") val status: String,
     val categories: List<CategoryInfo>,
     val tags: List<TagInfo>,
+    val brands: List<BrandInfo>,
     @Schema(description = "인스타그램 URL") val instagramUrl: String?,
     @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
 ) {
     data class CategoryInfo(val id: Long, val name: String)
     data class TagInfo(val id: Long, val name: String)
+    data class BrandInfo(val id: Long, val name: String, val type: String)
 
     companion object {
         fun from(place: Place) = PlaceListResponse(
@@ -34,6 +36,7 @@ data class PlaceListResponse(
             status = place.status.name,
             categories = place.categories.map { CategoryInfo(it.id, it.name) },
             tags = place.tags.map { TagInfo(it.id, it.name) },
+            brands = place.brands.map { BrandInfo(it.id, it.name, it.type.name) },
             instagramUrl = place.instagramUrl,
             naverMapUrl = place.naverMapUrl,
         )

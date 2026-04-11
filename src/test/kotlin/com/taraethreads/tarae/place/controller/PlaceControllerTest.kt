@@ -51,6 +51,7 @@ class PlaceControllerTest {
                 jsonPath("$.data[0].status") { value("OPEN") }
                 jsonPath("$.data[0].categories") { isArray() }
                 jsonPath("$.data[0].tags") { isArray() }
+                jsonPath("$.data[0].brands") { isArray() }
             }
         }
 
