@@ -26,7 +26,7 @@ Requires JDK 17.
 - 패키지: `com.taraethreads.tarae.{domain}.{layer}`
 - 레이어: Controller → Service → Repository
 - DTO ↔ Entity 완전 분리, Entity 직접 응답 노출 금지
-- DTO 네이밍: `~Request` / `~Response`
+- DTO 네이밍: `~Request` / `~Response` (최상위 API 입출력), `~Dto` (응답 내 중첩 서브 객체)
 
 ## 에이전트/스킬 사용 규칙
 
