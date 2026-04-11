@@ -56,9 +56,9 @@ class PlaceRepositoryTest {
         brands: List<Brand> = emptyList(),
     ): Place {
         val place = Place(name = name, region = region, district = district, address = address, description = description)
-        place.categories.addAll(categories)
-        place.tags.addAll(tags)
-        place.brands.addAll(brands)
+        categories.forEach { place.addCategory(it) }
+        tags.forEach { place.addTag(it) }
+        brands.forEach { place.addBrand(it) }
         return placeRepository.save(place)
     }
 

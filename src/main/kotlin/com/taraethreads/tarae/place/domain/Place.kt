@@ -1,6 +1,7 @@
 package com.taraethreads.tarae.place.domain
 
 import com.taraethreads.tarae.global.common.BaseEntity
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -9,10 +10,9 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.JoinTable
-import jakarta.persistence.ManyToMany
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
 import java.math.BigDecimal
 
 @Entity
@@ -63,29 +63,33 @@ class Place(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "place_categories",
-        joinColumns = [JoinColumn(name = "place_id")],
-        inverseJoinColumns = [JoinColumn(name = "category_id")]
-    )
-    val categories: MutableList<Category> = mutableListOf()
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "place", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val placeCategories: MutableList<PlaceCategory> = mutableListOf()
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "place_tags",
-        joinColumns = [JoinColumn(name = "place_id")],
-        inverseJoinColumns = [JoinColumn(name = "tag_id")]
-    )
-    val tags: MutableList<Tag> = mutableListOf()
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "place", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val placeTags: MutableList<PlaceTag> = mutableListOf()
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "place_brands",
-        joinColumns = [JoinColumn(name = "place_id")],
-        inverseJoinColumns = [JoinColumn(name = "brand_id")]
-    )
-    val brands: MutableList<Brand> = mutableListOf()
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "place", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val placeBrands: MutableList<PlaceBrand> = mutableListOf()
+
+    fun addCategory(category: Category) {
+        placeCategories.add(PlaceCategory(place = this, category = category))
+    }
+
+    fun addTag(tag: Tag) {
+        placeTags.add(PlaceTag(place = this, tag = tag))
+    }
+
+    fun addBrand(brand: Brand) {
+        placeBrands.add(PlaceBrand(place = this, brand = brand))
+    }
+
+    val categories: List<Category> get() = placeCategories.map { it.category }
+    val tags: List<Tag> get() = placeTags.map { it.tag }
+    val brands: List<Brand> get() = placeBrands.map { it.brand }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

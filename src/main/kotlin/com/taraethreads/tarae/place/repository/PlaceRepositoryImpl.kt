@@ -6,6 +6,9 @@ import com.taraethreads.tarae.place.domain.Place
 import com.taraethreads.tarae.place.domain.QBrand
 import com.taraethreads.tarae.place.domain.QCategory.category
 import com.taraethreads.tarae.place.domain.QPlace.place
+import com.taraethreads.tarae.place.domain.QPlaceBrand
+import com.taraethreads.tarae.place.domain.QPlaceCategory
+import com.taraethreads.tarae.place.domain.QPlaceTag
 import com.taraethreads.tarae.place.domain.QTag
 import com.taraethreads.tarae.place.domain.QTag.tag
 
@@ -23,21 +26,29 @@ class PlaceRepositoryImpl(
         }
 
         if (categoryId != null) {
-            query.join(place.categories, category)
+            val placeCategory = QPlaceCategory.placeCategory
+            query.join(place.placeCategories, placeCategory)
+                .join(placeCategory.category, category)
                 .where(category.id.eq(categoryId))
         }
 
         if (tagId != null) {
-            query.join(place.tags, tag)
+            val placeTag = QPlaceTag.placeTag
+            query.join(place.placeTags, placeTag)
+                .join(placeTag.tag, tag)
                 .where(tag.id.eq(tagId))
         }
 
         val tokens = keyword?.trim()?.split("\\s+".toRegex())?.filter { it.isNotEmpty() } ?: emptyList()
         if (tokens.isNotEmpty()) {
+            val searchPlaceTag = QPlaceTag("searchPlaceTag")
             val searchTag = QTag("searchTag")
+            val searchPlaceBrand = QPlaceBrand("searchPlaceBrand")
             val searchBrand = QBrand("searchBrand")
-            query.leftJoin(place.tags, searchTag)
-            query.leftJoin(place.brands, searchBrand)
+            query.leftJoin(place.placeTags, searchPlaceTag)
+                .leftJoin(searchPlaceTag.tag, searchTag)
+            query.leftJoin(place.placeBrands, searchPlaceBrand)
+                .leftJoin(searchPlaceBrand.brand, searchBrand)
 
             tokens.forEach { token ->
                 query.where(tokenCondition(token, searchTag, searchBrand))

@@ -9,6 +9,17 @@
 - 외래키 네이밍: `{참조테이블}_id`
 - Soft Delete 필요 시: `is_deleted`, `deleted_at`
 
+## SQL 파일 위치
+
+마이그레이션 SQL은 `docs/db/` 에서 관리 (수동 적용, Flyway 미사용):
+
+| 파일 | 내용 |
+|------|------|
+| `V1__create_place_tables.sql` | places, categories, tags, brands, 매핑 테이블 |
+| `V2__create_event_tables.sql` | events |
+| `V3__create_request_tables.sql` | place_requests, event_requests |
+| `V4__refactor_place_join_tables.sql` | 매핑 테이블 id 컬럼 추가 (PK 전환) |
+
 ---
 
 ## 테이블 목록
@@ -45,8 +56,10 @@
 
 | 컬럼 | 타입 | 비고 |
 |------|------|------|
+| id | BIGINT AUTO_INCREMENT | PK |
 | place_id | BIGINT | FK → places |
 | category_id | BIGINT | FK → categories |
+| UNIQUE | (place_id, category_id) | 중복 방지 |
 
 > 한 장소가 여러 카테고리를 가질 수 있음 (뜨개샵 + 공방 등)
 
@@ -61,8 +74,10 @@
 
 | 컬럼 | 타입 | 비고 |
 |------|------|------|
+| id | BIGINT AUTO_INCREMENT | PK |
 | place_id | BIGINT | FK → places |
 | tag_id | BIGINT | FK → tags |
+| UNIQUE | (place_id, tag_id) | 중복 방지 |
 
 ### brands (브랜드)
 
@@ -76,8 +91,10 @@
 
 | 컬럼 | 타입 | 비고 |
 |------|------|------|
+| id | BIGINT AUTO_INCREMENT | PK |
 | place_id | BIGINT | FK → places |
 | brand_id | BIGINT | FK → brands |
+| UNIQUE | (place_id, brand_id) | 중복 방지 |
 
 ### events (일정)
 

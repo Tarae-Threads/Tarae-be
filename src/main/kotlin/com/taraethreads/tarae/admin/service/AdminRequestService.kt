@@ -61,16 +61,13 @@ class AdminRequestService(
         )
 
         if (form.categoryIds.isNotEmpty()) {
-            val categories = categoryRepository.findAllById(form.categoryIds)
-            place.categories.addAll(categories)
+            categoryRepository.findAllById(form.categoryIds).forEach { place.addCategory(it) }
         }
         if (form.tagIds.isNotEmpty()) {
-            val tags = tagRepository.findAllById(form.tagIds)
-            place.tags.addAll(tags)
+            tagRepository.findAllById(form.tagIds).forEach { place.addTag(it) }
         }
         if (form.brandIds.isNotEmpty()) {
-            val brands = brandRepository.findAllById(form.brandIds)
-            place.brands.addAll(brands)
+            brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
         }
 
         return placeRepository.save(place)

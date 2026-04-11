@@ -4,7 +4,7 @@
 - [x] T1. Flyway V2 마이그레이션 작성
   - 목적: events 테이블 생성 DDL
   - 예상 변경 파일:
-    - `src/main/resources/db/migration/V2__create_event_tables.sql` (신규)
+    - `docs/db/V2__create_event_tables.sql` (신규)
   - 완료일: 2026-04-05
 
 - [x] T2. Event 도메인 Entity 구현

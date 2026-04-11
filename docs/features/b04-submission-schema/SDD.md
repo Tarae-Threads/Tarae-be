@@ -39,4 +39,4 @@ com.taraethreads.tarae.
 
 ## DB
 
-SQL 체크리스트: `src/main/resources/db/migration/V3__create_request_tables.sql`
+SQL 체크리스트: `docs/db/V3__create_request_tables.sql`
