@@ -19,6 +19,7 @@
 | `V2__create_event_tables.sql` | events |
 | `V3__create_request_tables.sql` | place_requests, event_requests |
 | `V4__refactor_place_join_tables.sql` | 매핑 테이블 id 컬럼 추가 (PK 전환) |
+| `V5__alter_place_requests_add_brand_fields.sql` | place_requests 브랜드 ID 리스트/텍스트 필드 추가, brands.type에 PATTERNBOOK 추가 |
 
 ---
 
@@ -85,7 +86,7 @@
 |------|------|------|
 | id | BIGINT AUTO_INCREMENT | PK |
 | name | VARCHAR(100) | 산네스간, 히야히야 등 |
-| type | ENUM(YARN, NEEDLE, NOTIONS) | 실, 바늘, 부자재 |
+| type | ENUM(YARN, NEEDLE, NOTIONS, PATTERNBOOK) | 실, 바늘, 부자재, 도안 |
 
 ### place_brands (장소-브랜드 매핑)
 
@@ -128,11 +129,17 @@
 | lat | DECIMAL(10,7) | nullable, 프론트 geocoding 후 전송 |
 | lng | DECIMAL(10,7) | nullable |
 | category_ids | JSON | nullable. `[1, 3]` |
+| category_text | VARCHAR(255) | nullable, 카테고리 직접 입력 |
 | hours_text | VARCHAR(255) | nullable |
 | closed_days | VARCHAR(100) | nullable |
-| brands_yarn | VARCHAR(255) | nullable, 쉼표 구분 |
-| brands_needle | VARCHAR(255) | nullable, 쉼표 구분 |
-| brands_notions | VARCHAR(255) | nullable, 쉼표 구분 |
+| brand_yarn_ids | JSON | nullable. 실 브랜드 ID 목록 `[10, 11]` |
+| brands_yarn | VARCHAR(255) | nullable, 실 브랜드 직접 입력 |
+| brand_needle_ids | JSON | nullable. 바늘 브랜드 ID 목록 |
+| brands_needle | VARCHAR(255) | nullable, 바늘 브랜드 직접 입력 |
+| brand_notions_ids | JSON | nullable. 부자재 브랜드 ID 목록 |
+| brands_notions | VARCHAR(255) | nullable, 부자재 브랜드 직접 입력 |
+| brand_patternbook_ids | JSON | nullable. 도안 브랜드 ID 목록 |
+| brands_patternbook | VARCHAR(255) | nullable, 도안 브랜드 직접 입력 |
 | instagram_url | VARCHAR(255) | nullable |
 | website_url | VARCHAR(255) | nullable |
 | naver_map_url | VARCHAR(255) | nullable |

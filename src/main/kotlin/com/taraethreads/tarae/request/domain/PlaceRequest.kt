@@ -44,19 +44,41 @@ class PlaceRequest(
     val categoryIds: List<Long> = emptyList(),
 
     @Column(length = 255)
+    val categoryText: String? = null,
+
+    @Column(length = 255)
     val hoursText: String? = null,
 
     @Column(length = 100)
     val closedDays: String? = null,
 
+    @Convert(converter = LongListJsonConverter::class)
+    @Column(columnDefinition = "JSON")
+    val brandYarnIds: List<Long> = emptyList(),
+
     @Column(length = 255)
     val brandsYarn: String? = null,
+
+    @Convert(converter = LongListJsonConverter::class)
+    @Column(columnDefinition = "JSON")
+    val brandNeedleIds: List<Long> = emptyList(),
 
     @Column(length = 255)
     val brandsNeedle: String? = null,
 
+    @Convert(converter = LongListJsonConverter::class)
+    @Column(columnDefinition = "JSON")
+    val brandNotionsIds: List<Long> = emptyList(),
+
     @Column(length = 255)
     val brandsNotions: String? = null,
+
+    @Convert(converter = LongListJsonConverter::class)
+    @Column(columnDefinition = "JSON")
+    val brandPatternbookIds: List<Long> = emptyList(),
+
+    @Column(length = 255)
+    val brandsPatternbook: String? = null,
 
     @Column(length = 255)
     val instagramUrl: String? = null,
