@@ -17,15 +17,16 @@ data class PlaceDetailResponse(
     @Schema(description = "휴무일", example = "월요일") val closedDays: String?,
     @Schema(description = "장소 설명") val description: String?,
     @Schema(description = "운영 상태", example = "OPEN") val status: String,
-    val categories: List<CategoryInfo>,
-    val tags: List<TagInfo>,
-    val brands: List<BrandInfo>,
+    @Schema(description = "카테고리 목록") val categories: List<CategoryDto>,
+    @Schema(description = "태그 목록") val tags: List<TagDto>,
+    @Schema(description = "브랜드 목록") val brands: List<BrandDto>,
     @Schema(description = "인스타그램 URL") val instagramUrl: String?,
     @Schema(description = "웹사이트 URL") val websiteUrl: String?,
     @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
+    @Schema(description = "활성 이벤트 목록") val events: List<PlaceEventDto>,
 ) {
     companion object {
-        fun from(place: Place) = PlaceDetailResponse(
+        fun from(place: Place, events: List<PlaceEventDto>) = PlaceDetailResponse(
             id = place.id,
             name = place.name,
             region = place.region,
@@ -37,12 +38,13 @@ data class PlaceDetailResponse(
             closedDays = place.closedDays,
             description = place.description,
             status = place.status.name,
-            categories = place.placeCategories.map { CategoryInfo(it.category.id, it.category.name) },
-            tags = place.placeTags.map { TagInfo(it.tag.id, it.tag.name) },
-            brands = place.placeBrands.map { BrandInfo(it.brand.id, it.brand.name, it.brand.type.name) },
+            categories = place.placeCategories.map { CategoryDto(it.category.id, it.category.name) },
+            tags = place.placeTags.map { TagDto(it.tag.id, it.tag.name) },
+            brands = place.placeBrands.map { BrandDto(it.brand.id, it.brand.name, it.brand.type.name) },
             instagramUrl = place.instagramUrl,
             websiteUrl = place.websiteUrl,
             naverMapUrl = place.naverMapUrl,
+            events = events,
         )
     }
 }

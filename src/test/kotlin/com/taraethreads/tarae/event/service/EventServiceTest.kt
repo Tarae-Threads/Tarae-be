@@ -60,6 +60,36 @@ class EventServiceTest {
     }
 
     @Nested
+    inner class `장소 활성 이벤트 조회` {
+
+        @Test
+        fun `placeId로 활성 이벤트 목록을 반환한다`() {
+            // given
+            every { eventRepository.findAllByPlaceIdAndActiveTrue(1L) } returns listOf(event(title = "봄 클래스"))
+
+            // when
+            val result: List<Event> = eventService.findActiveEventsByPlaceId(1L)
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].title).isEqualTo("봄 클래스")
+            verify { eventRepository.findAllByPlaceIdAndActiveTrue(1L) }
+        }
+
+        @Test
+        fun `이벤트가 없으면 빈 리스트를 반환한다`() {
+            // given
+            every { eventRepository.findAllByPlaceIdAndActiveTrue(99L) } returns emptyList()
+
+            // when
+            val result: List<Event> = eventService.findActiveEventsByPlaceId(99L)
+
+            // then
+            assertThat(result).isEmpty()
+        }
+    }
+
+    @Nested
     inner class `상세 조회` {
 
         @Test

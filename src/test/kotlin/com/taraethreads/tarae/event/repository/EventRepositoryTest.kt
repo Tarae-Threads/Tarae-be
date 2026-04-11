@@ -3,6 +3,8 @@ package com.taraethreads.tarae.event.repository
 import com.taraethreads.tarae.event.domain.Event
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.global.config.JpaConfig
+import com.taraethreads.tarae.place.domain.Place
+import com.taraethreads.tarae.place.repository.PlaceRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -19,6 +21,9 @@ class EventRepositoryTest {
 
     @Autowired
     lateinit var eventRepository: EventRepository
+
+    @Autowired
+    lateinit var placeRepository: PlaceRepository
 
     private fun createEvent(
         title: String = "테스트 이벤트",
@@ -141,6 +146,57 @@ class EventRepositoryTest {
 
             // then
             assertThat(result).hasSize(1)
+        }
+    }
+
+    @Nested
+    inner class `장소 ID + active 조회` {
+
+        private fun savedPlace() = placeRepository.save(
+            Place(name = "테스트 공방", region = "서울", district = "성수", address = "서울 성동구 테스트로 1")
+        )
+
+        @Test
+        fun `active=true 인 이벤트만 반환한다`() {
+            // given
+            val place = savedPlace()
+            eventRepository.save(Event(title = "활성 이벤트", eventType = EventType.SALE, startDate = LocalDate.now(), place = place, active = true))
+            eventRepository.save(Event(title = "비활성 이벤트", eventType = EventType.SALE, startDate = LocalDate.now(), place = place, active = false))
+
+            // when
+            val result = eventRepository.findAllByPlaceIdAndActiveTrue(place.id)
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].title).isEqualTo("활성 이벤트")
+        }
+
+        @Test
+        fun `해당 장소의 이벤트만 반환한다`() {
+            // given
+            val place1 = savedPlace()
+            val place2 = savedPlace()
+            eventRepository.save(Event(title = "장소1 이벤트", eventType = EventType.SALE, startDate = LocalDate.now(), place = place1, active = true))
+            eventRepository.save(Event(title = "장소2 이벤트", eventType = EventType.SALE, startDate = LocalDate.now(), place = place2, active = true))
+
+            // when
+            val result = eventRepository.findAllByPlaceIdAndActiveTrue(place1.id)
+
+            // then
+            assertThat(result).hasSize(1)
+            assertThat(result[0].title).isEqualTo("장소1 이벤트")
+        }
+
+        @Test
+        fun `이벤트가 없는 장소는 빈 리스트를 반환한다`() {
+            // given
+            val place = savedPlace()
+
+            // when
+            val result = eventRepository.findAllByPlaceIdAndActiveTrue(place.id)
+
+            // then
+            assertThat(result).isEmpty()
         }
     }
 

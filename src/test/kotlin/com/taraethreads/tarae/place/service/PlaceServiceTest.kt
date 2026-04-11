@@ -1,5 +1,8 @@
 package com.taraethreads.tarae.place.service
 
+import com.taraethreads.tarae.event.domain.Event
+import com.taraethreads.tarae.event.domain.EventType
+import com.taraethreads.tarae.event.service.EventService
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.domain.Place
@@ -13,12 +16,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.util.Optional
 
 class PlaceServiceTest {
 
     private val placeRepository: PlaceRepository = mockk()
-    private val placeService: PlaceService = PlaceService(placeRepository)
+    private val eventService: EventService = mockk()
+    private val placeService: PlaceService = PlaceService(placeRepository, eventService)
 
     private fun place(name: String = "장소A", region: String = "서울") =
         Place(name = name, region = region, district = "성수", address = "서울 성동구")
@@ -75,6 +80,7 @@ class PlaceServiceTest {
         fun `존재하는 id로 조회하면 PlaceDetailResponse를 반환한다`() {
             // given
             every { placeRepository.findById(1L) } returns Optional.of(place())
+            every { eventService.findActiveEventsByPlaceId(1L) } returns emptyList()
 
             // when
             val result: PlaceDetailResponse = placeService.getPlace(1L)
@@ -83,6 +89,43 @@ class PlaceServiceTest {
             assertThat(result.name).isEqualTo("장소A")
             assertThat(result.region).isEqualTo("서울")
             assertThat(result.status).isEqualTo("OPEN")
+            verify { eventService.findActiveEventsByPlaceId(1L) }
+        }
+
+        @Test
+        fun `활성 이벤트가 있는 장소 조회 시 events 리스트에 포함된다`() {
+            // given
+            val event = Event(
+                title = "봄 클래스 모집",
+                eventType = EventType.TESTER_RECRUIT,
+                startDate = LocalDate.of(2026, 4, 15),
+                endDate = LocalDate.of(2026, 5, 10),
+                active = true,
+            )
+            every { placeRepository.findById(1L) } returns Optional.of(place())
+            every { eventService.findActiveEventsByPlaceId(1L) } returns listOf(event)
+
+            // when
+            val result: PlaceDetailResponse = placeService.getPlace(1L)
+
+            // then
+            assertThat(result.events).hasSize(1)
+            assertThat(result.events[0].title).isEqualTo("봄 클래스 모집")
+            assertThat(result.events[0].eventType).isEqualTo("TESTER_RECRUIT")
+            assertThat(result.events[0].active).isTrue()
+        }
+
+        @Test
+        fun `이벤트가 없는 장소 조회 시 events는 빈 배열이다`() {
+            // given
+            every { placeRepository.findById(1L) } returns Optional.of(place())
+            every { eventService.findActiveEventsByPlaceId(1L) } returns emptyList()
+
+            // when
+            val result: PlaceDetailResponse = placeService.getPlace(1L)
+
+            // then
+            assertThat(result.events).isEmpty()
         }
 
         @Test

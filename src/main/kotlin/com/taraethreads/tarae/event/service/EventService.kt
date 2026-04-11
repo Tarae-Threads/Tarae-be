@@ -23,6 +23,9 @@ class EventService(
     fun getEvent(id: Long): EventDetailResponse =
         EventDetailResponse.from(findEventById(id))
 
+    fun findActiveEventsByPlaceId(placeId: Long): List<Event> =
+        eventRepository.findAllByPlaceIdAndActiveTrue(placeId)
+
     private fun findEventById(id: Long): Event =
         eventRepository.findById(id)
             .orElseThrow { CustomException(ErrorCode.EVENT_NOT_FOUND) }

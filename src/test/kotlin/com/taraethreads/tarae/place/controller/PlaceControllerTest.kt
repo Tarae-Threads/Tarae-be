@@ -5,6 +5,7 @@ import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.global.exception.GlobalExceptionHandler
 import com.taraethreads.tarae.place.dto.PlaceDetailResponse
+import com.taraethreads.tarae.place.dto.PlaceEventDto
 import com.taraethreads.tarae.place.dto.PlaceListResponse
 import com.taraethreads.tarae.place.service.PlaceService
 import io.mockk.every
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.time.LocalDate
 
 @WebMvcTest(
     controllers = [PlaceController::class, GlobalExceptionHandler::class],
@@ -71,6 +73,7 @@ class PlaceControllerTest {
         instagramUrl = null,
         websiteUrl = null,
         naverMapUrl = null,
+        events = emptyList(),
     )
 
     @Nested
@@ -147,6 +150,33 @@ class PlaceControllerTest {
                 jsonPath("$.data.categories") { isArray() }
                 jsonPath("$.data.tags") { isArray() }
                 jsonPath("$.data.brands") { isArray() }
+                jsonPath("$.data.events") { isArray() }
+            }
+        }
+
+        @Test
+        fun `활성 이벤트가 있는 장소 조회 시 events 필드에 이벤트 정보가 포함된다`() {
+            // given
+            val event = PlaceEventDto(
+                id = 10L,
+                title = "봄 클래스 모집",
+                eventType = "TESTER_RECRUIT",
+                startDate = LocalDate.of(2026, 4, 15),
+                endDate = LocalDate.of(2026, 5, 10),
+                active = true,
+                links = "https://forms.gle/xxxx",
+            )
+            every { placeService.getPlace(1L) } returns placeDetailResponse().copy(events = listOf(event))
+
+            // when & then
+            mockMvc.get("/api/places/1").andExpect {
+                status { isOk() }
+                jsonPath("$.data.events[0].id") { value(10) }
+                jsonPath("$.data.events[0].title") { value("봄 클래스 모집") }
+                jsonPath("$.data.events[0].eventType") { value("TESTER_RECRUIT") }
+                jsonPath("$.data.events[0].startDate") { value("2026-04-15") }
+                jsonPath("$.data.events[0].endDate") { value("2026-05-10") }
+                jsonPath("$.data.events[0].active") { value(true) }
             }
         }
 
