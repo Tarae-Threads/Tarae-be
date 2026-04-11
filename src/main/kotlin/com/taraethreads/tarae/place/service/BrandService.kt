@@ -17,13 +17,11 @@ class BrandService(
 
     fun getBrandsGroupedByType(): List<BrandGroupResponse.BrandTypeGroup> {
         val grouped = brandRepository.findAll().groupBy { it.type }
-        return BrandType.entries.mapNotNull { type ->
-            grouped[type]?.let { brands ->
-                BrandGroupResponse.BrandTypeGroup(
-                    type = type.name,
-                    brands = brands.map { BrandGroupResponse.BrandItem(id = it.id, name = it.name) },
-                )
-            }
+        return BrandType.entries.map { type ->
+            BrandGroupResponse.BrandTypeGroup(
+                type = type.name,
+                brands = grouped[type]?.map { BrandGroupResponse.BrandItem(id = it.id, name = it.name) } ?: emptyList(),
+            )
         }
     }
 }

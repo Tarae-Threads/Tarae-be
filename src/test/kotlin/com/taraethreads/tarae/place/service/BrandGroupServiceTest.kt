@@ -26,7 +26,7 @@ class BrandGroupServiceTest {
         val result = brandService.getBrandsGroupedByType()
 
         // then
-        assertThat(result).hasSize(2)
+        assertThat(result).hasSize(BrandType.entries.size)
         val yarnGroup = result.find { it.type == "YARN" }!!
         assertThat(yarnGroup.brands).hasSize(2)
         assertThat(yarnGroup.brands.map { it.name }).containsExactlyInAnyOrder("산네스간", "다루마")
@@ -36,7 +36,7 @@ class BrandGroupServiceTest {
     }
 
     @Test
-    fun `브랜드가 없으면 빈 리스트를 반환한다`() {
+    fun `브랜드가 없어도 모든 타입 그룹을 빈 배열로 반환한다`() {
         // given
         every { brandRepository.findAll() } returns emptyList()
 
@@ -44,11 +44,12 @@ class BrandGroupServiceTest {
         val result = brandService.getBrandsGroupedByType()
 
         // then
-        assertThat(result).isEmpty()
+        assertThat(result).hasSize(BrandType.entries.size)
+        assertThat(result.all { it.brands.isEmpty() }).isTrue()
     }
 
     @Test
-    fun `타입 순서는 enum 선언 순서를 따른다`() {
+    fun `모든 타입이 응답에 포함된다`() {
         // given
         every { brandRepository.findAll() } returns listOf(
             Brand(name = "클로버", type = BrandType.NEEDLE),
@@ -59,6 +60,6 @@ class BrandGroupServiceTest {
         val result = brandService.getBrandsGroupedByType()
 
         // then
-        assertThat(result.map { it.type }).containsExactly("YARN", "NEEDLE")
+        assertThat(result.map { it.type }).containsExactlyInAnyOrder("YARN", "NEEDLE", "NOTIONS", "PATTERNBOOK")
     }
 }
