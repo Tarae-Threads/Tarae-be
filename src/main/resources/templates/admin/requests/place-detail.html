@@ -131,34 +131,113 @@
                 <input type="text" name="naverMapUrl" th:value="${form.naverMapUrl}"/>
             </div>
 
-            <div class="form-group">
-                <label>카테고리</label>
-                <div class="checkbox-group">
-                    <label th:each="cat : ${categories}" class="checkbox-label">
-                        <input type="checkbox" name="categoryIds" th:value="${cat.id}"
-                               th:checked="${#lists.contains(form.categoryIds, cat.id)}"/>
-                        <span th:text="${cat.name}">카테고리</span>
-                    </label>
+            <!-- 카테고리 -->
+            <div class="selector-section open" data-selector="category">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">카테고리</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selected-summary"></div>
+                    <div class="selector-body-inner">
+                        <div class="chip-grid">
+                            <label th:each="cat : ${categories}" class="chip-toggle">
+                                <input type="checkbox" name="categoryIds" th:value="${cat.id}"
+                                       th:checked="${#lists.contains(form.categoryIds, cat.id)}"
+                                       onchange="updateSelector(this)"/>
+                                <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label>태그</label>
-                <div class="checkbox-group">
-                    <label th:each="tag : ${tags}" class="checkbox-label">
-                        <input type="checkbox" name="tagIds" th:value="${tag.id}"
-                               th:checked="${#lists.contains(form.tagIds, tag.id)}"/>
-                        <span th:text="${tag.name}">태그</span>
-                    </label>
+
+            <!-- 태그 -->
+            <div class="selector-section" data-selector="tag">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">태그</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selected-summary"></div>
+                    <div class="selector-body-inner">
+                        <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
+                        <div class="chip-grid">
+                            <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
+                                <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                                       th:checked="${#lists.contains(form.tagIds, tag.id)}"
+                                       onchange="updateSelector(this)"/>
+                                <span class="chip-label" th:text="${tag.name}">태그</span>
+                            </label>
+                        </div>
+                        <div class="chip-no-results">검색 결과가 없습니다</div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label>브랜드</label>
-                <div class="checkbox-group">
-                    <label th:each="brand : ${brands}" class="checkbox-label">
-                        <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                               th:checked="${#lists.contains(form.brandIds, brand.id)}"/>
-                        <span th:text="${brand.name + ' (' + brand.type + ')'}">브랜드</span>
-                    </label>
+
+            <!-- 브랜드 -->
+            <div class="selector-section" data-selector="brand">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">브랜드</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selected-summary"></div>
+                    <div class="selector-body-inner">
+                        <div class="chip-subgroup">
+                            <div class="chip-subgroup-title">YARN</div>
+                            <div class="chip-grid">
+                                <label th:each="brand : ${brands}" th:if="${brand.type == 'YARN'}" class="chip-toggle">
+                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="chip-subgroup">
+                            <div class="chip-subgroup-title">NEEDLE</div>
+                            <div class="chip-grid">
+                                <label th:each="brand : ${brands}" th:if="${brand.type == 'NEEDLE'}" class="chip-toggle">
+                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="chip-subgroup">
+                            <div class="chip-subgroup-title">NOTIONS</div>
+                            <div class="chip-grid">
+                                <label th:each="brand : ${brands}" th:if="${brand.type == 'NOTIONS'}" class="chip-toggle">
+                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="chip-subgroup">
+                            <div class="chip-subgroup-title">PATTERNBOOK</div>
+                            <div class="chip-grid">
+                                <label th:each="brand : ${brands}" th:if="${brand.type == 'PATTERNBOOK'}" class="chip-toggle">
+                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -178,6 +257,68 @@
         </form>
     </div>
 </div>
+
+<script>
+/* ── Selector UI ── */
+function toggleSection(header) {
+    header.closest('.selector-section').classList.toggle('open');
+}
+
+function updateSelector(checkbox) {
+    var section = checkbox.closest('.selector-section');
+    var checked = section.querySelectorAll('input[type="checkbox"]:checked');
+    var countBadge = section.querySelector('.selector-count');
+    var summary = section.querySelector('.selected-summary');
+
+    // Update count badge
+    countBadge.textContent = checked.length;
+    countBadge.classList.toggle('visible', checked.length > 0);
+
+    // Build summary chips
+    summary.innerHTML = '';
+    checked.forEach(function(cb) {
+        var chip = document.createElement('span');
+        chip.className = 'selected-chip';
+        chip.textContent = cb.nextElementSibling.textContent;
+        chip.onclick = function(e) {
+            e.stopPropagation();
+            cb.checked = false;
+            updateSelector(cb);
+        };
+        summary.appendChild(chip);
+    });
+}
+
+function filterChips(input) {
+    var query = input.value.toLowerCase().trim();
+    var body = input.closest('.selector-body-inner');
+    var chips = body.querySelectorAll('.chip-toggle');
+    var noResults = body.querySelector('.chip-no-results');
+    var visibleCount = 0;
+
+    chips.forEach(function(chip) {
+        var name = (chip.dataset.name || chip.querySelector('.chip-label').textContent).toLowerCase();
+        var match = !query || name.indexOf(query) !== -1;
+        chip.classList.toggle('hidden', !match);
+        if (match) visibleCount++;
+    });
+
+    if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+}
+
+// Initialize counts on page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.selector-section').forEach(function(section) {
+        var firstChecked = section.querySelector('input[type="checkbox"]:checked');
+        if (firstChecked) {
+            updateSelector(firstChecked);
+            section.classList.add('open');
+        }
+    });
+});
+</script>
 
 </body>
 </html>
