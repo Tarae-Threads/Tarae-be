@@ -258,6 +258,20 @@ tr:hover td {
     color: #842029;
 }
 
+.badge-update {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.badge-lg {
+    padding: 4px 12px;
+    font-size: 13px;
+}
+
+.request-type-badges {
+    margin-bottom: 16px;
+}
+
 /* Tabs */
 .tabs {
     display: flex;

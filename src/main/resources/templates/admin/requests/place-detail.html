@@ -3,9 +3,18 @@
       th:replace="~{admin/layout/base :: layout('장소 제보 검수', ~{::body})}">
 <body>
 
+<!-- 제보 유형 배지 -->
+<div class="request-type-badges">
+    <span th:if="${request.requestType.name() == 'NEW'}" class="badge badge-lg badge-approved">신규 등록</span>
+    <span th:if="${request.requestType.name() == 'UPDATE'}" class="badge badge-lg badge-update">수정 요청</span>
+    <span th:if="${request.status.name() != 'PENDING'}"
+          class="badge badge-lg"
+          th:classappend="${request.status.name() == 'APPROVED' ? 'badge-approved' : 'badge-rejected'}"
+          th:text="${request.status}">상태</span>
+</div>
+
 <!-- 처리된 제보 안내 -->
-<div th:if="${request.status != T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
-     class="alert alert-warning">
+<div th:if="${request.status.name() != 'PENDING'}" class="alert alert-warning">
     이미 <strong th:text="${request.status}">처리됨</strong> 상태인 제보입니다. 재처리할 수 없습니다.
 </div>
 
@@ -15,10 +24,6 @@
     <div class="card">
         <div class="detail-section-title">제보 원본</div>
 
-        <div class="field-group">
-            <div class="field-label">제보 유형</div>
-            <div class="field-value" th:text="${request.requestType}">NEW</div>
-        </div>
         <div class="field-group">
             <div class="field-label">장소명</div>
             <div class="field-value" th:text="${request.name ?: '-'}">-</div>
@@ -214,14 +219,14 @@
                 </div>
             </div>
 
-            <div class="form-actions" th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}">
+            <div class="form-actions" th:if="${request.status.name() == 'PENDING'}">
                 <button th:if="${request.requestType.name() == 'NEW'}" type="submit" class="btn btn-primary">승인 (신규 등록)</button>
                 <button th:if="${request.requestType.name() == 'UPDATE'}" type="submit" class="btn btn-primary">승인 (수정 반영)</button>
             </div>
         </form>
 
         <!-- 거절 폼 (별도) -->
-        <form th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
+        <form th:if="${request.status.name() == 'PENDING'}"
               th:action="@{/admin/requests/place/{id}/reject(id=${request.id})}"
               method="post"
               style="margin-top: 8px; text-align: right;">
