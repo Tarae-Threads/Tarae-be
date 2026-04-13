@@ -60,12 +60,48 @@ class AdminRequestControllerTest {
                 isAccessible = true
                 set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
             }
-            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING) } returns listOf(pr)
+            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, null) } returns listOf(pr)
 
             // when & then
             mockMvc.get("/admin/requests?type=place&status=PENDING").andExpect {
                 status { isOk() }
                 model { attribute("type", "place") }
+            }
+        }
+
+        @Test
+        fun `requestType=NEW이면 신규 제보만 반환한다`() {
+            // given
+            val pr = PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")
+            pr.javaClass.superclass.getDeclaredField("createdAt").apply {
+                isAccessible = true
+                set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
+            }
+            every { adminRequestService.getPlaceRequests(null, RequestType.NEW) } returns listOf(pr)
+
+            // when & then
+            mockMvc.get("/admin/requests?type=place&requestType=NEW").andExpect {
+                status { isOk() }
+                model { attribute("type", "place") }
+                model { attribute("requestType", RequestType.NEW) }
+            }
+        }
+
+        @Test
+        fun `status와 requestType 모두 지정하면 교집합 목록을 반환한다`() {
+            // given
+            val pr = PlaceRequest(requestType = RequestType.UPDATE, name = "수정 요청")
+            pr.javaClass.superclass.getDeclaredField("createdAt").apply {
+                isAccessible = true
+                set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
+            }
+            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, RequestType.UPDATE) } returns listOf(pr)
+
+            // when & then
+            mockMvc.get("/admin/requests?type=place&status=PENDING&requestType=UPDATE").andExpect {
+                status { isOk() }
+                model { attribute("type", "place") }
+                model { attribute("requestType", RequestType.UPDATE) }
             }
         }
 
@@ -93,6 +129,7 @@ class AdminRequestControllerTest {
             every { categoryService.getCategories() } returns listOf(CategoryResponse(id = 1L, name = "뜨개샵"))
             every { tagService.getAll() } returns listOf(TagResponse(id = 1L, name = "주차가능"))
             every { brandService.getAll() } returns listOf(BrandResponse(id = 1L, name = "산네스간", type = "YARN"))
+            every { brandService.getBrandsGroupedByType() } returns emptyList()
 
             // when & then
             mockMvc.get("/admin/requests/place/1").andExpect {
@@ -122,6 +159,7 @@ class AdminRequestControllerTest {
             every { categoryService.getCategories() } returns emptyList()
             every { tagService.getAll() } returns emptyList()
             every { brandService.getAll() } returns emptyList()
+            every { brandService.getBrandsGroupedByType() } returns emptyList()
 
             // when & then
             mockMvc.get("/admin/requests/place/2").andExpect {

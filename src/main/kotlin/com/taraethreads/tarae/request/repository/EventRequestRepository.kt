@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface EventRequestRepository : JpaRepository<EventRequest, Long> {
     fun countByStatus(status: RequestStatus): Long
-    fun findAllByStatus(status: RequestStatus): List<EventRequest>
+    fun findAllByStatusOrderByCreatedAtDesc(status: RequestStatus): List<EventRequest>
+    fun findAllByOrderByCreatedAtDesc(): List<EventRequest>
 }

@@ -59,24 +59,48 @@ class AdminRequestServiceTest {
     inner class `장소 제보 목록 조회` {
 
         @Test
-        fun `status가 null이면 전체 목록을 반환한다`() {
+        fun `status와 requestType이 모두 null이면 전체 목록을 반환한다`() {
             // given
-            every { placeRequestRepository.findAll() } returns listOf(placeRequest())
+            every { placeRequestRepository.findAllByOrderByCreatedAtDesc() } returns listOf(placeRequest())
 
             // when
-            val result = adminRequestService.getPlaceRequests(null)
+            val result = adminRequestService.getPlaceRequests(null, null)
 
             // then
             assertThat(result).hasSize(1)
         }
 
         @Test
-        fun `status가 PENDING이면 PENDING 목록을 반환한다`() {
+        fun `status만 지정하면 해당 상태 목록을 반환한다`() {
             // given
-            every { placeRequestRepository.findAllByStatus(RequestStatus.PENDING) } returns listOf(placeRequest())
+            every { placeRequestRepository.findAllByStatusOrderByCreatedAtDesc(RequestStatus.PENDING) } returns listOf(placeRequest())
 
             // when
-            val result = adminRequestService.getPlaceRequests(RequestStatus.PENDING)
+            val result = adminRequestService.getPlaceRequests(RequestStatus.PENDING, null)
+
+            // then
+            assertThat(result).hasSize(1)
+        }
+
+        @Test
+        fun `requestType만 지정하면 해당 유형 목록을 반환한다`() {
+            // given
+            every { placeRequestRepository.findAllByRequestTypeOrderByCreatedAtDesc(RequestType.NEW) } returns listOf(placeRequest())
+
+            // when
+            val result = adminRequestService.getPlaceRequests(null, RequestType.NEW)
+
+            // then
+            assertThat(result).hasSize(1)
+        }
+
+        @Test
+        fun `status와 requestType 모두 지정하면 교집합 목록을 반환한다`() {
+            // given
+            every { placeRequestRepository.findAllByStatusAndRequestTypeOrderByCreatedAtDesc(RequestStatus.PENDING, RequestType.UPDATE) } returns listOf(placeRequest())
+
+            // when
+            val result = adminRequestService.getPlaceRequests(RequestStatus.PENDING, RequestType.UPDATE)
 
             // then
             assertThat(result).hasSize(1)
@@ -89,7 +113,7 @@ class AdminRequestServiceTest {
         @Test
         fun `status가 null이면 전체 목록을 반환한다`() {
             // given
-            every { eventRequestRepository.findAll() } returns listOf(eventRequest())
+            every { eventRequestRepository.findAllByOrderByCreatedAtDesc() } returns listOf(eventRequest())
 
             // when
             val result = adminRequestService.getEventRequests(null)
@@ -101,7 +125,7 @@ class AdminRequestServiceTest {
         @Test
         fun `status가 APPROVED이면 APPROVED 목록을 반환한다`() {
             // given
-            every { eventRequestRepository.findAllByStatus(RequestStatus.APPROVED) } returns emptyList()
+            every { eventRequestRepository.findAllByStatusOrderByCreatedAtDesc(RequestStatus.APPROVED) } returns emptyList()
 
             // when
             val result = adminRequestService.getEventRequests(RequestStatus.APPROVED)

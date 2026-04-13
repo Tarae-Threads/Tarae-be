@@ -34,9 +34,14 @@ class AdminRequestService(
 
     // --- 장소 제보 ---
 
-    fun getPlaceRequests(status: RequestStatus?): List<PlaceRequest> =
-        if (status == null) placeRequestRepository.findAll()
-        else placeRequestRepository.findAllByStatus(status)
+    fun getPlaceRequests(status: RequestStatus?, requestType: RequestType?): List<PlaceRequest> =
+        when {
+            status != null && requestType != null ->
+                placeRequestRepository.findAllByStatusAndRequestTypeOrderByCreatedAtDesc(status, requestType)
+            status != null -> placeRequestRepository.findAllByStatusOrderByCreatedAtDesc(status)
+            requestType != null -> placeRequestRepository.findAllByRequestTypeOrderByCreatedAtDesc(requestType)
+            else -> placeRequestRepository.findAllByOrderByCreatedAtDesc()
+        }
 
     fun getPlaceRequest(id: Long): PlaceRequest =
         placeRequestRepository.findById(id)
@@ -97,8 +102,8 @@ class AdminRequestService(
     // --- 이벤트 제보 ---
 
     fun getEventRequests(status: RequestStatus?): List<EventRequest> =
-        if (status == null) eventRequestRepository.findAll()
-        else eventRequestRepository.findAllByStatus(status)
+        if (status == null) eventRequestRepository.findAllByOrderByCreatedAtDesc()
+        else eventRequestRepository.findAllByStatusOrderByCreatedAtDesc(status)
 
     fun getEventRequest(id: Long): EventRequest =
         eventRequestRepository.findById(id)

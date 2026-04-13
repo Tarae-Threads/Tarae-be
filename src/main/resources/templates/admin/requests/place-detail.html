@@ -132,7 +132,7 @@
             </div>
 
             <!-- 카테고리 -->
-            <div class="selector-section open" data-selector="category">
+            <div class="selector-section open">
                 <div class="selector-header" onclick="toggleSection(this)">
                     <div class="selector-header-left">
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -141,22 +141,24 @@
                     <span class="selector-count">0</span>
                 </div>
                 <div class="selector-body">
-                    <div class="selected-summary"></div>
-                    <div class="selector-body-inner">
-                        <div class="chip-grid">
-                            <label th:each="cat : ${categories}" class="chip-toggle">
-                                <input type="checkbox" name="categoryIds" th:value="${cat.id}"
-                                       th:checked="${#lists.contains(form.categoryIds, cat.id)}"
-                                       onchange="updateSelector(this)"/>
-                                <span class="chip-label" th:text="${cat.name}">카테고리</span>
-                            </label>
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <div class="chip-grid">
+                                <label th:each="cat : ${categories}" class="chip-toggle">
+                                    <input type="checkbox" name="categoryIds" th:value="${cat.id}"
+                                           th:checked="${#lists.contains(form.categoryIds, cat.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 태그 -->
-            <div class="selector-section" data-selector="tag">
+            <div class="selector-section">
                 <div class="selector-header" onclick="toggleSection(this)">
                     <div class="selector-header-left">
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -165,24 +167,26 @@
                     <span class="selector-count">0</span>
                 </div>
                 <div class="selector-body">
-                    <div class="selected-summary"></div>
-                    <div class="selector-body-inner">
-                        <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
-                        <div class="chip-grid">
-                            <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
-                                <input type="checkbox" name="tagIds" th:value="${tag.id}"
-                                       th:checked="${#lists.contains(form.tagIds, tag.id)}"
-                                       onchange="updateSelector(this)"/>
-                                <span class="chip-label" th:text="${tag.name}">태그</span>
-                            </label>
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
+                            <div class="chip-grid">
+                                <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
+                                    <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                                           th:checked="${#lists.contains(form.tagIds, tag.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${tag.name}">태그</span>
+                                </label>
+                            </div>
+                            <div class="chip-no-results">검색 결과가 없습니다</div>
                         </div>
-                        <div class="chip-no-results">검색 결과가 없습니다</div>
                     </div>
                 </div>
             </div>
 
             <!-- 브랜드 -->
-            <div class="selector-section" data-selector="brand">
+            <div class="selector-section">
                 <div class="selector-header" onclick="toggleSection(this)">
                     <div class="selector-header-left">
                         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -191,50 +195,19 @@
                     <span class="selector-count">0</span>
                 </div>
                 <div class="selector-body">
-                    <div class="selected-summary"></div>
-                    <div class="selector-body-inner">
-                        <div class="chip-subgroup">
-                            <div class="chip-subgroup-title">YARN</div>
-                            <div class="chip-grid">
-                                <label th:each="brand : ${brands}" th:if="${brand.type == 'YARN'}" class="chip-toggle">
-                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
-                                           onchange="updateSelector(this)"/>
-                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="chip-subgroup">
-                            <div class="chip-subgroup-title">NEEDLE</div>
-                            <div class="chip-grid">
-                                <label th:each="brand : ${brands}" th:if="${brand.type == 'NEEDLE'}" class="chip-toggle">
-                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
-                                           onchange="updateSelector(this)"/>
-                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="chip-subgroup">
-                            <div class="chip-subgroup-title">NOTIONS</div>
-                            <div class="chip-grid">
-                                <label th:each="brand : ${brands}" th:if="${brand.type == 'NOTIONS'}" class="chip-toggle">
-                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
-                                           onchange="updateSelector(this)"/>
-                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="chip-subgroup">
-                            <div class="chip-subgroup-title">PATTERNBOOK</div>
-                            <div class="chip-grid">
-                                <label th:each="brand : ${brands}" th:if="${brand.type == 'PATTERNBOOK'}" class="chip-toggle">
-                                    <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                                           th:checked="${#lists.contains(form.brandIds, brand.id)}"
-                                           onchange="updateSelector(this)"/>
-                                    <span class="chip-label" th:text="${brand.name}">브랜드</span>
-                                </label>
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip-subgroup">
+                                <div class="chip-subgroup-title" th:text="${group.type}">TYPE</div>
+                                <div class="chip-grid">
+                                    <label th:each="brand : ${group.brands}" class="chip-toggle">
+                                        <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                               th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                               onchange="updateSelector(this)"/>
+                                        <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -13,13 +13,26 @@
        class="tab">이벤트 제보</a>
 </div>
 
+<!-- 장소 제보 서브탭: 전체 / 신규 / 수정 -->
+<div th:if="${type == 'place'}" class="filter-bar filter-bar-sub">
+    <a th:href="@{/admin/requests(type='place', status=${status})}"
+       th:classappend="${requestType == null} ? 'active'"
+       class="filter-btn">전체</a>
+    <a th:href="@{/admin/requests(type='place', status=${status}, requestType='NEW')}"
+       th:classappend="${requestType != null && requestType.name() == 'NEW'} ? 'active'"
+       class="filter-btn">신규</a>
+    <a th:href="@{/admin/requests(type='place', status=${status}, requestType='UPDATE')}"
+       th:classappend="${requestType != null && requestType.name() == 'UPDATE'} ? 'active'"
+       class="filter-btn">수정</a>
+</div>
+
 <!-- 상태 필터 -->
 <div class="filter-bar">
-    <a th:href="@{/admin/requests(type=${type})}"
+    <a th:href="@{/admin/requests(type=${type}, requestType=${requestType})}"
        th:classappend="${status == null} ? 'active'"
        class="filter-btn">전체</a>
     <a th:each="s : ${allStatuses}"
-       th:href="@{/admin/requests(type=${type}, status=${s})}"
+       th:href="@{/admin/requests(type=${type}, status=${s}, requestType=${requestType})}"
        th:classappend="${status == s} ? 'active'"
        th:text="${s}"
        class="filter-btn">STATUS</a>

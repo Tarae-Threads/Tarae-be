@@ -31,15 +31,17 @@ class AdminRequestController(
     fun list(
         @RequestParam(defaultValue = "place") type: String,
         @RequestParam(required = false) status: RequestStatus?,
+        @RequestParam(required = false) requestType: RequestType?,
         model: Model,
     ): String {
         model.addAttribute("type", type)
         model.addAttribute("status", status)
+        model.addAttribute("requestType", requestType)
         model.addAttribute("allStatuses", RequestStatus.entries)
 
         when (type.lowercase()) {
             "event" -> model.addAttribute("requests", adminRequestService.getEventRequests(status))
-            "place" -> model.addAttribute("requests", adminRequestService.getPlaceRequests(status))
+            "place" -> model.addAttribute("requests", adminRequestService.getPlaceRequests(status, requestType))
             else -> model.addAttribute("requests", emptyList<Any>())
         }
 
@@ -93,6 +95,7 @@ class AdminRequestController(
         model.addAttribute("categories", categoryService.getCategories())
         model.addAttribute("tags", tagService.getAll())
         model.addAttribute("brands", brandService.getAll())
+        model.addAttribute("brandGroups", brandService.getBrandsGroupedByType())
         return "admin/requests/place-detail"
     }
 
