@@ -76,7 +76,10 @@
 
     <!-- 우측: Place 입력 폼 -->
     <div class="card">
-        <div class="detail-section-title">장소 등록 폼</div>
+        <div class="detail-section-title">
+            <span th:if="${request.requestType.name() == 'NEW'}">장소 등록 폼</span>
+            <span th:if="${request.requestType.name() == 'UPDATE'}">장소 수정 폼</span>
+        </div>
 
         <form th:action="@{/admin/requests/place/{id}/approve(id=${request.id})}" method="post">
             <div class="form-group">
@@ -160,7 +163,8 @@
             </div>
 
             <div class="form-actions" th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}">
-                <button type="submit" class="btn btn-primary">승인</button>
+                <button th:if="${request.requestType.name() == 'NEW'}" type="submit" class="btn btn-primary">승인 (신규 등록)</button>
+                <button th:if="${request.requestType.name() == 'UPDATE'}" type="submit" class="btn btn-primary">승인 (수정 반영)</button>
             </div>
         </form>
 

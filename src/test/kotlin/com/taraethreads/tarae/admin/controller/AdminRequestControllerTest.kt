@@ -10,6 +10,7 @@ import com.taraethreads.tarae.place.service.BrandService
 import com.taraethreads.tarae.place.service.CategoryService
 import com.taraethreads.tarae.place.service.TagService
 import com.taraethreads.tarae.request.domain.EventRequest
+import com.taraethreads.tarae.place.domain.Place
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestStatus
 import com.taraethreads.tarae.request.domain.RequestType
@@ -85,7 +86,7 @@ class AdminRequestControllerTest {
     inner class `GET 장소 제보 상세` {
 
         @Test
-        fun `장소 제보 상세를 반환한다`() {
+        fun `NEW 장소 제보 상세를 반환한다`() {
             // given
             every { adminRequestService.getPlaceRequest(1L) } returns
                 PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")
@@ -99,6 +100,35 @@ class AdminRequestControllerTest {
                 model { attributeExists("request") }
                 model { attributeExists("form") }
                 model { attributeExists("categories") }
+            }
+        }
+
+        @Test
+        fun `UPDATE 장소 제보 상세에서는 기존 Place 데이터가 폼에 채워진다`() {
+            // given
+            val existingPlace = Place(
+                name = "실과 바늘",
+                region = "서울",
+                district = "성수",
+                address = "서울 성동구 성수이로 1",
+                hoursText = "10:00-18:00",
+                closedDays = "일요일",
+                description = "뜨개 편집샵",
+                instagramUrl = "https://instagram.com/test",
+            )
+            every { adminRequestService.getPlaceRequest(2L) } returns
+                PlaceRequest(requestType = RequestType.UPDATE, placeId = 10L, name = "실과 바늘 수정요청")
+            every { adminRequestService.getPlace(10L) } returns existingPlace
+            every { categoryService.getCategories() } returns emptyList()
+            every { tagService.getAll() } returns emptyList()
+            every { brandService.getAll() } returns emptyList()
+
+            // when & then
+            mockMvc.get("/admin/requests/place/2").andExpect {
+                status { isOk() }
+                model { attributeExists("request") }
+                model { attributeExists("form") }
+                model { attributeExists("existingPlace") }
             }
         }
     }

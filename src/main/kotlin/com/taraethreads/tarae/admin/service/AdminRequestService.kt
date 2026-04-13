@@ -14,6 +14,7 @@ import com.taraethreads.tarae.place.repository.TagRepository
 import com.taraethreads.tarae.request.domain.EventRequest
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestStatus
+import com.taraethreads.tarae.request.domain.RequestType
 import com.taraethreads.tarae.request.repository.EventRequestRepository
 import com.taraethreads.tarae.request.repository.PlaceRequestRepository
 import org.springframework.stereotype.Service
@@ -41,25 +42,40 @@ class AdminRequestService(
         placeRequestRepository.findById(id)
             .orElseThrow { CustomException(ErrorCode.PLACE_REQUEST_NOT_FOUND) }
 
+    fun getPlace(id: Long): Place =
+        placeRepository.findById(id)
+            .orElseThrow { CustomException(ErrorCode.PLACE_NOT_FOUND) }
+
     @Transactional
     fun approvePlaceRequest(id: Long, form: PlaceCreateForm) {
         val placeRequest = getPlaceRequest(id)
         placeRequest.approve()
 
-        val place = Place(
-            name = form.name,
-            region = form.region,
-            district = form.district,
-            address = form.address,
-            lat = form.lat,
-            lng = form.lng,
-            hoursText = form.hoursText,
-            closedDays = form.closedDays,
-            description = form.description,
-            instagramUrl = form.instagramUrl,
-            websiteUrl = form.websiteUrl,
-            naverMapUrl = form.naverMapUrl,
-        )
+        val place = if (placeRequest.requestType == RequestType.UPDATE) {
+            val existing = placeRepository.findById(placeRequest.placeId!!)
+                .orElseThrow { CustomException(ErrorCode.PLACE_NOT_FOUND) }
+            existing.update(form)
+            existing.placeCategories.clear()
+            existing.placeTags.clear()
+            existing.placeBrands.clear()
+            existing
+        } else {
+            val newPlace = Place(
+                name = form.name,
+                region = form.region,
+                district = form.district,
+                address = form.address,
+                lat = form.lat,
+                lng = form.lng,
+                hoursText = form.hoursText,
+                closedDays = form.closedDays,
+                description = form.description,
+                instagramUrl = form.instagramUrl,
+                websiteUrl = form.websiteUrl,
+                naverMapUrl = form.naverMapUrl,
+            )
+            placeRepository.save(newPlace)
+        }
 
         if (form.categoryIds.isNotEmpty()) {
             categoryRepository.findAllById(form.categoryIds).forEach { place.addCategory(it) }
@@ -70,8 +86,6 @@ class AdminRequestService(
         if (form.brandIds.isNotEmpty()) {
             brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
         }
-
-        placeRepository.save(place)
     }
 
     @Transactional

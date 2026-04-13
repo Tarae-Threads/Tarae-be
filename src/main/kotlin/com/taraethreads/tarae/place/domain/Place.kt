@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.place.domain
 
+import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.global.common.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -19,40 +20,40 @@ import java.math.BigDecimal
 @Table(name = "places")
 class Place(
     @Column(nullable = false, length = 100)
-    val name: String,
+    var name: String,
 
     @Column(nullable = false, length = 50)
-    val region: String,
+    var region: String,
 
     @Column(nullable = false, length = 100)
-    val district: String,
+    var district: String,
 
     @Column(nullable = false, length = 255)
-    val address: String,
+    var address: String,
 
     @Column(precision = 10, scale = 7)
-    val lat: BigDecimal? = null,
+    var lat: BigDecimal? = null,
 
     @Column(precision = 10, scale = 7)
-    val lng: BigDecimal? = null,
+    var lng: BigDecimal? = null,
 
     @Column(length = 255)
-    val hoursText: String? = null,
+    var hoursText: String? = null,
 
     @Column(length = 100)
-    val closedDays: String? = null,
+    var closedDays: String? = null,
 
     @Column(columnDefinition = "TEXT")
-    val description: String? = null,
+    var description: String? = null,
 
     @Column(length = 255)
-    val instagramUrl: String? = null,
+    var instagramUrl: String? = null,
 
     @Column(length = 255)
-    val websiteUrl: String? = null,
+    var websiteUrl: String? = null,
 
     @Column(length = 255)
-    val naverMapUrl: String? = null,
+    var naverMapUrl: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -90,6 +91,21 @@ class Place(
     val categories: List<Category> get() = placeCategories.map { it.category }
     val tags: List<Tag> get() = placeTags.map { it.tag }
     val brands: List<Brand> get() = placeBrands.map { it.brand }
+
+    fun update(form: PlaceCreateForm) {
+        name = form.name
+        region = form.region
+        district = form.district
+        address = form.address
+        lat = form.lat
+        lng = form.lng
+        hoursText = form.hoursText
+        closedDays = form.closedDays
+        description = form.description
+        instagramUrl = form.instagramUrl
+        websiteUrl = form.websiteUrl
+        naverMapUrl = form.naverMapUrl
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

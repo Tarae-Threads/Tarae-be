@@ -8,6 +8,7 @@ import com.taraethreads.tarae.place.service.BrandService
 import com.taraethreads.tarae.place.service.CategoryService
 import com.taraethreads.tarae.place.service.TagService
 import com.taraethreads.tarae.request.domain.RequestStatus
+import com.taraethreads.tarae.request.domain.RequestType
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -51,18 +52,44 @@ class AdminRequestController(
     fun placeDetail(@PathVariable id: Long, model: Model): String {
         val placeRequest = adminRequestService.getPlaceRequest(id)
         model.addAttribute("request", placeRequest)
-        model.addAttribute("form", PlaceCreateForm(
-            name = placeRequest.name ?: "",
-            address = placeRequest.address ?: "",
-            lat = placeRequest.lat,
-            lng = placeRequest.lng,
-            hoursText = placeRequest.hoursText,
-            closedDays = placeRequest.closedDays,
-            instagramUrl = placeRequest.instagramUrl,
-            websiteUrl = placeRequest.websiteUrl,
-            naverMapUrl = placeRequest.naverMapUrl,
-            categoryIds = placeRequest.categoryIds,
-        ))
+
+        val placeId = placeRequest.placeId
+        val form = if (placeRequest.requestType == RequestType.UPDATE && placeId != null) {
+            val existingPlace = adminRequestService.getPlace(placeId)
+            model.addAttribute("existingPlace", existingPlace)
+            PlaceCreateForm(
+                name = existingPlace.name,
+                region = existingPlace.region,
+                district = existingPlace.district,
+                address = existingPlace.address,
+                lat = existingPlace.lat,
+                lng = existingPlace.lng,
+                hoursText = existingPlace.hoursText,
+                closedDays = existingPlace.closedDays,
+                description = existingPlace.description,
+                instagramUrl = existingPlace.instagramUrl,
+                websiteUrl = existingPlace.websiteUrl,
+                naverMapUrl = existingPlace.naverMapUrl,
+                categoryIds = existingPlace.categories.map { it.id },
+                tagIds = existingPlace.tags.map { it.id },
+                brandIds = existingPlace.brands.map { it.id },
+            )
+        } else {
+            PlaceCreateForm(
+                name = placeRequest.name ?: "",
+                address = placeRequest.address ?: "",
+                lat = placeRequest.lat,
+                lng = placeRequest.lng,
+                hoursText = placeRequest.hoursText,
+                closedDays = placeRequest.closedDays,
+                instagramUrl = placeRequest.instagramUrl,
+                websiteUrl = placeRequest.websiteUrl,
+                naverMapUrl = placeRequest.naverMapUrl,
+                categoryIds = placeRequest.categoryIds,
+            )
+        }
+
+        model.addAttribute("form", form)
         model.addAttribute("categories", categoryService.getCategories())
         model.addAttribute("tags", tagService.getAll())
         model.addAttribute("brands", brandService.getAll())

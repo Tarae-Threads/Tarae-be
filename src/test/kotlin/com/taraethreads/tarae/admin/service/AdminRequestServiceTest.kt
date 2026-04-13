@@ -115,7 +115,7 @@ class AdminRequestServiceTest {
     inner class `장소 제보 승인` {
 
         @Test
-        fun `PENDING 제보를 승인하면 Place가 생성된다`() {
+        fun `NEW 제보를 승인하면 Place가 생성된다`() {
             // given
             val request = placeRequest()
             val savedPlace = Place(name = "실과 바늘", region = "서울", district = "성수", address = "서울 성동구")
@@ -141,15 +141,58 @@ class AdminRequestServiceTest {
         }
 
         @Test
+        fun `UPDATE 제보를 승인하면 기존 Place가 업데이트된다`() {
+            // given
+            val existingPlace = Place(name = "실과 바늘", region = "서울", district = "성수", address = "서울 성동구")
+            val request = PlaceRequest(requestType = RequestType.UPDATE, placeId = 10L, name = "실과 바늘")
+            every { placeRequestRepository.findById(1L) } returns Optional.of(request)
+            every { placeRepository.findById(10L) } returns Optional.of(existingPlace)
+            every { categoryRepository.findAllById(any()) } returns emptyList()
+            every { tagRepository.findAllById(any()) } returns emptyList()
+            every { brandRepository.findAllById(any()) } returns emptyList()
+
+            val form = PlaceCreateForm(
+                name = "실과 바늘 (수정)",
+                region = "서울",
+                district = "강남",
+                address = "서울 강남구 역삼동",
+            )
+
+            // when
+            adminRequestService.approvePlaceRequest(1L, form)
+
+            // then
+            assertThat(request.status).isEqualTo(RequestStatus.APPROVED)
+            assertThat(existingPlace.name).isEqualTo("실과 바늘 (수정)")
+            assertThat(existingPlace.district).isEqualTo("강남")
+            assertThat(existingPlace.address).isEqualTo("서울 강남구 역삼동")
+            verify(exactly = 0) { placeRepository.save(any()) }
+        }
+
+        @Test
+        fun `UPDATE 제보인데 placeId에 해당하는 Place가 없으면 예외가 발생한다`() {
+            // given
+            val request = PlaceRequest(requestType = RequestType.UPDATE, placeId = 999L, name = "없는 장소")
+            every { placeRequestRepository.findById(1L) } returns Optional.of(request)
+            every { placeRepository.findById(999L) } returns Optional.empty()
+
+            val form = PlaceCreateForm(
+                name = "없는 장소", region = "서울", district = "성수", address = "서울 성동구"
+            )
+
+            // when & then
+            assertThatThrownBy { adminRequestService.approvePlaceRequest(1L, form) }
+                .isInstanceOf(CustomException::class.java)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.PLACE_NOT_FOUND)
+        }
+
+        @Test
         fun `이미 처리된 제보를 승인하면 예외가 발생한다`() {
             // given
             val request = placeRequest()
             request.approve()
             every { placeRequestRepository.findById(2L) } returns Optional.of(request)
-            every { categoryRepository.findAllById(any()) } returns emptyList()
-            every { tagRepository.findAllById(any()) } returns emptyList()
-            every { brandRepository.findAllById(any()) } returns emptyList()
-            every { placeRepository.save(any()) } returns mockk()
 
             // when & then
             assertThatThrownBy {
