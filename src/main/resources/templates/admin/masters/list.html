@@ -17,11 +17,14 @@
 
 <!-- 카테고리 -->
 <div th:if="${type == 'categories'}" class="card table-wrap">
-    <form method="post" th:action="@{/admin/masters/categories}"
-          style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <input type="text" name="name" placeholder="새 카테고리 이름" required style="flex: 1; max-width: 320px;"/>
-        <button type="submit" class="btn btn-primary">+ 추가</button>
-    </form>
+    <div class="master-toolbar">
+        <form method="post" th:action="@{/admin/masters/categories}">
+            <input type="text" name="name" placeholder="새 카테고리 이름" required/>
+            <button type="submit" class="btn btn-primary">+ 추가</button>
+        </form>
+        <input type="text" class="master-search" data-filter="categories-row"
+               placeholder="이름 검색"/>
+    </div>
     <table th:if="${not #lists.isEmpty(categories)}">
         <thead>
         <tr>
@@ -31,7 +34,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="c : ${categories}">
+        <tr th:each="c : ${categories}" class="categories-row" th:data-name="${c.name}">
             <td th:text="${c.id}">1</td>
             <td>
                 <span th:id="'category-name-' + ${c.id}" th:text="${c.name}">이름</span>
@@ -59,11 +62,14 @@
 
 <!-- 태그 -->
 <div th:if="${type == 'tags'}" class="card table-wrap">
-    <form method="post" th:action="@{/admin/masters/tags}"
-          style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <input type="text" name="name" placeholder="새 태그 이름" required style="flex: 1; max-width: 320px;"/>
-        <button type="submit" class="btn btn-primary">+ 추가</button>
-    </form>
+    <div class="master-toolbar">
+        <form method="post" th:action="@{/admin/masters/tags}">
+            <input type="text" name="name" placeholder="새 태그 이름" required/>
+            <button type="submit" class="btn btn-primary">+ 추가</button>
+        </form>
+        <input type="text" class="master-search" data-filter="tags-row"
+               placeholder="이름 검색"/>
+    </div>
     <table th:if="${not #lists.isEmpty(tags)}">
         <thead>
         <tr>
@@ -73,7 +79,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="t : ${tags}">
+        <tr th:each="t : ${tags}" class="tags-row" th:data-name="${t.name}">
             <td th:text="${t.id}">1</td>
             <td>
                 <span th:id="'tag-name-' + ${t.id}" th:text="${t.name}">이름</span>
@@ -101,14 +107,17 @@
 
 <!-- 브랜드 -->
 <div th:if="${type == 'brands'}" class="card table-wrap">
-    <form method="post" th:action="@{/admin/masters/brands}"
-          style="display: flex; gap: 8px; margin-bottom: 16px;">
-        <input type="text" name="name" placeholder="새 브랜드 이름" required style="flex: 1; max-width: 280px;"/>
-        <select name="type">
-            <option th:each="bt : ${brandTypes}" th:value="${bt}" th:text="${bt}">YARN</option>
-        </select>
-        <button type="submit" class="btn btn-primary">+ 추가</button>
-    </form>
+    <div class="master-toolbar">
+        <form method="post" th:action="@{/admin/masters/brands}">
+            <input type="text" name="name" placeholder="새 브랜드 이름" required/>
+            <select name="type">
+                <option th:each="bt : ${brandTypes}" th:value="${bt}" th:text="${bt}">YARN</option>
+            </select>
+            <button type="submit" class="btn btn-primary">+ 추가</button>
+        </form>
+        <input type="text" class="master-search" data-filter="brands-row"
+               placeholder="이름 검색"/>
+    </div>
     <table th:if="${not #lists.isEmpty(brands)}">
         <thead>
         <tr>
@@ -119,7 +128,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="b : ${brands}">
+        <tr th:each="b : ${brands}" class="brands-row" th:data-name="${b.name}">
             <td th:text="${b.id}">1</td>
             <td>
                 <span th:id="'brand-name-' + ${b.id}" th:text="${b.name}">이름</span>

@@ -20,8 +20,8 @@
             <th>지역</th>
             <th>카테고리</th>
             <th>운영상태</th>
-            <th>공개</th>
             <th>액션</th>
+            <th>공개</th>
         </tr>
         </thead>
         <tbody>
@@ -33,20 +33,18 @@
             <td>
                 <span class="badge" th:text="${p.status}">OPEN</span>
             </td>
-            <td>
-                <span th:if="${p.active}" class="badge badge-active">활성</span>
-                <span th:unless="${p.active}" class="badge badge-inactive">비활성</span>
-            </td>
-            <td style="display: flex; gap: 6px;">
+            <td class="td-actions">
                 <a th:href="@{/admin/places/{id}/edit(id=${p.id})}" class="btn btn-secondary btn-sm">수정</a>
-                <form th:action="@{/admin/places/{id}/toggle-active(id=${p.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn btn-secondary btn-sm"
-                            onclick="return confirm('공개 상태를 변경하시겠습니까?')">토글</button>
-                </form>
                 <form th:action="@{/admin/places/{id}/delete(id=${p.id})}" method="post" style="display:inline">
                     <button type="submit" class="btn btn-destructive btn-sm"
                             onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
+            </td>
+            <td>
+                <th:block th:replace="~{admin/layout/fragments :: toggleSwitch(
+                    actionUrl=@{/admin/places/{id}/toggle-active(id=${p.id})},
+                    checked=${p.active},
+                    label='공개 상태 토글')}"/>
             </td>
         </tr>
         </tbody>

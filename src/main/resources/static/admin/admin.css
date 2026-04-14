@@ -59,6 +59,7 @@ body {
     font-weight: 700;
     color: var(--primary);
     margin-bottom: 2px;
+    white-space: nowrap;
 }
 
 .sidebar-subtitle {
@@ -199,6 +200,7 @@ tr:hover td {
     text-decoration: none;
     border: none;
     transition: background 0.15s;
+    white-space: nowrap;
 }
 
 .btn-primary {
@@ -793,4 +795,149 @@ textarea {
 
 .pagination .current {
     color: var(--on-surface-muted);
+}
+
+/* ── iOS 스타일 토글 스위치 ── */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.switch .slider {
+    position: absolute;
+    inset: 0;
+    background: #c7beb7;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.switch .slider::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s ease;
+}
+
+.switch input:checked + .slider {
+    background: var(--primary);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(18px);
+}
+
+.switch input:focus-visible + .slider {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ── 액션 셀 (목록 테이블) ── */
+.td-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* ── 마스터 데이터 검색바 ── */
+.master-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.master-toolbar .master-search {
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+}
+
+.master-toolbar form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.master-toolbar form input[type="text"] {
+    min-width: 160px;
+    flex: 1;
+}
+
+.master-toolbar form select {
+    width: auto;
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+.master-toolbar form .btn {
+    flex-shrink: 0;
+}
+
+/* ── 반응형 (태블릿 이하) ── */
+@media (max-width: 900px) {
+    :root {
+        --sidebar-width: 180px;
+    }
+
+    .content {
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--outline-light);
+    }
+
+    .layout {
+        flex-direction: column;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 8px 12px;
+        gap: 4px;
+    }
+
+    .nav-item {
+        padding: 8px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+        border-radius: 6px;
+    }
+
+    .topbar {
+        padding: 14px 16px;
+    }
+
+    .topbar-title {
+        font-size: 17px;
+    }
 }

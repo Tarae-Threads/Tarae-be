@@ -24,8 +24,8 @@
             <th>시작일</th>
             <th>종료일</th>
             <th>상태</th>
-            <th>공개</th>
             <th>액션</th>
+            <th>공개</th>
         </tr>
         </thead>
         <tbody>
@@ -40,20 +40,18 @@
                 <span th:if="${e.status.name() == 'EXPIRING_SOON'}" class="badge badge-expiring">임박</span>
                 <span th:if="${e.status.name() == 'EXPIRED'}" class="badge badge-expired">만료</span>
             </td>
-            <td>
-                <span th:if="${e.active}" class="badge badge-active">활성</span>
-                <span th:unless="${e.active}" class="badge badge-inactive">비활성</span>
-            </td>
-            <td style="display:flex;gap:6px;">
+            <td class="td-actions">
                 <a th:href="@{/admin/events/{id}/edit(id=${e.id})}" class="btn btn-secondary btn-sm">수정</a>
-                <form th:action="@{/admin/events/{id}/toggle-active(id=${e.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn btn-secondary btn-sm"
-                            onclick="return confirm('공개 상태를 변경하시겠습니까?')">토글</button>
-                </form>
                 <form th:action="@{/admin/events/{id}/delete(id=${e.id})}" method="post" style="display:inline">
                     <button type="submit" class="btn btn-destructive btn-sm"
                             onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
+            </td>
+            <td>
+                <th:block th:replace="~{admin/layout/fragments :: toggleSwitch(
+                    actionUrl=@{/admin/events/{id}/toggle-active(id=${e.id})},
+                    checked=${e.active},
+                    label='공개 상태 토글')}"/>
             </td>
         </tr>
         </tbody>

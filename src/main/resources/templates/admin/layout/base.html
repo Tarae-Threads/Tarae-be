@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="${title} + ' | Tarae Admin'">Tarae Admin</title>
     <link rel="stylesheet" th:href="@{/admin/admin.css}"/>
+    <script th:src="@{/admin/admin.js}" defer></script>
 </head>
 <body>
 <div class="layout">
@@ -15,12 +16,12 @@
             <span class="sidebar-subtitle">관리자</span>
         </div>
         <nav class="sidebar-nav">
-            <a th:href="@{/admin}" class="nav-item">대시보드</a>
-            <a th:href="@{/admin/places}" class="nav-item">장소 관리</a>
-            <a th:href="@{/admin/events}" class="nav-item">이벤트 관리</a>
-            <a th:href="@{/admin/requests?type=place&amp;status=PENDING}" class="nav-item">제보 관리</a>
-            <a th:href="@{/admin/reviews?type=place}" class="nav-item">리뷰 관리</a>
-            <a th:href="@{/admin/masters?type=categories}" class="nav-item">마스터 데이터</a>
+            <a th:href="@{/admin}" class="nav-item" data-match="^/admin/?$">대시보드</a>
+            <a th:href="@{/admin/places}" class="nav-item" data-match="^/admin/places(/|$)">장소 관리</a>
+            <a th:href="@{/admin/events}" class="nav-item" data-match="^/admin/events(/|$)">이벤트 관리</a>
+            <a th:href="@{/admin/requests?type=place&amp;status=PENDING}" class="nav-item" data-match="^/admin/requests(/|$)">제보 관리</a>
+            <a th:href="@{/admin/reviews?type=place}" class="nav-item" data-match="^/admin/reviews(/|$)">리뷰 관리</a>
+            <a th:href="@{/admin/masters?type=categories}" class="nav-item" data-match="^/admin/masters(/|$)">마스터 데이터</a>
         </nav>
     </aside>
     <div class="main">

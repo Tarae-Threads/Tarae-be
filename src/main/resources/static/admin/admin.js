@@ -8,3 +8,28 @@ window.confirmSubmit = function (message, formSelector) {
     if (form) form.submit();
     return true;
 };
+
+// 사이드바 현재 페이지 하이라이트: data-match 정규식과 현재 경로를 매칭
+(function highlightActiveNav() {
+    var path = window.location.pathname;
+    document.querySelectorAll('.nav-item[data-match]').forEach(function (el) {
+        var re = new RegExp(el.getAttribute('data-match'));
+        if (re.test(path)) el.classList.add('active');
+    });
+})();
+
+// 테이블 행 클라이언트 사이드 검색: 입력값이 data-name 부분 매칭
+// 사용법: <input class="master-search" data-filter="{rowClass}">
+//       <tr class="{rowClass}" data-name="...">
+(function attachRowFilters() {
+    document.querySelectorAll('.master-search').forEach(function (input) {
+        input.addEventListener('input', function () {
+            var q = input.value.trim().toLowerCase();
+            var rows = document.querySelectorAll('.' + input.dataset.filter);
+            rows.forEach(function (row) {
+                var name = (row.dataset.name || '').toLowerCase();
+                row.style.display = (q === '' || name.indexOf(q) !== -1) ? '' : 'none';
+            });
+        });
+    });
+})();

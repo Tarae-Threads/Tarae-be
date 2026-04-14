@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="toggleSwitch(actionUrl, checked, label)">
+    <form th:action="${actionUrl}" method="post" style="display:inline">
+        <label class="switch" th:aria-label="${label}">
+            <input type="checkbox" role="switch" th:checked="${checked}"
+                   th:aria-checked="${checked}"
+                   onchange="this.disabled=true;this.form.submit()"/>
+            <span class="slider"></span>
+        </label>
+    </form>
+</th:block>
+
+</body>
+</html>
