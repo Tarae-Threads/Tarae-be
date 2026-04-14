@@ -1,0 +1,33 @@
+/* 목록 페이지 공통 */
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.toolbar__search {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    max-width: 480px;
+}
+
+.td-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.empty-state {
+    color: var(--on-surface-muted);
+    font-size: 13px;
+    padding: 16px 0;
+}
+
+.reject-form {
+    margin-top: 8px;
+    text-align: right;
+}

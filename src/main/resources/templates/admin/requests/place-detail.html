@@ -5,11 +5,11 @@
 
 <!-- 제보 유형 배지 -->
 <div class="request-type-badges">
-    <span th:if="${request.requestType.name() == 'NEW'}" class="badge badge-lg badge-approved">신규 등록</span>
-    <span th:if="${request.requestType.name() == 'UPDATE'}" class="badge badge-lg badge-update">수정 요청</span>
+    <span th:if="${request.requestType.name() == 'NEW'}" class="badge badge--lg badge--approved">신규 등록</span>
+    <span th:if="${request.requestType.name() == 'UPDATE'}" class="badge badge--lg badge--update">수정 요청</span>
     <span th:if="${request.status.name() != 'PENDING'}"
-          class="badge badge-lg"
-          th:classappend="${request.status.name() == 'APPROVED' ? 'badge-approved' : 'badge-rejected'}"
+          class="badge badge--lg"
+          th:classappend="${request.status.name() == 'APPROVED' ? 'badge--approved' : 'badge--rejected'}"
           th:text="${request.status}">상태</span>
 </div>
 
@@ -203,8 +203,8 @@
                     <div class="selector-body-wrap">
                         <div class="selected-summary"></div>
                         <div class="selector-body-inner">
-                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip-subgroup">
-                                <div class="chip-subgroup-title" th:text="${group.type}">TYPE</div>
+                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup">
+                                <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
                                 <div class="chip-grid">
                                     <label th:each="brand : ${group.brands}" class="chip-toggle">
                                         <input type="checkbox" name="brandIds" th:value="${brand.id}"
@@ -220,8 +220,8 @@
             </div>
 
             <div class="form-actions" th:if="${request.status.name() == 'PENDING'}">
-                <button th:if="${request.requestType.name() == 'NEW'}" type="submit" class="btn btn-primary">승인 (신규 등록)</button>
-                <button th:if="${request.requestType.name() == 'UPDATE'}" type="submit" class="btn btn-primary">승인 (수정 반영)</button>
+                <button th:if="${request.requestType.name() == 'NEW'}" type="submit" class="btn btn--primary">승인 (신규 등록)</button>
+                <button th:if="${request.requestType.name() == 'UPDATE'}" type="submit" class="btn btn--primary">승인 (수정 반영)</button>
             </div>
         </form>
 
@@ -229,8 +229,8 @@
         <form th:if="${request.status.name() == 'PENDING'}"
               th:action="@{/admin/requests/place/{id}/reject(id=${request.id})}"
               method="post"
-              style="margin-top: 8px; text-align: right;">
-            <button type="submit" class="btn btn-destructive"
+              class="reject-form">
+            <button type="submit" class="btn btn--destructive"
                     onclick="return confirm('정말 거절하시겠습니까?')">거절</button>
         </form>
     </div>

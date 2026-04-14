@@ -3,7 +3,7 @@
 <body>
 
 <th:block th:fragment="toggleSwitch(actionUrl, checked, label)">
-    <form th:action="${actionUrl}" method="post" style="display:inline">
+    <form th:action="${actionUrl}" method="post" class="form-inline">
         <label class="switch" th:aria-label="${label}">
             <input type="checkbox" role="switch" th:checked="${checked}"
                    th:aria-checked="${checked}"

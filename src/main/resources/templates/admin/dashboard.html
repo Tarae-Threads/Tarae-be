@@ -4,33 +4,33 @@
 <body>
 <div class="card-grid">
     <div class="stat-card">
-        <div class="stat-label">등록 장소</div>
-        <div class="stat-value" th:text="${placeCount}">0</div>
+        <div class="stat-card__label">등록 장소</div>
+        <div class="stat-card__value" th:text="${placeCount}">0</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">등록 이벤트</div>
-        <div class="stat-value" th:text="${eventCount}">0</div>
+        <div class="stat-card__label">등록 이벤트</div>
+        <div class="stat-card__value" th:text="${eventCount}">0</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">장소 제보 대기</div>
-        <div class="stat-value" th:text="${pendingPlaceRequestCount}">0</div>
+        <div class="stat-card__label">장소 제보 대기</div>
+        <div class="stat-card__value" th:text="${pendingPlaceRequestCount}">0</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">이벤트 제보 대기</div>
-        <div class="stat-value" th:text="${pendingEventRequestCount}">0</div>
+        <div class="stat-card__label">이벤트 제보 대기</div>
+        <div class="stat-card__value" th:text="${pendingEventRequestCount}">0</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">리뷰</div>
-        <div class="stat-value" th:text="${reviewCount}">0</div>
+        <div class="stat-card__label">리뷰</div>
+        <div class="stat-card__value" th:text="${reviewCount}">0</div>
     </div>
     <div class="stat-card">
-        <div class="stat-label">만료 임박 이벤트 (D-7)</div>
-        <div class="stat-value" th:text="${expiringSoonEventCount}">0</div>
+        <div class="stat-card__label">만료 임박 이벤트 (D-7)</div>
+        <div class="stat-card__value" th:text="${expiringSoonEventCount}">0</div>
     </div>
 </div>
 
 <div class="card">
-    <p style="color: var(--on-surface-muted); font-size: 13px;">
+    <p class="empty-state">
         제보 관리를 시작하려면 사이드바의 <strong>제보 관리</strong>를 클릭하세요.
     </p>
 </div>

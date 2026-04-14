@@ -1,0 +1,52 @@
+/* ── 마스터 데이터 검색바 ── */
+.master-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.master-toolbar__search {
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+}
+
+.master-toolbar form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.master-toolbar form input[type="text"] {
+    min-width: 160px;
+    flex: 1;
+}
+
+.master-toolbar form select {
+    width: auto;
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+.master-toolbar form .btn {
+    flex-shrink: 0;
+}
+
+/* ── 행 인라인 편집 ── */
+.inline-edit-form {
+    display: none;
+    gap: 8px;
+    align-items: center;
+}
+
+.inline-edit-form.open {
+    display: flex;
+}
+
+.inline-edit-form input[type="text"] {
+    flex: 1;
+    max-width: 280px;
+}

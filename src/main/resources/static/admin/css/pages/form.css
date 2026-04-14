@@ -1,0 +1,100 @@
+/* ── 다건 입력 행 ── */
+.row-input {
+    margin-bottom: 12px;
+}
+
+.row-input__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.row-input__actions {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.row-input__add-btn {
+    /* btn 클래스와 함께 사용 */
+}
+
+.row-input__remove-btn {
+    background: transparent;
+    border: 1px solid var(--outline-light);
+    color: var(--destructive);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.row-input__remove-btn:hover {
+    background: rgba(186, 26, 26, 0.06);
+}
+
+/* ── 프리뷰 모달 ── */
+.preview-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(29, 27, 22, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.preview-modal__backdrop.open {
+    display: flex;
+}
+
+.preview-modal {
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--outline-light);
+    width: min(720px, 92vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.preview-modal__header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--outline-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-modal__body {
+    padding: 18px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.preview-modal__footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--outline-light);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background: var(--surface-container);
+}
+
+.preview-card__title {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.preview-card__meta {
+    font-size: 12px;
+    color: var(--on-surface-muted);
+}
+
+.preview-card__sub {
+    font-size: 12px;
+}

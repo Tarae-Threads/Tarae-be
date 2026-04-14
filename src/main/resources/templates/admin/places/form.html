@@ -7,11 +7,10 @@
 <div th:if="${mode == 'create'}">
     <form id="bulk-form" method="post" th:action="@{/admin/places}" onsubmit="return false;">
         <div id="rows-container">
-            <!-- 첫 번째 행 (필수) -->
-            <div class="card row-input-row" th:with="i=0">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div class="card row-input">
+                <div class="row-input__header">
                     <strong>장소 #1</strong>
-                    <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+                    <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
                 </div>
                 <div class="form-group">
                     <label>장소명 *</label>
@@ -48,9 +47,9 @@
             </div>
         </div>
 
-        <div style="display: flex; gap: 8px; margin: 16px 0;">
-            <button type="button" class="row-add-btn btn btn-secondary" onclick="addRow()">+ 행 추가</button>
-            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+        <div class="row-input__actions">
+            <button type="button" class="row-input__add-btn btn btn--secondary" onclick="addRow()">+ 행 추가</button>
+            <button type="button" class="btn btn--primary" onclick="openPreview()">프리뷰 후 저장</button>
         </div>
     </form>
 </div>
@@ -132,8 +131,8 @@
 
             <div class="form-group">
                 <label>브랜드</label>
-                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip-subgroup">
-                    <div class="chip-subgroup-title" th:text="${group.type}">TYPE</div>
+                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup">
+                    <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
                     <div class="chip-grid">
                         <label th:each="brand : ${group.brands}" class="chip-toggle">
                             <input type="checkbox" name="brandIds" th:value="${brand.id}"
@@ -146,41 +145,41 @@
         </div>
 
         <div class="form-actions">
-            <a th:href="@{/admin/places}" class="btn btn-secondary">취소</a>
-            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+            <a th:href="@{/admin/places}" class="btn btn--secondary">취소</a>
+            <button type="button" class="btn btn--primary" onclick="openPreview()">프리뷰 후 저장</button>
         </div>
     </form>
 </div>
 
 <!-- 프리뷰 모달 -->
-<div id="preview-modal" class="preview-modal-backdrop" style="display:none;">
+<div id="preview-modal" class="preview-modal__backdrop">
     <div class="preview-modal">
-        <div class="preview-modal-header">
+        <div class="preview-modal__header">
             <strong>프리뷰</strong>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="closePreview()">닫기</button>
+            <button type="button" class="btn btn--secondary btn--sm" onclick="AdminPreview.close()">닫기</button>
         </div>
-        <div class="preview-modal-body" id="preview-body"></div>
-        <div class="preview-modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closePreview()">취소</button>
-            <button type="button" class="btn btn-primary" onclick="confirmSubmit()">확인 저장</button>
+        <div class="preview-modal__body" id="preview-body"></div>
+        <div class="preview-modal__footer">
+            <button type="button" class="btn btn--secondary" onclick="AdminPreview.close()">취소</button>
+            <button type="button" class="btn btn--primary" onclick="confirmPreviewSubmit()">확인 저장</button>
         </div>
     </div>
 </div>
 
-<script th:src="@{/admin/admin.js}"></script>
 <script th:inline="javascript">
 const MODE = /*[[${mode}]]*/ 'create';
+const FORM_ID = MODE === 'edit' ? 'edit-form' : 'bulk-form';
 
 let rowCount = 1;
 function addRow() {
     const container = document.getElementById('rows-container');
     const idx = rowCount++;
     const div = document.createElement('div');
-    div.className = 'card row-input-row';
+    div.className = 'card row-input';
     div.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="row-input__header">
             <strong>장소 #${idx + 1}</strong>
-            <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+            <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
         </div>
         <div class="form-group"><label>장소명 *</label><input type="text" name="places[${idx}].name" required/></div>
         <div class="form-group"><label>지역 *</label><input type="text" name="places[${idx}].region" required/></div>
@@ -195,62 +194,47 @@ function addRow() {
 }
 
 function removeRow(btn) {
-    const row = btn.closest('.row-input-row');
-    if (document.querySelectorAll('.row-input-row').length > 1) row.remove();
+    const row = btn.closest('.row-input');
+    if (document.querySelectorAll('.row-input').length > 1) row.remove();
 }
 
 function openPreview() {
-    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
-    if (!form.reportValidity()) return;
-    const body = document.getElementById('preview-body');
-    body.innerHTML = '';
-
-    if (MODE === 'edit') {
-        const card = buildPreviewCard({
-            name: form.querySelector('[name=name]').value,
-            region: form.querySelector('[name=region]').value,
-            district: form.querySelector('[name=district]').value,
-            address: form.querySelector('[name=address]').value,
-        });
-        body.appendChild(card);
-    } else {
-        document.querySelectorAll('.row-input-row').forEach(row => {
-            const card = buildPreviewCard({
-                name: row.querySelector('[name$=".name"]').value,
-                region: row.querySelector('[name$=".region"]').value,
-                district: row.querySelector('[name$=".district"]').value,
-                address: row.querySelector('[name$=".address"]').value,
+    AdminPreview.open(FORM_ID, function (body) {
+        const form = document.getElementById(FORM_ID);
+        if (MODE === 'edit') {
+            body.appendChild(buildPreviewCard({
+                name: form.querySelector('[name=name]').value,
+                region: form.querySelector('[name=region]').value,
+                district: form.querySelector('[name=district]').value,
+                address: form.querySelector('[name=address]').value,
+            }));
+        } else {
+            document.querySelectorAll('.row-input').forEach(row => {
+                body.appendChild(buildPreviewCard({
+                    name: row.querySelector('[name$=".name"]').value,
+                    region: row.querySelector('[name$=".region"]').value,
+                    district: row.querySelector('[name$=".district"]').value,
+                    address: row.querySelector('[name$=".address"]').value,
+                }));
             });
-            body.appendChild(card);
-        });
-    }
-
-    document.getElementById('preview-modal').style.display = 'flex';
+        }
+    });
 }
 
-function closePreview() {
-    document.getElementById('preview-modal').style.display = 'none';
-}
-
-function confirmSubmit() {
-    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
-    form.removeAttribute('onsubmit');
-    form.submit();
+function confirmPreviewSubmit() {
+    AdminPreview.submit(FORM_ID);
 }
 
 function buildPreviewCard(data) {
+    const esc = AdminPreview.escapeHtml;
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
-        <div style="font-weight:600;margin-bottom:6px;">${escapeHtml(data.name)}</div>
-        <div style="font-size:12px;color:var(--on-surface-muted);">${escapeHtml(data.region)} ${escapeHtml(data.district)}</div>
-        <div style="font-size:12px;">${escapeHtml(data.address)}</div>
+        <div class="preview-card__title">${esc(data.name)}</div>
+        <div class="preview-card__meta">${esc(data.region)} ${esc(data.district)}</div>
+        <div class="preview-card__sub">${esc(data.address)}</div>
     `;
     return card;
-}
-
-function escapeHtml(s) {
-    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 </script>
 

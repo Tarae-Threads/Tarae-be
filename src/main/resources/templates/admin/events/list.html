@@ -3,15 +3,15 @@
       th:replace="~{admin/layout/base :: layout('이벤트 관리', ~{::body})}">
 <body>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-    <div class="filter-bar" style="margin-bottom: 0;">
+<div class="toolbar">
+    <div class="filter-bar filter-bar--sub">
         <a th:each="f : ${filters}"
            th:href="@{/admin/events(filter=${f})}"
            th:classappend="${filter == f} ? 'active'"
            class="filter-btn"
            th:text="${f.name() == 'ALL' ? '전체' : (f.name() == 'ONGOING' ? '진행중' : (f.name() == 'EXPIRING_SOON' ? '만료 임박' : '만료'))}">전체</a>
     </div>
-    <a th:href="@{/admin/events/new}" class="btn btn-primary">+ 이벤트 등록</a>
+    <a th:href="@{/admin/events/new}" class="btn btn--primary">+ 이벤트 등록</a>
 </div>
 
 <div class="card table-wrap">
@@ -36,14 +36,14 @@
             <td th:text="${e.startDate}">2026-01-01</td>
             <td th:text="${e.endDate ?: '-'}">-</td>
             <td>
-                <span th:if="${e.status.name() == 'ONGOING'}" class="badge badge-ongoing">진행중</span>
-                <span th:if="${e.status.name() == 'EXPIRING_SOON'}" class="badge badge-expiring">임박</span>
-                <span th:if="${e.status.name() == 'EXPIRED'}" class="badge badge-expired">만료</span>
+                <span th:if="${e.status.name() == 'ONGOING'}" class="badge badge--ongoing">진행중</span>
+                <span th:if="${e.status.name() == 'EXPIRING_SOON'}" class="badge badge--expiring">임박</span>
+                <span th:if="${e.status.name() == 'EXPIRED'}" class="badge badge--expired">만료</span>
             </td>
             <td class="td-actions">
-                <a th:href="@{/admin/events/{id}/edit(id=${e.id})}" class="btn btn-secondary btn-sm">수정</a>
-                <form th:action="@{/admin/events/{id}/delete(id=${e.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn btn-destructive btn-sm"
+                <a th:href="@{/admin/events/{id}/edit(id=${e.id})}" class="btn btn--secondary btn--sm">수정</a>
+                <form th:action="@{/admin/events/{id}/delete(id=${e.id})}" method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm"
                             onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
             </td>
@@ -56,8 +56,7 @@
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(events)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(events)}" class="empty-state">
         이벤트가 없습니다.
     </p>
 </div>

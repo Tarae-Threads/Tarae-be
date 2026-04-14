@@ -14,7 +14,7 @@
 </div>
 
 <!-- 장소 제보 서브탭: 전체 / 신규 / 수정 -->
-<div th:if="${type == 'place'}" class="filter-bar filter-bar-sub">
+<div th:if="${type == 'place'}" class="filter-bar filter-bar--sub">
     <a th:href="@{/admin/requests(type='place', status=${status})}"
        th:classappend="${requestType == null} ? 'active'"
        class="filter-btn">전체</a>
@@ -58,11 +58,11 @@
             <td th:if="${type == 'place'}" th:text="${req.name ?: '-'}">장소명</td>
             <td th:if="${type == 'event'}" th:text="${req.title}">이벤트명</td>
             <td th:if="${type == 'place'}">
-                <span th:if="${req.requestType.name() == 'NEW'}" class="badge badge-approved">신규</span>
-                <span th:if="${req.requestType.name() == 'UPDATE'}" class="badge badge-update">수정</span>
+                <span th:if="${req.requestType.name() == 'NEW'}" class="badge badge--approved">신규</span>
+                <span th:if="${req.requestType.name() == 'UPDATE'}" class="badge badge--update">수정</span>
             </td>
             <td>
-                <span th:classappend="'badge-' + ${#strings.toLowerCase(req.status)}"
+                <span th:classappend="'badge--' + ${#strings.toLowerCase(req.status)}"
                       th:text="${req.status}"
                       class="badge">PENDING</span>
             </td>
@@ -70,16 +70,15 @@
             <td>
                 <a th:if="${type == 'place'}"
                    th:href="@{/admin/requests/place/{id}(id=${req.id})}"
-                   class="btn btn-secondary btn-sm">검수</a>
+                   class="btn btn--secondary btn--sm">검수</a>
                 <a th:if="${type == 'event'}"
                    th:href="@{/admin/requests/event/{id}(id=${req.id})}"
-                   class="btn btn-secondary btn-sm">검수</a>
+                   class="btn btn--secondary btn--sm">검수</a>
             </td>
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(requests)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(requests)}" class="empty-state">
         제보가 없습니다.
     </p>
 </div>

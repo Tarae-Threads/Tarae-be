@@ -94,7 +94,7 @@
             </div>
 
             <div class="form-actions" th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}">
-                <button type="submit" class="btn btn-primary">승인</button>
+                <button type="submit" class="btn btn--primary">승인</button>
             </div>
         </form>
 
@@ -102,8 +102,8 @@
         <form th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
               th:action="@{/admin/requests/event/{id}/reject(id=${request.id})}"
               method="post"
-              style="margin-top: 8px; text-align: right;">
-            <button type="submit" class="btn btn-destructive"
+              class="reject-form">
+            <button type="submit" class="btn btn--destructive"
                     onclick="return confirm('정말 거절하시겠습니까?')">거절</button>
         </form>
     </div>

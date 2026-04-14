@@ -20,9 +20,9 @@
     <div class="master-toolbar">
         <form method="post" th:action="@{/admin/masters/categories}">
             <input type="text" name="name" placeholder="새 카테고리 이름" required/>
-            <button type="submit" class="btn btn-primary">+ 추가</button>
+            <button type="submit" class="btn btn--primary">+ 추가</button>
         </form>
-        <input type="text" class="master-search" data-filter="categories-row"
+        <input type="text" class="master-toolbar__search" data-filter="categories-row"
                placeholder="이름 검색"/>
     </div>
     <table th:if="${not #lists.isEmpty(categories)}">
@@ -41,21 +41,19 @@
                 <form th:id="'category-edit-' + ${c.id}"
                       th:action="@{/admin/masters/categories/{id}(id=${c.id})}"
                       method="post"
-                      style="display: none; gap: 8px;">
-                    <input type="text" name="name" th:value="${c.name}" required style="flex: 1; max-width: 280px;"/>
-                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                      class="inline-edit-form">
+                    <input type="text" name="name" th:value="${c.name}" required/>
+                    <button type="submit" class="btn btn--primary btn--sm">저장</button>
                 </form>
             </td>
             <td>
-                <button type="button" class="btn btn-secondary btn-sm"
-                        th:attr="data-target='category-' + ${c.id}"
-                        onclick="toggleEdit(this.dataset.target)">수정</button>
+                <button type="button" class="btn btn--secondary btn--sm"
+                        th:attr="data-toggle-target='category-' + ${c.id}">수정</button>
             </td>
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(categories)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(categories)}" class="empty-state">
         카테고리가 없습니다.
     </p>
 </div>
@@ -65,9 +63,9 @@
     <div class="master-toolbar">
         <form method="post" th:action="@{/admin/masters/tags}">
             <input type="text" name="name" placeholder="새 태그 이름" required/>
-            <button type="submit" class="btn btn-primary">+ 추가</button>
+            <button type="submit" class="btn btn--primary">+ 추가</button>
         </form>
-        <input type="text" class="master-search" data-filter="tags-row"
+        <input type="text" class="master-toolbar__search" data-filter="tags-row"
                placeholder="이름 검색"/>
     </div>
     <table th:if="${not #lists.isEmpty(tags)}">
@@ -86,21 +84,19 @@
                 <form th:id="'tag-edit-' + ${t.id}"
                       th:action="@{/admin/masters/tags/{id}(id=${t.id})}"
                       method="post"
-                      style="display: none; gap: 8px;">
-                    <input type="text" name="name" th:value="${t.name}" required style="flex: 1; max-width: 280px;"/>
-                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                      class="inline-edit-form">
+                    <input type="text" name="name" th:value="${t.name}" required/>
+                    <button type="submit" class="btn btn--primary btn--sm">저장</button>
                 </form>
             </td>
             <td>
-                <button type="button" class="btn btn-secondary btn-sm"
-                        th:attr="data-target='tag-' + ${t.id}"
-                        onclick="toggleEdit(this.dataset.target)">수정</button>
+                <button type="button" class="btn btn--secondary btn--sm"
+                        th:attr="data-toggle-target='tag-' + ${t.id}">수정</button>
             </td>
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(tags)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(tags)}" class="empty-state">
         태그가 없습니다.
     </p>
 </div>
@@ -113,9 +109,9 @@
             <select name="type">
                 <option th:each="bt : ${brandTypes}" th:value="${bt}" th:text="${bt}">YARN</option>
             </select>
-            <button type="submit" class="btn btn-primary">+ 추가</button>
+            <button type="submit" class="btn btn--primary">+ 추가</button>
         </form>
-        <input type="text" class="master-search" data-filter="brands-row"
+        <input type="text" class="master-toolbar__search" data-filter="brands-row"
                placeholder="이름 검색"/>
     </div>
     <table th:if="${not #lists.isEmpty(brands)}">
@@ -135,42 +131,29 @@
                 <form th:id="'brand-edit-' + ${b.id}"
                       th:action="@{/admin/masters/brands/{id}(id=${b.id})}"
                       method="post"
-                      style="display: none; gap: 8px;">
-                    <input type="text" name="name" th:value="${b.name}" required style="flex: 1; max-width: 220px;"/>
+                      class="inline-edit-form">
+                    <input type="text" name="name" th:value="${b.name}" required/>
                     <select name="type">
                         <option th:each="bt : ${brandTypes}"
                                 th:value="${bt}"
                                 th:text="${bt}"
                                 th:selected="${bt == b.type}">YARN</option>
                     </select>
-                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                    <button type="submit" class="btn btn--primary btn--sm">저장</button>
                 </form>
             </td>
             <td th:text="${b.type}">YARN</td>
             <td>
-                <button type="button" class="btn btn-secondary btn-sm"
-                        th:attr="data-target='brand-' + ${b.id}"
-                        onclick="toggleEdit(this.dataset.target)">수정</button>
+                <button type="button" class="btn btn--secondary btn--sm"
+                        th:attr="data-toggle-target='brand-' + ${b.id}">수정</button>
             </td>
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(brands)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(brands)}" class="empty-state">
         브랜드가 없습니다.
     </p>
 </div>
-
-<script>
-    function toggleEdit(target) {
-        var nameEl = document.getElementById(target + '-name');
-        var formEl = document.getElementById(target + '-edit');
-        if (!nameEl || !formEl) return;
-        var editing = formEl.style.display !== 'none';
-        nameEl.style.display = editing ? '' : 'none';
-        formEl.style.display = editing ? 'none' : 'flex';
-    }
-</script>
 
 </body>
 </html>

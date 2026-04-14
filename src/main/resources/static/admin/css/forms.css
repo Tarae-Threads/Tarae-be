@@ -1,0 +1,289 @@
+/* Forms */
+.form-group {
+    margin-bottom: 14px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--on-surface);
+    margin-bottom: 4px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--outline-light);
+    border-radius: 6px;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--on-surface);
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.form-inline {
+    display: inline;
+}
+
+/* ── Selector Section (collapsible) ── */
+.selector-section {
+    border: 1px solid var(--outline-light);
+    border-radius: 8px;
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.selector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.selector-header:hover {
+    background: rgba(145, 71, 43, 0.04);
+}
+
+.selector-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selector-header-left .chevron {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    color: var(--on-surface-muted);
+    transition: transform 0.2s ease;
+}
+
+.selector-section.open .chevron {
+    transform: rotate(90deg);
+}
+
+.selector-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.selector-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary);
+    border-radius: 999px;
+    padding: 1px 8px;
+    min-width: 20px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.selector-count.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.selector-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+    overflow: hidden;
+}
+
+.selector-section.open .selector-body {
+    grid-template-rows: 1fr;
+}
+
+.selector-body-wrap {
+    overflow: hidden;
+    min-height: 0;
+}
+
+.selector-section.open .selector-body-wrap {
+    overflow: visible;
+}
+
+.selector-body-inner {
+    padding: 0 14px 14px;
+}
+
+/* Selected summary chips */
+.selected-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 10px;
+}
+
+.selected-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    background: rgba(145, 71, 43, 0.1);
+    color: var(--primary);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.selected-chip:hover {
+    background: rgba(145, 71, 43, 0.2);
+}
+
+.selected-chip::after {
+    content: "×";
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.6;
+}
+
+/* Search input inside selector */
+.selector-search {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--outline-light);
+    border-radius: 6px;
+    font-size: 12px;
+    background-color: var(--surface-container);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2387736c' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 9px center;
+    color: var(--on-surface);
+    outline: none;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+}
+
+.selector-search:focus {
+    border-color: var(--primary);
+}
+
+.selector-search::placeholder {
+    color: var(--on-surface-muted);
+}
+
+/* Chip grid (replaces checkbox-group) */
+.chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Sub-group for brands */
+.chip__subgroup {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.chip__subgroup:last-child {
+    margin-bottom: 0;
+}
+
+.chip__subgroup-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--on-surface-muted);
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+
+/* Individual chip toggle */
+.chip-toggle {
+    position: relative;
+}
+
+.chip-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.chip-toggle .chip-label {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--outline-light);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--on-surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.chip-toggle .chip-label:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(145, 71, 43, 0.04);
+}
+
+.chip-toggle input:checked + .chip-label {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.chip-toggle.hidden {
+    display: none;
+}
+
+/* No results message */
+.chip-no-results {
+    font-size: 12px;
+    color: var(--on-surface-muted);
+    padding: 8px 0;
+    display: none;
+}
+
+/* Legacy fallback */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}

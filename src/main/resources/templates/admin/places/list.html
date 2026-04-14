@@ -3,12 +3,12 @@
       th:replace="~{admin/layout/base :: layout('장소 관리', ~{::body})}">
 <body>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-    <form method="get" th:action="@{/admin/places}" style="display: flex; gap: 8px; flex: 1; max-width: 480px;">
+<div class="toolbar">
+    <form method="get" th:action="@{/admin/places}" class="toolbar__search">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="장소명 / 주소 / 카테고리"/>
-        <button type="submit" class="btn btn-secondary">검색</button>
+        <button type="submit" class="btn btn--secondary">검색</button>
     </form>
-    <a th:href="@{/admin/places/new}" class="btn btn-primary">+ 장소 등록</a>
+    <a th:href="@{/admin/places/new}" class="btn btn--primary">+ 장소 등록</a>
 </div>
 
 <div class="card table-wrap">
@@ -34,9 +34,9 @@
                 <span class="badge" th:text="${p.status}">OPEN</span>
             </td>
             <td class="td-actions">
-                <a th:href="@{/admin/places/{id}/edit(id=${p.id})}" class="btn btn-secondary btn-sm">수정</a>
-                <form th:action="@{/admin/places/{id}/delete(id=${p.id})}" method="post" style="display:inline">
-                    <button type="submit" class="btn btn-destructive btn-sm"
+                <a th:href="@{/admin/places/{id}/edit(id=${p.id})}" class="btn btn--secondary btn--sm">수정</a>
+                <form th:action="@{/admin/places/{id}/delete(id=${p.id})}" method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm"
                             onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
             </td>
@@ -49,8 +49,7 @@
         </tr>
         </tbody>
     </table>
-    <p th:if="${#lists.isEmpty(places)}"
-       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+    <p th:if="${#lists.isEmpty(places)}" class="empty-state">
         장소가 없습니다.
     </p>
 </div>
