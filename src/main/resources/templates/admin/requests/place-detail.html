@@ -14,7 +14,7 @@
 </div>
 
 <!-- 처리된 제보 안내 -->
-<div th:if="${request.status.name() != 'PENDING'}" class="alert alert-warning">
+<div th:if="${request.status.name() != 'PENDING'}" class="alert alert--warning">
     이미 <strong th:text="${request.status}">처리됨</strong> 상태인 제보입니다. 재처리할 수 없습니다.
 </div>
 
@@ -25,57 +25,57 @@
         <div class="detail-section-title">제보 원본</div>
 
         <div class="field-group">
-            <div class="field-label">장소명</div>
-            <div class="field-value" th:text="${request.name ?: '-'}">-</div>
+            <div class="field-group__label">장소명</div>
+            <div class="field-group__value" th:text="${request.name ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">주소</div>
-            <div class="field-value" th:text="${request.address ?: '-'}">-</div>
+            <div class="field-group__label">주소</div>
+            <div class="field-group__value" th:text="${request.address ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">상세주소</div>
-            <div class="field-value" th:text="${request.addressDetail ?: '-'}">-</div>
+            <div class="field-group__label">상세주소</div>
+            <div class="field-group__value" th:text="${request.addressDetail ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">위도/경도</div>
-            <div class="field-value"
+            <div class="field-group__label">위도/경도</div>
+            <div class="field-group__value"
                  th:text="${request.lat != null ? request.lat + ' / ' + request.lng : '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">영업시간</div>
-            <div class="field-value" th:text="${request.hoursText ?: '-'}">-</div>
+            <div class="field-group__label">영업시간</div>
+            <div class="field-group__value" th:text="${request.hoursText ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">휴무일</div>
-            <div class="field-value" th:text="${request.closedDays ?: '-'}">-</div>
+            <div class="field-group__label">휴무일</div>
+            <div class="field-group__value" th:text="${request.closedDays ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">취급 실 브랜드</div>
-            <div class="field-value" th:text="${request.brandsYarn ?: '-'}">-</div>
+            <div class="field-group__label">취급 실 브랜드</div>
+            <div class="field-group__value" th:text="${request.brandsYarn ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">취급 바늘 브랜드</div>
-            <div class="field-value" th:text="${request.brandsNeedle ?: '-'}">-</div>
+            <div class="field-group__label">취급 바늘 브랜드</div>
+            <div class="field-group__value" th:text="${request.brandsNeedle ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">인스타그램</div>
-            <div class="field-value" th:text="${request.instagramUrl ?: '-'}">-</div>
+            <div class="field-group__label">인스타그램</div>
+            <div class="field-group__value" th:text="${request.instagramUrl ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">웹사이트</div>
-            <div class="field-value" th:text="${request.websiteUrl ?: '-'}">-</div>
+            <div class="field-group__label">웹사이트</div>
+            <div class="field-group__value" th:text="${request.websiteUrl ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">네이버 지도</div>
-            <div class="field-value" th:text="${request.naverMapUrl ?: '-'}">-</div>
+            <div class="field-group__label">네이버 지도</div>
+            <div class="field-group__value" th:text="${request.naverMapUrl ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">태그 (자유입력)</div>
-            <div class="field-value" th:text="${request.tags ?: '-'}">-</div>
+            <div class="field-group__label">태그 (자유입력)</div>
+            <div class="field-group__value" th:text="${request.tags ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">메모</div>
-            <div class="field-value" th:text="${request.note ?: '-'}">-</div>
+            <div class="field-group__label">메모</div>
+            <div class="field-group__value" th:text="${request.note ?: '-'}">-</div>
         </div>
     </div>
 

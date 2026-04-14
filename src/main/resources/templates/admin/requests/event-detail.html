@@ -5,7 +5,7 @@
 
 <!-- 처리된 제보 안내 -->
 <div th:if="${request.status != T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}"
-     class="alert alert-warning">
+     class="alert alert--warning">
     이미 <strong th:text="${request.status}">처리됨</strong> 상태인 제보입니다. 재처리할 수 없습니다.
 </div>
 
@@ -16,29 +16,29 @@
         <div class="detail-section-title">제보 원본</div>
 
         <div class="field-group">
-            <div class="field-label">이벤트명</div>
-            <div class="field-value" th:text="${request.title}">-</div>
+            <div class="field-group__label">이벤트명</div>
+            <div class="field-group__value" th:text="${request.title}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">이벤트 유형</div>
-            <div class="field-value" th:text="${request.eventType}">-</div>
+            <div class="field-group__label">이벤트 유형</div>
+            <div class="field-group__value" th:text="${request.eventType}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">시작일</div>
-            <div class="field-value" th:text="${#temporals.format(request.startDate, 'yyyy-MM-dd')}">-</div>
+            <div class="field-group__label">시작일</div>
+            <div class="field-group__value" th:text="${#temporals.format(request.startDate, 'yyyy-MM-dd')}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">종료일</div>
-            <div class="field-value"
+            <div class="field-group__label">종료일</div>
+            <div class="field-group__value"
                  th:text="${request.endDate != null ? #temporals.format(request.endDate, 'yyyy-MM-dd') : '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">장소</div>
-            <div class="field-value" th:text="${request.locationText ?: '-'}">-</div>
+            <div class="field-group__label">장소</div>
+            <div class="field-group__value" th:text="${request.locationText ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-label">설명</div>
-            <div class="field-value" th:text="${request.description ?: '-'}">-</div>
+            <div class="field-group__label">설명</div>
+            <div class="field-group__value" th:text="${request.description ?: '-'}">-</div>
         </div>
     </div>
 

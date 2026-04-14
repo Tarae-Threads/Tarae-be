@@ -3,29 +3,29 @@
       th:replace="~{admin/layout/base :: layout('대시보드', ~{::body})}">
 <body>
 <div class="card-grid">
-    <div class="stat-card">
-        <div class="stat-card__label">등록 장소</div>
-        <div class="stat-card__value" th:text="${placeCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">등록 장소</div>
+        <div class="stat__value" th:text="${placeCount}">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-card__label">등록 이벤트</div>
-        <div class="stat-card__value" th:text="${eventCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">등록 이벤트</div>
+        <div class="stat__value" th:text="${eventCount}">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-card__label">장소 제보 대기</div>
-        <div class="stat-card__value" th:text="${pendingPlaceRequestCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">장소 제보 대기</div>
+        <div class="stat__value" th:text="${pendingPlaceRequestCount}">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-card__label">이벤트 제보 대기</div>
-        <div class="stat-card__value" th:text="${pendingEventRequestCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">이벤트 제보 대기</div>
+        <div class="stat__value" th:text="${pendingEventRequestCount}">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-card__label">리뷰</div>
-        <div class="stat-card__value" th:text="${reviewCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">리뷰</div>
+        <div class="stat__value" th:text="${reviewCount}">0</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-card__label">만료 임박 이벤트 (D-7)</div>
-        <div class="stat-card__value" th:text="${expiringSoonEventCount}">0</div>
+    <div class="card stat">
+        <div class="stat__label">만료 임박 이벤트 (D-7)</div>
+        <div class="stat__value" th:text="${expiringSoonEventCount}">0</div>
     </div>
 </div>
 

@@ -13,14 +13,7 @@
     margin-bottom: 28px;
 }
 
-.stat-card {
-    background: var(--surface-container);
-    border: 1px solid var(--outline-light);
-    border-radius: 8px;
-    padding: 20px;
-}
-
-.stat-card__label {
+.stat__label {
     font-size: 12px;
     color: var(--on-surface-muted);
     margin-bottom: 8px;
@@ -28,7 +21,7 @@
     letter-spacing: 0.04em;
 }
 
-.stat-card__value {
+.stat__value {
     font-size: 28px;
     font-weight: 700;
     color: var(--primary);
@@ -259,13 +252,13 @@ tr:hover td {
     margin-bottom: 14px;
 }
 
-.field-label {
+.field-group__label {
     font-size: 11px;
     color: var(--on-surface-muted);
     margin-bottom: 3px;
 }
 
-.field-value {
+.field-group__value {
     font-size: 14px;
     color: var(--on-surface);
     word-break: break-word;
@@ -305,13 +298,13 @@ tr:hover td {
     margin-bottom: 20px;
 }
 
-.alert-info {
+.alert--info {
     background: #e8f4f8;
     color: #1a5a6b;
     border: 1px solid #bee3f8;
 }
 
-.alert-warning {
+.alert--warning {
     background: #fff3cd;
     color: #856404;
     border: 1px solid #ffd700;
