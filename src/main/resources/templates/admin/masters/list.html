@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('마스터 데이터', ~{::body})}">
+<body>
+
+<div class="tabs">
+    <a th:href="@{/admin/masters(type='categories')}"
+       th:classappend="${type == 'categories'} ? 'active'"
+       class="tab">카테고리</a>
+    <a th:href="@{/admin/masters(type='tags')}"
+       th:classappend="${type == 'tags'} ? 'active'"
+       class="tab">태그</a>
+    <a th:href="@{/admin/masters(type='brands')}"
+       th:classappend="${type == 'brands'} ? 'active'"
+       class="tab">브랜드</a>
+</div>
+
+<!-- 카테고리 -->
+<div th:if="${type == 'categories'}" class="card table-wrap">
+    <form method="post" th:action="@{/admin/masters/categories}"
+          style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <input type="text" name="name" placeholder="새 카테고리 이름" required style="flex: 1; max-width: 320px;"/>
+        <button type="submit" class="btn btn-primary">+ 추가</button>
+    </form>
+    <table th:if="${not #lists.isEmpty(categories)}">
+        <thead>
+        <tr>
+            <th style="width: 80px;">ID</th>
+            <th>이름</th>
+            <th style="width: 200px;">관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${categories}">
+            <td th:text="${c.id}">1</td>
+            <td>
+                <span th:id="'category-name-' + ${c.id}" th:text="${c.name}">이름</span>
+                <form th:id="'category-edit-' + ${c.id}"
+                      th:action="@{/admin/masters/categories/{id}(id=${c.id})}"
+                      method="post"
+                      style="display: none; gap: 8px;">
+                    <input type="text" name="name" th:value="${c.name}" required style="flex: 1; max-width: 280px;"/>
+                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                </form>
+            </td>
+            <td>
+                <button type="button" class="btn btn-secondary btn-sm"
+                        th:attr="data-target='category-' + ${c.id}"
+                        onclick="toggleEdit(this.dataset.target)">수정</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(categories)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        카테고리가 없습니다.
+    </p>
+</div>
+
+<!-- 태그 -->
+<div th:if="${type == 'tags'}" class="card table-wrap">
+    <form method="post" th:action="@{/admin/masters/tags}"
+          style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <input type="text" name="name" placeholder="새 태그 이름" required style="flex: 1; max-width: 320px;"/>
+        <button type="submit" class="btn btn-primary">+ 추가</button>
+    </form>
+    <table th:if="${not #lists.isEmpty(tags)}">
+        <thead>
+        <tr>
+            <th style="width: 80px;">ID</th>
+            <th>이름</th>
+            <th style="width: 200px;">관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${tags}">
+            <td th:text="${t.id}">1</td>
+            <td>
+                <span th:id="'tag-name-' + ${t.id}" th:text="${t.name}">이름</span>
+                <form th:id="'tag-edit-' + ${t.id}"
+                      th:action="@{/admin/masters/tags/{id}(id=${t.id})}"
+                      method="post"
+                      style="display: none; gap: 8px;">
+                    <input type="text" name="name" th:value="${t.name}" required style="flex: 1; max-width: 280px;"/>
+                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                </form>
+            </td>
+            <td>
+                <button type="button" class="btn btn-secondary btn-sm"
+                        th:attr="data-target='tag-' + ${t.id}"
+                        onclick="toggleEdit(this.dataset.target)">수정</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(tags)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        태그가 없습니다.
+    </p>
+</div>
+
+<!-- 브랜드 -->
+<div th:if="${type == 'brands'}" class="card table-wrap">
+    <form method="post" th:action="@{/admin/masters/brands}"
+          style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <input type="text" name="name" placeholder="새 브랜드 이름" required style="flex: 1; max-width: 280px;"/>
+        <select name="type">
+            <option th:each="bt : ${brandTypes}" th:value="${bt}" th:text="${bt}">YARN</option>
+        </select>
+        <button type="submit" class="btn btn-primary">+ 추가</button>
+    </form>
+    <table th:if="${not #lists.isEmpty(brands)}">
+        <thead>
+        <tr>
+            <th style="width: 80px;">ID</th>
+            <th>이름</th>
+            <th style="width: 140px;">타입</th>
+            <th style="width: 200px;">관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${brands}">
+            <td th:text="${b.id}">1</td>
+            <td>
+                <span th:id="'brand-name-' + ${b.id}" th:text="${b.name}">이름</span>
+                <form th:id="'brand-edit-' + ${b.id}"
+                      th:action="@{/admin/masters/brands/{id}(id=${b.id})}"
+                      method="post"
+                      style="display: none; gap: 8px;">
+                    <input type="text" name="name" th:value="${b.name}" required style="flex: 1; max-width: 220px;"/>
+                    <select name="type">
+                        <option th:each="bt : ${brandTypes}"
+                                th:value="${bt}"
+                                th:text="${bt}"
+                                th:selected="${bt == b.type}">YARN</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">저장</button>
+                </form>
+            </td>
+            <td th:text="${b.type}">YARN</td>
+            <td>
+                <button type="button" class="btn btn-secondary btn-sm"
+                        th:attr="data-target='brand-' + ${b.id}"
+                        onclick="toggleEdit(this.dataset.target)">수정</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(brands)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        브랜드가 없습니다.
+    </p>
+</div>
+
+<script>
+    function toggleEdit(target) {
+        var nameEl = document.getElementById(target + '-name');
+        var formEl = document.getElementById(target + '-edit');
+        if (!nameEl || !formEl) return;
+        var editing = formEl.style.display !== 'none';
+        nameEl.style.display = editing ? '' : 'none';
+        formEl.style.display = editing ? 'none' : 'flex';
+    }
+</script>
+
+</body>
+</html>
