@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('리뷰 관리', ~{::body})}">
+<body>
+
+<!-- 탭 -->
+<div class="tabs">
+    <a th:href="@{/admin/reviews(type='place')}"
+       th:classappend="${type == 'place'} ? 'active'"
+       class="tab">장소 리뷰</a>
+    <a th:href="@{/admin/reviews(type='event')}"
+       th:classappend="${type == 'event'} ? 'active'"
+       class="tab">이벤트 리뷰</a>
+</div>
+
+<!-- 목록 테이블 -->
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(reviews)}">
+        <thead>
+        <tr>
+            <th th:if="${type == 'place'}">장소명</th>
+            <th th:if="${type == 'event'}">이벤트명</th>
+            <th>닉네임</th>
+            <th>내용</th>
+            <th>작성일</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.targetName}">대상명</td>
+            <td th:text="${review.nickname}">닉네임</td>
+            <td th:text="${review.contentPreview}">리뷰 내용 미리보기...</td>
+            <td th:text="${review.createdAt != null} ? ${#temporals.format(review.createdAt, 'yyyy-MM-dd')} : '-'">2026-01-01</td>
+            <td>
+                <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}"
+                      method="post"
+                      style="display: inline;"
+                      onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <input type="hidden" name="type" th:value="${type}"/>
+                    <button type="submit" class="btn btn-destructive btn-sm">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(reviews)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        리뷰가 없습니다.
+    </p>
+</div>
+
+</body>
+</html>

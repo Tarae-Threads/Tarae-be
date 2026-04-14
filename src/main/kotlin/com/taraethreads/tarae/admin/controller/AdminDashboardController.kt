@@ -16,6 +16,7 @@ class AdminDashboardController(
         model.addAttribute("eventCount", adminDashboardService.getEventCount())
         model.addAttribute("pendingPlaceRequestCount", adminDashboardService.getPendingPlaceRequestCount())
         model.addAttribute("pendingEventRequestCount", adminDashboardService.getPendingEventRequestCount())
+        model.addAttribute("reviewCount", adminDashboardService.getReviewCount())
         return "admin/dashboard"
     }
 }
