@@ -35,6 +35,7 @@ class AdminDashboardControllerTest {
             every { adminDashboardService.getPendingPlaceRequestCount() } returns 3L
             every { adminDashboardService.getPendingEventRequestCount() } returns 2L
             every { adminDashboardService.getReviewCount() } returns 7L
+            every { adminDashboardService.getExpiringSoonEventCount() } returns 4L
 
             // when & then
             mockMvc.get("/admin").andExpect {

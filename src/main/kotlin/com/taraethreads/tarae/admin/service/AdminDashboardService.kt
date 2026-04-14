@@ -8,6 +8,7 @@ import com.taraethreads.tarae.request.repository.PlaceRequestRepository
 import com.taraethreads.tarae.review.repository.ReviewRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 @Transactional(readOnly = true)
@@ -30,4 +31,9 @@ class AdminDashboardService(
         eventRequestRepository.countByStatus(RequestStatus.PENDING)
 
     fun getReviewCount(): Long = reviewRepository.count()
+
+    fun getExpiringSoonEventCount(): Long {
+        val today = LocalDate.now()
+        return eventRepository.countExpiringSoon(today, today.plusDays(7))
+    }
 }

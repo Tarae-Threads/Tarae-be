@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.event.domain
 
+import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.global.common.BaseEntity
 import com.taraethreads.tarae.place.domain.Place
 import jakarta.persistence.Column
@@ -20,43 +21,63 @@ import java.time.LocalDate
 @Table(name = "events")
 class Event(
     @Column(nullable = false, length = 200)
-    val title: String,
+    var title: String,
 
     @Column(columnDefinition = "TEXT")
-    val description: String? = null,
+    var description: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    val eventType: EventType,
+    var eventType: EventType,
 
     @Column(nullable = false)
-    val startDate: LocalDate,
+    var startDate: LocalDate,
 
-    val endDate: LocalDate? = null,
+    var endDate: LocalDate? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
-    val place: Place? = null,
+    var place: Place? = null,
 
     @Column(length = 255)
-    val locationText: String? = null,
+    var locationText: String? = null,
 
     @Column(precision = 10, scale = 7)
-    val lat: BigDecimal? = null,
+    var lat: BigDecimal? = null,
 
     @Column(precision = 10, scale = 7)
-    val lng: BigDecimal? = null,
+    var lng: BigDecimal? = null,
 
     @Column(columnDefinition = "TEXT")
-    val links: String? = null,
+    var links: String? = null,
 
     @Column(nullable = false)
-    val active: Boolean = true,
+    var active: Boolean = true,
 ) : BaseEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
+
+    fun update(form: EventCreateForm) {
+        title = form.title
+        eventType = form.eventType
+        startDate = form.startDate
+        endDate = form.endDate
+        locationText = form.locationText
+        description = form.description
+        lat = form.lat
+        lng = form.lng
+        links = form.links
+    }
+
+    fun activate() {
+        active = true
+    }
+
+    fun deactivate() {
+        active = false
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

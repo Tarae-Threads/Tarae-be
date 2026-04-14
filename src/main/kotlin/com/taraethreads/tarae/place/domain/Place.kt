@@ -57,7 +57,10 @@ class Place(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    val status: PlaceStatus = PlaceStatus.OPEN,
+    var status: PlaceStatus = PlaceStatus.OPEN,
+
+    @Column(nullable = false)
+    var active: Boolean = true,
 ) : BaseEntity() {
 
     @Id
@@ -91,6 +94,14 @@ class Place(
     val categories: List<Category> get() = placeCategories.map { it.category }
     val tags: List<Tag> get() = placeTags.map { it.tag }
     val brands: List<Brand> get() = placeBrands.map { it.brand }
+
+    fun activate() {
+        active = true
+    }
+
+    fun deactivate() {
+        active = false
+    }
 
     fun update(form: PlaceCreateForm) {
         name = form.name

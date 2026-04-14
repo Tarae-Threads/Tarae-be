@@ -65,7 +65,7 @@ class EventServiceTest {
         @Test
         fun `placeId로 활성 이벤트 목록을 반환한다`() {
             // given
-            every { eventRepository.findAllByPlaceIdAndActiveTrue(1L) } returns listOf(event(title = "봄 클래스"))
+            every { eventRepository.findPublicEventsByPlaceId(eq(1L), any()) } returns listOf(event(title = "봄 클래스"))
 
             // when
             val result: List<Event> = eventService.findActiveEventsByPlaceId(1L)
@@ -73,13 +73,13 @@ class EventServiceTest {
             // then
             assertThat(result).hasSize(1)
             assertThat(result[0].title).isEqualTo("봄 클래스")
-            verify { eventRepository.findAllByPlaceIdAndActiveTrue(1L) }
+            verify { eventRepository.findPublicEventsByPlaceId(eq(1L), any()) }
         }
 
         @Test
         fun `이벤트가 없으면 빈 리스트를 반환한다`() {
             // given
-            every { eventRepository.findAllByPlaceIdAndActiveTrue(99L) } returns emptyList()
+            every { eventRepository.findPublicEventsByPlaceId(eq(99L), any()) } returns emptyList()
 
             // when
             val result: List<Event> = eventService.findActiveEventsByPlaceId(99L)

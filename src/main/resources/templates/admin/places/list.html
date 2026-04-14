@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('장소 관리', ~{::body})}">
+<body>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <form method="get" th:action="@{/admin/places}" style="display: flex; gap: 8px; flex: 1; max-width: 480px;">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="장소명 / 주소 / 카테고리"/>
+        <button type="submit" class="btn btn-secondary">검색</button>
+    </form>
+    <a th:href="@{/admin/places/new}" class="btn btn-primary">+ 장소 등록</a>
+</div>
+
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(places)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>장소명</th>
+            <th>지역</th>
+            <th>카테고리</th>
+            <th>운영상태</th>
+            <th>공개</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${places}">
+            <td th:text="${p.id}">1</td>
+            <td th:text="${p.name}">장소명</td>
+            <td th:text="${p.region + ' ' + p.district}">서울 성수</td>
+            <td th:text="${#strings.listJoin(p.categoryNames, ', ')}">카테고리</td>
+            <td>
+                <span class="badge" th:text="${p.status}">OPEN</span>
+            </td>
+            <td>
+                <span th:if="${p.active}" class="badge badge-active">활성</span>
+                <span th:unless="${p.active}" class="badge badge-inactive">비활성</span>
+            </td>
+            <td style="display: flex; gap: 6px;">
+                <a th:href="@{/admin/places/{id}/edit(id=${p.id})}" class="btn btn-secondary btn-sm">수정</a>
+                <form th:action="@{/admin/places/{id}/toggle-active(id=${p.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-secondary btn-sm"
+                            onclick="return confirm('공개 상태를 변경하시겠습니까?')">토글</button>
+                </form>
+                <form th:action="@{/admin/places/{id}/delete(id=${p.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-destructive btn-sm"
+                            onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(places)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        장소가 없습니다.
+    </p>
+</div>
+
+<div class="pagination" th:if="${page.totalPages > 1}">
+    <a th:if="${!page.first}" th:href="@{/admin/places(keyword=${keyword}, page=${page.number - 1})}">‹ 이전</a>
+    <span class="current" th:text="${page.number + 1} + ' / ' + ${page.totalPages}">1 / 1</span>
+    <a th:if="${!page.last}" th:href="@{/admin/places(keyword=${keyword}, page=${page.number + 1})}">다음 ›</a>
+</div>
+
+</body>
+</html>

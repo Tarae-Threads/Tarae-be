@@ -5,6 +5,7 @@ import com.taraethreads.tarae.event.service.EventService
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.domain.Place
+import com.taraethreads.tarae.place.domain.PlaceStatus
 import com.taraethreads.tarae.place.dto.PlaceDetailResponse
 import com.taraethreads.tarae.place.dto.PlaceEventDto
 import com.taraethreads.tarae.place.dto.PlaceListResponse
@@ -29,9 +30,14 @@ class PlaceService(
         return PlaceDetailResponse.from(place, events)
     }
 
-    private fun findPlaceById(id: Long): Place =
-        placeRepository.findById(id)
+    private fun findPlaceById(id: Long): Place {
+        val place = placeRepository.findById(id)
             .orElseThrow { CustomException(ErrorCode.PLACE_NOT_FOUND) }
+        if (!place.active || place.status != PlaceStatus.OPEN) {
+            throw CustomException(ErrorCode.PLACE_NOT_FOUND)
+        }
+        return place
+    }
 
     private fun Event.toPlaceEventDto() = PlaceEventDto(
         id = id,

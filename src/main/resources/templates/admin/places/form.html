@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('장소 ' + (${mode == 'edit'} ? '수정' : '등록'), ~{::body})}">
+<body>
+
+<!-- ========== 등록 (다건 입력) ========== -->
+<div th:if="${mode == 'create'}">
+    <form id="bulk-form" method="post" th:action="@{/admin/places}" onsubmit="return false;">
+        <div id="rows-container">
+            <!-- 첫 번째 행 (필수) -->
+            <div class="card row-input-row" th:with="i=0">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <strong>장소 #1</strong>
+                    <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+                </div>
+                <div class="form-group">
+                    <label>장소명 *</label>
+                    <input type="text" name="places[0].name" required/>
+                </div>
+                <div class="form-group">
+                    <label>지역 *</label>
+                    <input type="text" name="places[0].region" placeholder="예: 서울" required/>
+                </div>
+                <div class="form-group">
+                    <label>구/동 *</label>
+                    <input type="text" name="places[0].district" placeholder="예: 성수동" required/>
+                </div>
+                <div class="form-group">
+                    <label>주소 *</label>
+                    <input type="text" name="places[0].address" required/>
+                </div>
+                <div class="form-group">
+                    <label>인스타그램 URL</label>
+                    <input type="text" name="places[0].instagramUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>웹사이트 URL</label>
+                    <input type="text" name="places[0].websiteUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>네이버 지도 URL</label>
+                    <input type="text" name="places[0].naverMapUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>설명</label>
+                    <textarea name="places[0].description"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin: 16px 0;">
+            <button type="button" class="row-add-btn btn btn-secondary" onclick="addRow()">+ 행 추가</button>
+            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<!-- ========== 수정 (단건) ========== -->
+<div th:if="${mode == 'edit'}">
+    <form id="edit-form" method="post" th:action="@{/admin/places/{id}(id=${placeId})}" onsubmit="return false;">
+        <div class="card">
+            <div class="form-group">
+                <label>장소명 *</label>
+                <input type="text" name="name" th:value="${form.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>지역 *</label>
+                <input type="text" name="region" th:value="${form.region}" required/>
+            </div>
+            <div class="form-group">
+                <label>구/동 *</label>
+                <input type="text" name="district" th:value="${form.district}" required/>
+            </div>
+            <div class="form-group">
+                <label>주소 *</label>
+                <input type="text" name="address" th:value="${form.address}" required/>
+            </div>
+            <div class="form-group">
+                <label>위도</label>
+                <input type="text" name="lat" th:value="${form.lat}"/>
+            </div>
+            <div class="form-group">
+                <label>경도</label>
+                <input type="text" name="lng" th:value="${form.lng}"/>
+            </div>
+            <div class="form-group">
+                <label>영업시간</label>
+                <input type="text" name="hoursText" th:value="${form.hoursText}"/>
+            </div>
+            <div class="form-group">
+                <label>휴무일</label>
+                <input type="text" name="closedDays" th:value="${form.closedDays}"/>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <textarea name="description" th:text="${form.description}"></textarea>
+            </div>
+            <div class="form-group">
+                <label>인스타그램 URL</label>
+                <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>웹사이트 URL</label>
+                <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>네이버 지도 URL</label>
+                <input type="text" name="naverMapUrl" th:value="${form.naverMapUrl}"/>
+            </div>
+
+            <div class="form-group">
+                <label>카테고리</label>
+                <div class="chip-grid">
+                    <label th:each="cat : ${categories}" class="chip-toggle">
+                        <input type="checkbox" name="categoryIds" th:value="${cat.id}"
+                               th:checked="${#lists.contains(form.categoryIds, cat.id)}"/>
+                        <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>태그</label>
+                <div class="chip-grid">
+                    <label th:each="tag : ${tags}" class="chip-toggle">
+                        <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                               th:checked="${#lists.contains(form.tagIds, tag.id)}"/>
+                        <span class="chip-label" th:text="${tag.name}">태그</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>브랜드</label>
+                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip-subgroup">
+                    <div class="chip-subgroup-title" th:text="${group.type}">TYPE</div>
+                    <div class="chip-grid">
+                        <label th:each="brand : ${group.brands}" class="chip-toggle">
+                            <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                   th:checked="${#lists.contains(form.brandIds, brand.id)}"/>
+                            <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/admin/places}" class="btn btn-secondary">취소</a>
+            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<!-- 프리뷰 모달 -->
+<div id="preview-modal" class="preview-modal-backdrop" style="display:none;">
+    <div class="preview-modal">
+        <div class="preview-modal-header">
+            <strong>프리뷰</strong>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closePreview()">닫기</button>
+        </div>
+        <div class="preview-modal-body" id="preview-body"></div>
+        <div class="preview-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePreview()">취소</button>
+            <button type="button" class="btn btn-primary" onclick="confirmSubmit()">확인 저장</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/admin/admin.js}"></script>
+<script th:inline="javascript">
+const MODE = /*[[${mode}]]*/ 'create';
+
+let rowCount = 1;
+function addRow() {
+    const container = document.getElementById('rows-container');
+    const idx = rowCount++;
+    const div = document.createElement('div');
+    div.className = 'card row-input-row';
+    div.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <strong>장소 #${idx + 1}</strong>
+            <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+        </div>
+        <div class="form-group"><label>장소명 *</label><input type="text" name="places[${idx}].name" required/></div>
+        <div class="form-group"><label>지역 *</label><input type="text" name="places[${idx}].region" required/></div>
+        <div class="form-group"><label>구/동 *</label><input type="text" name="places[${idx}].district" required/></div>
+        <div class="form-group"><label>주소 *</label><input type="text" name="places[${idx}].address" required/></div>
+        <div class="form-group"><label>인스타그램 URL</label><input type="text" name="places[${idx}].instagramUrl"/></div>
+        <div class="form-group"><label>웹사이트 URL</label><input type="text" name="places[${idx}].websiteUrl"/></div>
+        <div class="form-group"><label>네이버 지도 URL</label><input type="text" name="places[${idx}].naverMapUrl"/></div>
+        <div class="form-group"><label>설명</label><textarea name="places[${idx}].description"></textarea></div>
+    `;
+    container.appendChild(div);
+}
+
+function removeRow(btn) {
+    const row = btn.closest('.row-input-row');
+    if (document.querySelectorAll('.row-input-row').length > 1) row.remove();
+}
+
+function openPreview() {
+    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
+    if (!form.reportValidity()) return;
+    const body = document.getElementById('preview-body');
+    body.innerHTML = '';
+
+    if (MODE === 'edit') {
+        const card = buildPreviewCard({
+            name: form.querySelector('[name=name]').value,
+            region: form.querySelector('[name=region]').value,
+            district: form.querySelector('[name=district]').value,
+            address: form.querySelector('[name=address]').value,
+        });
+        body.appendChild(card);
+    } else {
+        document.querySelectorAll('.row-input-row').forEach(row => {
+            const card = buildPreviewCard({
+                name: row.querySelector('[name$=".name"]').value,
+                region: row.querySelector('[name$=".region"]').value,
+                district: row.querySelector('[name$=".district"]').value,
+                address: row.querySelector('[name$=".address"]').value,
+            });
+            body.appendChild(card);
+        });
+    }
+
+    document.getElementById('preview-modal').style.display = 'flex';
+}
+
+function closePreview() {
+    document.getElementById('preview-modal').style.display = 'none';
+}
+
+function confirmSubmit() {
+    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
+    form.removeAttribute('onsubmit');
+    form.submit();
+}
+
+function buildPreviewCard(data) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <div style="font-weight:600;margin-bottom:6px;">${escapeHtml(data.name)}</div>
+        <div style="font-size:12px;color:var(--on-surface-muted);">${escapeHtml(data.region)} ${escapeHtml(data.district)}</div>
+        <div style="font-size:12px;">${escapeHtml(data.address)}</div>
+    `;
+    return card;
+}
+
+function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+
+</body>
+</html>

@@ -63,4 +63,22 @@ class PlaceTest {
             assertThat(place.naverMapUrl).isEqualTo("https://naver.me/new")
         }
     }
+
+    @Nested
+    inner class `activate deactivate` {
+        @Test
+        fun `deactivate 호출 시 active 가 false 가 된다`() {
+            val place = place()
+            place.deactivate()
+            assertThat(place.active).isFalse()
+        }
+
+        @Test
+        fun `activate 호출 시 active 가 true 가 된다`() {
+            val place = place()
+            place.deactivate()
+            place.activate()
+            assertThat(place.active).isTrue()
+        }
+    }
 }

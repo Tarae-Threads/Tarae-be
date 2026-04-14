@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('이벤트 ' + (${mode == 'edit'} ? '수정' : '등록'), ~{::body})}">
+<body>
+
+<div th:if="${mode == 'create'}">
+    <form id="bulk-form" method="post" th:action="@{/admin/events}" onsubmit="return false;">
+        <div id="rows-container">
+            <div class="card row-input-row">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <strong>이벤트 #1</strong>
+                    <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+                </div>
+                <div class="form-group">
+                    <label>제목 *</label>
+                    <input type="text" name="events[0].title" required/>
+                </div>
+                <div class="form-group">
+                    <label>유형 *</label>
+                    <select name="events[0].eventType">
+                        <option th:each="t : ${eventTypes}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>시작일 *</label>
+                    <input type="date" name="events[0].startDate" required/>
+                </div>
+                <div class="form-group">
+                    <label>종료일</label>
+                    <input type="date" name="events[0].endDate"/>
+                </div>
+                <div class="form-group">
+                    <label>장소 텍스트</label>
+                    <input type="text" name="events[0].locationText"/>
+                </div>
+                <div class="form-group">
+                    <label>설명</label>
+                    <textarea name="events[0].description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>링크</label>
+                    <input type="text" name="events[0].links"/>
+                </div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;margin:16px 0;">
+            <button type="button" class="row-add-btn btn btn-secondary" onclick="addRow()">+ 행 추가</button>
+            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<div th:if="${mode == 'edit'}">
+    <form id="edit-form" method="post" th:action="@{/admin/events/{id}(id=${eventId})}" onsubmit="return false;">
+        <div class="card">
+            <div class="form-group">
+                <label>제목 *</label>
+                <input type="text" name="title" th:value="${form.title}" required/>
+            </div>
+            <div class="form-group">
+                <label>유형 *</label>
+                <select name="eventType">
+                    <option th:each="t : ${eventTypes}" th:value="${t}" th:text="${t}" th:selected="${form.eventType == t}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>시작일 *</label>
+                <input type="date" name="startDate" th:value="${form.startDate}" required/>
+            </div>
+            <div class="form-group">
+                <label>종료일</label>
+                <input type="date" name="endDate" th:value="${form.endDate}"/>
+            </div>
+            <div class="form-group">
+                <label>장소 텍스트</label>
+                <input type="text" name="locationText" th:value="${form.locationText}"/>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <textarea name="description" th:text="${form.description}"></textarea>
+            </div>
+            <div class="form-group">
+                <label>링크</label>
+                <input type="text" name="links" th:value="${form.links}"/>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a th:href="@{/admin/events}" class="btn btn-secondary">취소</a>
+            <button type="button" class="btn btn-primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<div id="preview-modal" class="preview-modal-backdrop" style="display:none;">
+    <div class="preview-modal">
+        <div class="preview-modal-header">
+            <strong>프리뷰</strong>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closePreview()">닫기</button>
+        </div>
+        <div class="preview-modal-body" id="preview-body"></div>
+        <div class="preview-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePreview()">취소</button>
+            <button type="button" class="btn btn-primary" onclick="confirmSubmit()">확인 저장</button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/admin/admin.js}"></script>
+<script th:inline="javascript">
+const MODE = /*[[${mode}]]*/ 'create';
+let rowCount = 1;
+
+function addRow() {
+    const container = document.getElementById('rows-container');
+    const idx = rowCount++;
+    const div = document.createElement('div');
+    div.className = 'card row-input-row';
+    const eventTypes = /*[[${eventTypes}]]*/ [];
+    const optionsHtml = eventTypes.map(t => `<option value="${t}">${t}</option>`).join('');
+    div.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <strong>이벤트 #${idx + 1}</strong>
+            <button type="button" class="row-remove-btn" onclick="removeRow(this)">제거</button>
+        </div>
+        <div class="form-group"><label>제목 *</label><input type="text" name="events[${idx}].title" required/></div>
+        <div class="form-group"><label>유형 *</label><select name="events[${idx}].eventType">${optionsHtml}</select></div>
+        <div class="form-group"><label>시작일 *</label><input type="date" name="events[${idx}].startDate" required/></div>
+        <div class="form-group"><label>종료일</label><input type="date" name="events[${idx}].endDate"/></div>
+        <div class="form-group"><label>장소 텍스트</label><input type="text" name="events[${idx}].locationText"/></div>
+        <div class="form-group"><label>설명</label><textarea name="events[${idx}].description"></textarea></div>
+        <div class="form-group"><label>링크</label><input type="text" name="events[${idx}].links"/></div>
+    `;
+    container.appendChild(div);
+}
+
+function removeRow(btn) {
+    const row = btn.closest('.row-input-row');
+    if (document.querySelectorAll('.row-input-row').length > 1) row.remove();
+}
+
+function openPreview() {
+    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
+    if (!form.reportValidity()) return;
+    const body = document.getElementById('preview-body');
+    body.innerHTML = '';
+
+    if (MODE === 'edit') {
+        body.appendChild(buildPreviewCard({
+            title: form.querySelector('[name=title]').value,
+            eventType: form.querySelector('[name=eventType]').value,
+            startDate: form.querySelector('[name=startDate]').value,
+            endDate: form.querySelector('[name=endDate]').value,
+        }));
+    } else {
+        document.querySelectorAll('.row-input-row').forEach(row => {
+            body.appendChild(buildPreviewCard({
+                title: row.querySelector('[name$=".title"]').value,
+                eventType: row.querySelector('[name$=".eventType"]').value,
+                startDate: row.querySelector('[name$=".startDate"]').value,
+                endDate: row.querySelector('[name$=".endDate"]').value,
+            }));
+        });
+    }
+
+    document.getElementById('preview-modal').style.display = 'flex';
+}
+
+function closePreview() {
+    document.getElementById('preview-modal').style.display = 'none';
+}
+
+function confirmSubmit() {
+    const form = MODE === 'edit' ? document.getElementById('edit-form') : document.getElementById('bulk-form');
+    form.removeAttribute('onsubmit');
+    form.submit();
+}
+
+function buildPreviewCard(data) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <div style="font-weight:600;margin-bottom:6px;">${escapeHtml(data.title)}</div>
+        <div style="font-size:12px;color:var(--on-surface-muted);">${escapeHtml(data.eventType)}</div>
+        <div style="font-size:12px;">${escapeHtml(data.startDate)} ~ ${escapeHtml(data.endDate || '상시')}</div>
+    `;
+    return card;
+}
+
+function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+
+</body>
+</html>

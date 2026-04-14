@@ -9,6 +9,7 @@ import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 @Transactional(readOnly = true)
@@ -20,11 +21,22 @@ class EventService(
         eventRepository.findAllWithFilters(eventType, active)
             .map { EventListResponse.from(it) }
 
-    fun getEvent(id: Long): EventDetailResponse =
-        EventDetailResponse.from(findEventById(id))
+    fun getEvent(id: Long): EventDetailResponse {
+        val event = findEventById(id)
+        if (!isPublic(event)) {
+            throw CustomException(ErrorCode.EVENT_NOT_FOUND)
+        }
+        return EventDetailResponse.from(event)
+    }
 
     fun findActiveEventsByPlaceId(placeId: Long): List<Event> =
-        eventRepository.findAllByPlaceIdAndActiveTrue(placeId)
+        eventRepository.findPublicEventsByPlaceId(placeId, LocalDate.now())
+
+    private fun isPublic(event: Event): Boolean {
+        if (!event.active) return false
+        val end = event.endDate ?: return true
+        return !end.isBefore(LocalDate.now())
+    }
 
     private fun findEventById(id: Long): Event =
         eventRepository.findById(id)

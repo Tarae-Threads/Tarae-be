@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('이벤트 관리', ~{::body})}">
+<body>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <div class="filter-bar" style="margin-bottom: 0;">
+        <a th:each="f : ${filters}"
+           th:href="@{/admin/events(filter=${f})}"
+           th:classappend="${filter == f} ? 'active'"
+           class="filter-btn"
+           th:text="${f.name() == 'ALL' ? '전체' : (f.name() == 'ONGOING' ? '진행중' : (f.name() == 'EXPIRING_SOON' ? '만료 임박' : '만료'))}">전체</a>
+    </div>
+    <a th:href="@{/admin/events/new}" class="btn btn-primary">+ 이벤트 등록</a>
+</div>
+
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(events)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>유형</th>
+            <th>시작일</th>
+            <th>종료일</th>
+            <th>상태</th>
+            <th>공개</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="e : ${events}">
+            <td th:text="${e.id}">1</td>
+            <td th:text="${e.title}">제목</td>
+            <td th:text="${e.eventType}">SALE</td>
+            <td th:text="${e.startDate}">2026-01-01</td>
+            <td th:text="${e.endDate ?: '-'}">-</td>
+            <td>
+                <span th:if="${e.status.name() == 'ONGOING'}" class="badge badge-ongoing">진행중</span>
+                <span th:if="${e.status.name() == 'EXPIRING_SOON'}" class="badge badge-expiring">임박</span>
+                <span th:if="${e.status.name() == 'EXPIRED'}" class="badge badge-expired">만료</span>
+            </td>
+            <td>
+                <span th:if="${e.active}" class="badge badge-active">활성</span>
+                <span th:unless="${e.active}" class="badge badge-inactive">비활성</span>
+            </td>
+            <td style="display:flex;gap:6px;">
+                <a th:href="@{/admin/events/{id}/edit(id=${e.id})}" class="btn btn-secondary btn-sm">수정</a>
+                <form th:action="@{/admin/events/{id}/toggle-active(id=${e.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-secondary btn-sm"
+                            onclick="return confirm('공개 상태를 변경하시겠습니까?')">토글</button>
+                </form>
+                <form th:action="@{/admin/events/{id}/delete(id=${e.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-destructive btn-sm"
+                            onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(events)}"
+       style="color: var(--on-surface-muted); font-size: 13px; padding: 16px 0;">
+        이벤트가 없습니다.
+    </p>
+</div>
+
+<div class="pagination" th:if="${page.totalPages > 1}">
+    <a th:if="${!page.first}" th:href="@{/admin/events(filter=${filter}, page=${page.number - 1})}">‹ 이전</a>
+    <span class="current" th:text="${page.number + 1} + ' / ' + ${page.totalPages}">1 / 1</span>
+    <a th:if="${!page.last}" th:href="@{/admin/events(filter=${filter}, page=${page.number + 1})}">다음 ›</a>
+</div>
+
+</body>
+</html>
