@@ -14,26 +14,16 @@ class EventRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
 ) : EventRepositoryCustom {
 
-    override fun findAllWithFilters(eventType: EventType?, active: Boolean?): List<Event> {
-        val today = LocalDate.now()
+    override fun findAllWithFilters(eventType: EventType?): List<Event> {
         val query = queryFactory
             .selectFrom(event)
-            .where(
-                event.active.isTrue,
-                event.endDate.isNull.or(event.endDate.goe(today)),
-            )
+            .where(event.active.isTrue)
 
         if (eventType != null) {
             query.where(event.eventType.eq(eventType))
         }
 
-        // active 파라미터는 의미상 더 이상 사용하지 않지만 시그니처는 유지 (공개 API 호환).
-        // active=false 가 명시적으로 들어오면 빈 결과 반환.
-        if (active == false) {
-            return emptyList()
-        }
-
-        return query.fetch()
+        return query.orderBy(event.startDate.desc()).fetch()
     }
 
     override fun findAllForAdmin(filter: AdminEventStatusFilter, pageable: Pageable): Page<Event> {

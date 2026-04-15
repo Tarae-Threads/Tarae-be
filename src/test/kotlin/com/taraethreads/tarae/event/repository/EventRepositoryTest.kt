@@ -49,7 +49,7 @@ class EventRepositoryTest {
             createEvent(title = "이벤트B", eventType = EventType.EVENT_POPUP)
 
             // when
-            val result = eventRepository.findAllWithFilters(null, null)
+            val result = eventRepository.findAllWithFilters(null)
 
             // then
             assertThat(result).hasSize(2)
@@ -65,7 +65,7 @@ class EventRepositoryTest {
             createEvent(title = "팝업 이벤트", eventType = EventType.EVENT_POPUP)
 
             // when
-            val result = eventRepository.findAllWithFilters(EventType.SALE, null)
+            val result = eventRepository.findAllWithFilters(EventType.SALE)
 
             // then
             assertThat(result).hasSize(1)
@@ -74,15 +74,15 @@ class EventRepositoryTest {
     }
 
     @Nested
-    inner class `active 필터` {
+    inner class `비활성 이벤트 제외` {
         @Test
-        fun `active=true 필터링하면 활성 이벤트만 반환된다`() {
+        fun `비활성 이벤트는 조회되지 않는다`() {
             // given
             createEvent(title = "활성 이벤트", active = true)
             createEvent(title = "비활성 이벤트", active = false)
 
             // when
-            val result = eventRepository.findAllWithFilters(null, true)
+            val result = eventRepository.findAllWithFilters(null)
 
             // then
             assertThat(result).hasSize(1)
@@ -93,14 +93,14 @@ class EventRepositoryTest {
     @Nested
     inner class `복합 필터` {
         @Test
-        fun `eventType과 active를 함께 사용하면 모두 만족하는 이벤트만 반환된다`() {
+        fun `eventType 필터와 비활성 제외가 함께 동작한다`() {
             // given
             createEvent(title = "활성 세일", eventType = EventType.SALE, active = true)
             createEvent(title = "비활성 세일", eventType = EventType.SALE, active = false)
             createEvent(title = "활성 팝업", eventType = EventType.EVENT_POPUP, active = true)
 
             // when
-            val result = eventRepository.findAllWithFilters(EventType.SALE, true)
+            val result = eventRepository.findAllWithFilters(EventType.SALE)
 
             // then
             assertThat(result).hasSize(1)
@@ -111,17 +111,16 @@ class EventRepositoryTest {
     @Nested
     inner class `만료일 필터` {
         @Test
-        fun `만료일이 오늘보다 이전인 이벤트는 조회되지 않는다`() {
+        fun `만료일이 오늘보다 이전인 이벤트도 조회된다`() {
             // given
             createEvent(title = "만료된 이벤트", endDate = LocalDate.now().minusDays(1))
             createEvent(title = "진행 중인 이벤트", endDate = LocalDate.now().plusDays(7))
 
             // when
-            val result = eventRepository.findAllWithFilters(null, null)
+            val result = eventRepository.findAllWithFilters(null)
 
             // then
-            assertThat(result).hasSize(1)
-            assertThat(result[0].title).isEqualTo("진행 중인 이벤트")
+            assertThat(result).hasSize(2)
         }
 
         @Test
@@ -130,7 +129,7 @@ class EventRepositoryTest {
             createEvent(title = "오늘 마감 이벤트", endDate = LocalDate.now())
 
             // when
-            val result = eventRepository.findAllWithFilters(null, null)
+            val result = eventRepository.findAllWithFilters(null)
 
             // then
             assertThat(result).hasSize(1)
@@ -142,7 +141,7 @@ class EventRepositoryTest {
             createEvent(title = "상시 이벤트", endDate = null)
 
             // when
-            val result = eventRepository.findAllWithFilters(null, null)
+            val result = eventRepository.findAllWithFilters(null)
 
             // then
             assertThat(result).hasSize(1)

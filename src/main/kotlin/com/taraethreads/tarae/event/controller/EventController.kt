@@ -31,9 +31,8 @@ class EventController(
     @GetMapping
     fun getEvents(
         @Parameter(description = "이벤트 타입 (TESTER_RECRUIT, SALE, EVENT_POPUP)") @RequestParam eventType: EventType?,
-        @Parameter(description = "활성 여부 (기본값: true)") @RequestParam active: Boolean? = true,
     ): ResponseEntity<ApiResponse<List<EventListResponse>>> =
-        ApiResponse.ok(eventService.getEvents(eventType, active))
+        ApiResponse.ok(eventService.getEvents(eventType))
 
     @Operation(summary = "이벤트 상세 조회")
     @ApiResponses(

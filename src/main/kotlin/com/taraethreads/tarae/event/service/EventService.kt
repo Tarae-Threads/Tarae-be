@@ -17,8 +17,8 @@ class EventService(
     private val eventRepository: EventRepository,
 ) {
 
-    fun getEvents(eventType: EventType?, active: Boolean?): List<EventListResponse> =
-        eventRepository.findAllWithFilters(eventType, active)
+    fun getEvents(eventType: EventType?): List<EventListResponse> =
+        eventRepository.findAllWithFilters(eventType)
             .map { EventListResponse.from(it) }
 
     fun getEvent(id: Long): EventDetailResponse {
@@ -32,11 +32,7 @@ class EventService(
     fun findActiveEventsByPlaceId(placeId: Long): List<Event> =
         eventRepository.findPublicEventsByPlaceId(placeId, LocalDate.now())
 
-    private fun isPublic(event: Event): Boolean {
-        if (!event.active) return false
-        val end = event.endDate ?: return true
-        return !end.isBefore(LocalDate.now())
-    }
+    private fun isPublic(event: Event): Boolean = event.active
 
     private fun findEventById(id: Long): Event =
         eventRepository.findById(id)

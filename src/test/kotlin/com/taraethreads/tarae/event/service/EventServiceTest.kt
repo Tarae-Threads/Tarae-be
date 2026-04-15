@@ -34,25 +34,25 @@ class EventServiceTest {
         @Test
         fun `필터 파라미터를 repository에 그대로 전달하고 EventListResponse 목록을 반환한다`() {
             // given
-            every { eventRepository.findAllWithFilters(EventType.SALE, true) } returns listOf(event())
+            every { eventRepository.findAllWithFilters(EventType.SALE) } returns listOf(event())
 
             // when
-            val result: List<EventListResponse> = eventService.getEvents(EventType.SALE, true)
+            val result: List<EventListResponse> = eventService.getEvents(EventType.SALE)
 
             // then
             assertThat(result).hasSize(1)
             assertThat(result[0].title).isEqualTo("테스트 이벤트")
             assertThat(result[0].eventType).isEqualTo("SALE")
-            verify { eventRepository.findAllWithFilters(EventType.SALE, true) }
+            verify { eventRepository.findAllWithFilters(EventType.SALE) }
         }
 
         @Test
         fun `필터 없이 전체 조회한다`() {
             // given
-            every { eventRepository.findAllWithFilters(null, null) } returns emptyList()
+            every { eventRepository.findAllWithFilters(null) } returns emptyList()
 
             // when
-            val result: List<EventListResponse> = eventService.getEvents(null, null)
+            val result: List<EventListResponse> = eventService.getEvents(null)
 
             // then
             assertThat(result).isEmpty()

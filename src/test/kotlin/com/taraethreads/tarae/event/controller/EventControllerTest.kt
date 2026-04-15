@@ -63,9 +63,9 @@ class EventControllerTest {
     inner class `GET 목록 조회` {
 
         @Test
-        fun `active 파라미터 없이 호출하면 active=true 기본값으로 조회한다`() {
+        fun `파라미터 없이 호출하면 전체 조회한다`() {
             // given
-            every { eventService.getEvents(null, true) } returns listOf(eventListResponse())
+            every { eventService.getEvents(null) } returns listOf(eventListResponse())
 
             // when & then
             mockMvc.get("/api/events").andExpect {
@@ -79,21 +79,10 @@ class EventControllerTest {
         @Test
         fun `eventType 파라미터를 서비스에 전달한다`() {
             // given
-            every { eventService.getEvents(EventType.SALE, true) } returns emptyList()
+            every { eventService.getEvents(EventType.SALE) } returns emptyList()
 
             // when & then
             mockMvc.get("/api/events?eventType=SALE").andExpect {
-                status { isOk() }
-            }
-        }
-
-        @Test
-        fun `active 파라미터를 서비스에 전달한다`() {
-            // given
-            every { eventService.getEvents(null, true) } returns listOf(eventListResponse())
-
-            // when & then
-            mockMvc.get("/api/events?active=true").andExpect {
                 status { isOk() }
             }
         }

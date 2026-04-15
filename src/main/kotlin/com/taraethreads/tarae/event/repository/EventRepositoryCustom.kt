@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable
 import java.time.LocalDate
 
 interface EventRepositoryCustom {
-    fun findAllWithFilters(eventType: EventType?, active: Boolean?): List<Event>
+    fun findAllWithFilters(eventType: EventType?): List<Event>
 
     fun findAllForAdmin(filter: AdminEventStatusFilter, pageable: Pageable): Page<Event>
 
