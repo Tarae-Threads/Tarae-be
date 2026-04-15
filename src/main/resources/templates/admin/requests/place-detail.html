@@ -50,12 +50,24 @@
             <div class="field-group__value" th:text="${request.closedDays ?: '-'}">-</div>
         </div>
         <div class="field-group">
+            <div class="field-group__label">카테고리 (자유입력)</div>
+            <div class="field-group__value" th:text="${request.categoryText ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
             <div class="field-group__label">취급 실 브랜드</div>
             <div class="field-group__value" th:text="${request.brandsYarn ?: '-'}">-</div>
         </div>
         <div class="field-group">
             <div class="field-group__label">취급 바늘 브랜드</div>
             <div class="field-group__value" th:text="${request.brandsNeedle ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">취급 도구 브랜드</div>
+            <div class="field-group__value" th:text="${request.brandsNotions ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">취급 도안집 브랜드</div>
+            <div class="field-group__value" th:text="${request.brandsPatternbook ?: '-'}">-</div>
         </div>
         <div class="field-group">
             <div class="field-group__label">인스타그램</div>

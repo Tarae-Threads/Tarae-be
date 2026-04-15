@@ -47,8 +47,9 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
         log.error("Unhandled exception", e)
+        val detail = "${e.javaClass.simpleName}: ${e.message}"
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR))
+            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR, ErrorCode.INTERNAL_ERROR.message, detail))
     }
 }
