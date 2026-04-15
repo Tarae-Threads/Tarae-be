@@ -5,10 +5,7 @@ import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.domain.Place
-import com.taraethreads.tarae.place.repository.BrandRepository
-import com.taraethreads.tarae.place.repository.CategoryRepository
 import com.taraethreads.tarae.place.repository.PlaceRepository
-import com.taraethreads.tarae.place.repository.TagRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -18,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class AdminPlaceService(
     private val placeRepository: PlaceRepository,
-    private val categoryRepository: CategoryRepository,
-    private val tagRepository: TagRepository,
-    private val brandRepository: BrandRepository,
+    private val placeAssociationSyncer: PlaceAssociationSyncer,
 ) {
 
     fun list(keyword: String?, pageable: Pageable): Page<AdminPlaceListRow> =
@@ -70,7 +65,7 @@ class AdminPlaceService(
                 websiteUrl = form.websiteUrl,
                 naverMapUrl = form.naverMapUrl,
             )
-            attachAssociations(place, form)
+            placeAssociationSyncer.attach(place, form)
             placeRepository.save(place).id
         }
     }
@@ -79,7 +74,7 @@ class AdminPlaceService(
     fun update(id: Long, form: PlaceCreateForm) {
         val place = getEntity(id)
         place.update(form)
-        syncAssociations(place, form)
+        placeAssociationSyncer.sync(place, form)
     }
 
     @Transactional
@@ -94,45 +89,4 @@ class AdminPlaceService(
         placeRepository.delete(place)
     }
 
-    private fun attachAssociations(place: Place, form: PlaceCreateForm) {
-        if (form.categoryIds.isNotEmpty()) {
-            categoryRepository.findAllById(form.categoryIds).forEach { place.addCategory(it) }
-        }
-        if (form.tagIds.isNotEmpty()) {
-            tagRepository.findAllById(form.tagIds).forEach { place.addTag(it) }
-        }
-        if (form.brandIds.isNotEmpty()) {
-            brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
-        }
-    }
-
-    private fun syncAssociations(place: Place, form: PlaceCreateForm) {
-        val newCatIds = form.categoryIds.toSet()
-        val newTagIds = form.tagIds.toSet()
-        val newBrandIds = form.brandIds.toSet()
-
-        // 제거: 새 목록에 없는 기존 연관
-        place.placeCategories.removeIf { it.category.id !in newCatIds }
-        place.placeTags.removeIf { it.tag.id !in newTagIds }
-        place.placeBrands.removeIf { it.brand.id !in newBrandIds }
-
-        // 추가: 기존에 없는 새 연관
-        val existingCatIds = place.placeCategories.map { it.category.id }.toSet()
-        val existingTagIds = place.placeTags.map { it.tag.id }.toSet()
-        val existingBrandIds = place.placeBrands.map { it.brand.id }.toSet()
-
-        val catsToAdd = newCatIds - existingCatIds
-        val tagsToAdd = newTagIds - existingTagIds
-        val brandsToAdd = newBrandIds - existingBrandIds
-
-        if (catsToAdd.isNotEmpty()) {
-            categoryRepository.findAllById(catsToAdd).forEach { place.addCategory(it) }
-        }
-        if (tagsToAdd.isNotEmpty()) {
-            tagRepository.findAllById(tagsToAdd).forEach { place.addTag(it) }
-        }
-        if (brandsToAdd.isNotEmpty()) {
-            brandRepository.findAllById(brandsToAdd).forEach { place.addBrand(it) }
-        }
-    }
 }

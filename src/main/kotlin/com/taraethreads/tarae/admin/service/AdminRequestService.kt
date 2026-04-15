@@ -7,10 +7,7 @@ import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.domain.Place
-import com.taraethreads.tarae.place.repository.BrandRepository
-import com.taraethreads.tarae.place.repository.CategoryRepository
 import com.taraethreads.tarae.place.repository.PlaceRepository
-import com.taraethreads.tarae.place.repository.TagRepository
 import com.taraethreads.tarae.request.domain.EventRequest
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestStatus
@@ -27,9 +24,7 @@ class AdminRequestService(
     private val eventRequestRepository: EventRequestRepository,
     private val placeRepository: PlaceRepository,
     private val eventRepository: EventRepository,
-    private val categoryRepository: CategoryRepository,
-    private val tagRepository: TagRepository,
-    private val brandRepository: BrandRepository,
+    private val placeAssociationSyncer: PlaceAssociationSyncer,
 ) {
 
     // --- 장소 제보 ---
@@ -56,14 +51,11 @@ class AdminRequestService(
         val placeRequest = getPlaceRequest(id)
         placeRequest.approve()
 
-        val place = if (placeRequest.requestType == RequestType.UPDATE) {
+        if (placeRequest.requestType == RequestType.UPDATE) {
             val existing = placeRepository.findById(placeRequest.placeId!!)
                 .orElseThrow { CustomException(ErrorCode.PLACE_NOT_FOUND) }
             existing.update(form)
-            existing.placeCategories.clear()
-            existing.placeTags.clear()
-            existing.placeBrands.clear()
-            existing
+            placeAssociationSyncer.sync(existing, form)
         } else {
             val newPlace = Place(
                 name = form.name,
@@ -80,16 +72,7 @@ class AdminRequestService(
                 naverMapUrl = form.naverMapUrl,
             )
             placeRepository.save(newPlace)
-        }
-
-        if (form.categoryIds.isNotEmpty()) {
-            categoryRepository.findAllById(form.categoryIds).forEach { place.addCategory(it) }
-        }
-        if (form.tagIds.isNotEmpty()) {
-            tagRepository.findAllById(form.tagIds).forEach { place.addTag(it) }
-        }
-        if (form.brandIds.isNotEmpty()) {
-            brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
+            placeAssociationSyncer.attach(newPlace, form)
         }
     }
 

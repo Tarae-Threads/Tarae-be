@@ -34,18 +34,17 @@ class AdminRequestServiceTest {
     private val eventRequestRepository: EventRequestRepository = mockk()
     private val placeRepository: PlaceRepository = mockk()
     private val eventRepository: EventRepository = mockk()
-    private val categoryRepository: CategoryRepository = mockk()
-    private val tagRepository: TagRepository = mockk()
-    private val brandRepository: BrandRepository = mockk()
+    private val categoryRepository: CategoryRepository = mockk(relaxed = true)
+    private val tagRepository: TagRepository = mockk(relaxed = true)
+    private val brandRepository: BrandRepository = mockk(relaxed = true)
+    private val placeAssociationSyncer = PlaceAssociationSyncer(categoryRepository, tagRepository, brandRepository)
 
     private val adminRequestService = AdminRequestService(
         placeRequestRepository = placeRequestRepository,
         eventRequestRepository = eventRequestRepository,
         placeRepository = placeRepository,
         eventRepository = eventRepository,
-        categoryRepository = categoryRepository,
-        tagRepository = tagRepository,
-        brandRepository = brandRepository,
+        placeAssociationSyncer = placeAssociationSyncer,
     )
 
     private fun placeRequest() = PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")

@@ -23,7 +23,8 @@ class AdminPlaceServiceTest {
     private val categoryRepository: CategoryRepository = mockk(relaxed = true)
     private val tagRepository: TagRepository = mockk(relaxed = true)
     private val brandRepository: BrandRepository = mockk(relaxed = true)
-    private val service = AdminPlaceService(placeRepository, categoryRepository, tagRepository, brandRepository)
+    private val placeAssociationSyncer = PlaceAssociationSyncer(categoryRepository, tagRepository, brandRepository)
+    private val service = AdminPlaceService(placeRepository, placeAssociationSyncer)
 
     private fun place(name: String = "장소") = Place(name = name, region = "서울", district = "성수", address = "서울 성동구")
 
