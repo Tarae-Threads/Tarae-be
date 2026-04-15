@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.global.exception
 
+import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -45,11 +46,15 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleException(e: Exception): ResponseEntity<ErrorResponse> {
+    fun handleException(e: Exception, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
         log.error("Unhandled exception", e)
-        val detail = "${e.javaClass.simpleName}: ${e.message}"
+        val detail = if (request.requestURI.startsWith("/admin")) {
+            "${e.javaClass.simpleName}: ${e.message}"
+        } else {
+            null
+        }
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR, ErrorCode.INTERNAL_ERROR.message, detail))
+            .body(ErrorResponse.of(ErrorCode.INTERNAL_ERROR, detail = detail))
     }
 }
