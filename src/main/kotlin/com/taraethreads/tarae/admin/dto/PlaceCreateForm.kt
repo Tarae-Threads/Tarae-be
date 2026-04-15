@@ -1,9 +1,11 @@
 package com.taraethreads.tarae.admin.dto
 
+import com.taraethreads.tarae.place.domain.PlaceStatus
 import java.math.BigDecimal
 
 data class PlaceCreateForm(
     val name: String = "",
+    val status: PlaceStatus = PlaceStatus.OPEN,
     val region: String = "",
     val district: String = "",
     val address: String = "",

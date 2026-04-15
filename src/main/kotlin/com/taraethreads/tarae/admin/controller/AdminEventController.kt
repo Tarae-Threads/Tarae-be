@@ -42,6 +42,7 @@ class AdminEventController(
         model.addAttribute("mode", "create")
         model.addAttribute("form", EventCreateForm())
         model.addAttribute("eventTypes", EventType.entries)
+        model.addAttribute("places", adminEventService.placeOptions())
         return "admin/events/form"
     }
 
@@ -60,6 +61,7 @@ class AdminEventController(
         model.addAttribute("eventId", id)
         model.addAttribute("form", adminEventService.getForm(id))
         model.addAttribute("eventTypes", EventType.entries)
+        model.addAttribute("places", adminEventService.placeOptions())
         return "admin/events/form"
     }
 

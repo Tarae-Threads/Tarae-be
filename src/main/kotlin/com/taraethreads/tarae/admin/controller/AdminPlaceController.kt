@@ -3,6 +3,7 @@ package com.taraethreads.tarae.admin.controller
 import com.taraethreads.tarae.admin.dto.PlaceBulkCreateRequest
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.admin.service.AdminPlaceService
+import com.taraethreads.tarae.place.domain.PlaceStatus
 import com.taraethreads.tarae.place.service.BrandService
 import com.taraethreads.tarae.place.service.CategoryService
 import com.taraethreads.tarae.place.service.TagService
@@ -87,6 +88,7 @@ class AdminPlaceController(
         model.addAttribute("categories", categoryService.getCategories())
         model.addAttribute("tags", tagService.getAll())
         model.addAttribute("brandGroups", brandService.getBrandsGroupedByType())
+        model.addAttribute("statuses", PlaceStatus.entries)
     }
 
     companion object {

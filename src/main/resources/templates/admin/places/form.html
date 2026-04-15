@@ -17,6 +17,12 @@
                     <input type="text" name="places[0].name" required/>
                 </div>
                 <div class="form-group">
+                    <label>상태</label>
+                    <select name="places[0].status">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>지역 *</label>
                     <input type="text" name="places[0].region" placeholder="예: 서울" required/>
                 </div>
@@ -27,6 +33,22 @@
                 <div class="form-group">
                     <label>주소 *</label>
                     <input type="text" name="places[0].address" required/>
+                </div>
+                <div class="form-group">
+                    <label>위도</label>
+                    <input type="text" name="places[0].lat"/>
+                </div>
+                <div class="form-group">
+                    <label>경도</label>
+                    <input type="text" name="places[0].lng"/>
+                </div>
+                <div class="form-group">
+                    <label>영업시간</label>
+                    <input type="text" name="places[0].hoursText"/>
+                </div>
+                <div class="form-group">
+                    <label>휴무일</label>
+                    <input type="text" name="places[0].closedDays"/>
                 </div>
                 <div class="form-group">
                     <label>인스타그램 URL</label>
@@ -43,6 +65,37 @@
                 <div class="form-group">
                     <label>설명</label>
                     <textarea name="places[0].description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>카테고리</label>
+                    <div class="chip-grid">
+                        <label th:each="cat : ${categories}" class="chip-toggle">
+                            <input type="checkbox" name="places[0].categoryIds" th:value="${cat.id}"/>
+                            <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>태그</label>
+                    <div class="chip-grid">
+                        <label th:each="tag : ${tags}" class="chip-toggle">
+                            <input type="checkbox" name="places[0].tagIds" th:value="${tag.id}"/>
+                            <span class="chip-label" th:text="${tag.name}">태그</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>브랜드</label>
+                    <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup">
+                        <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
+                        <div class="chip-grid">
+                            <label th:each="brand : ${group.brands}" class="chip-toggle">
+                                <input type="checkbox" name="places[0].brandIds" th:value="${brand.id}"/>
+                                <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,6 +114,12 @@
             <div class="form-group">
                 <label>장소명 *</label>
                 <input type="text" name="name" th:value="${form.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>상태</label>
+                <select name="status">
+                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${form.status == s}"></option>
+                </select>
             </div>
             <div class="form-group">
                 <label>지역 *</label>
@@ -169,6 +228,35 @@
 <script th:inline="javascript">
 const MODE = /*[[${mode}]]*/ 'create';
 const FORM_ID = MODE === 'edit' ? 'edit-form' : 'bulk-form';
+const CATEGORIES = /*[[${categories}]]*/ [];
+const TAGS = /*[[${tags}]]*/ [];
+const BRAND_GROUPS = /*[[${brandGroups}]]*/ [];
+const STATUSES = /*[[${statuses}]]*/ [];
+
+function buildChipHtml(label, fieldName, items) {
+    if (!items || items.length === 0) return '';
+    const chips = items.map(item =>
+        `<label class="chip-toggle"><input type="checkbox" name="${fieldName}" value="${item.id}"/><span class="chip-label">${AdminPreview.escapeHtml(item.name)}</span></label>`
+    ).join('');
+    return `<div class="form-group"><label>${label}</label><div class="chip-grid">${chips}</div></div>`;
+}
+
+function buildBrandChipHtml(fieldName, groups) {
+    if (!groups || groups.length === 0) return '';
+    let html = '<div class="form-group"><label>브랜드</label>';
+    groups.forEach(group => {
+        if (group.brands && group.brands.length > 0) {
+            const chips = group.brands.map(b =>
+                `<label class="chip-toggle"><input type="checkbox" name="${fieldName}" value="${b.id}"/><span class="chip-label">${AdminPreview.escapeHtml(b.name)}</span></label>`
+            ).join('');
+            html += `<div class="chip__subgroup"><div class="chip__subgroup-title">${AdminPreview.escapeHtml(group.type)}</div><div class="chip-grid">${chips}</div></div>`;
+        }
+    });
+    html += '</div>';
+    return html;
+}
+
+const statusOptionsHtml = STATUSES.map(s => `<option value="${s}">${s}</option>`).join('');
 
 let rowCount = 1;
 function addRow() {
@@ -182,13 +270,21 @@ function addRow() {
             <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
         </div>
         <div class="form-group"><label>장소명 *</label><input type="text" name="places[${idx}].name" required/></div>
+        <div class="form-group"><label>상태</label><select name="places[${idx}].status">${statusOptionsHtml}</select></div>
         <div class="form-group"><label>지역 *</label><input type="text" name="places[${idx}].region" required/></div>
         <div class="form-group"><label>구/동 *</label><input type="text" name="places[${idx}].district" required/></div>
         <div class="form-group"><label>주소 *</label><input type="text" name="places[${idx}].address" required/></div>
+        <div class="form-group"><label>위도</label><input type="text" name="places[${idx}].lat"/></div>
+        <div class="form-group"><label>경도</label><input type="text" name="places[${idx}].lng"/></div>
+        <div class="form-group"><label>영업시간</label><input type="text" name="places[${idx}].hoursText"/></div>
+        <div class="form-group"><label>휴무일</label><input type="text" name="places[${idx}].closedDays"/></div>
         <div class="form-group"><label>인스타그램 URL</label><input type="text" name="places[${idx}].instagramUrl"/></div>
         <div class="form-group"><label>웹사이트 URL</label><input type="text" name="places[${idx}].websiteUrl"/></div>
         <div class="form-group"><label>네이버 지도 URL</label><input type="text" name="places[${idx}].naverMapUrl"/></div>
         <div class="form-group"><label>설명</label><textarea name="places[${idx}].description"></textarea></div>
+        ${buildChipHtml('카테고리', 'places[' + idx + '].categoryIds', CATEGORIES)}
+        ${buildChipHtml('태그', 'places[' + idx + '].tagIds', TAGS)}
+        ${buildBrandChipHtml('places[' + idx + '].brandIds', BRAND_GROUPS)}
     `;
     container.appendChild(div);
 }

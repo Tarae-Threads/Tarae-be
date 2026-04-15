@@ -3,10 +3,12 @@ package com.taraethreads.tarae.admin.service
 import com.taraethreads.tarae.admin.dto.AdminEventListRow
 import com.taraethreads.tarae.admin.dto.AdminEventStatusFilter
 import com.taraethreads.tarae.admin.dto.EventCreateForm
+import com.taraethreads.tarae.admin.dto.PlaceSelectOption
 import com.taraethreads.tarae.event.domain.Event
 import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
+import com.taraethreads.tarae.place.repository.PlaceRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -17,11 +19,15 @@ import java.time.LocalDate
 @Transactional(readOnly = true)
 class AdminEventService(
     private val eventRepository: EventRepository,
+    private val placeRepository: PlaceRepository,
 ) {
 
     companion object {
         const val EXPIRING_THRESHOLD_DAYS = 7L
     }
+
+    fun placeOptions(): List<PlaceSelectOption> =
+        placeRepository.findAll().map { PlaceSelectOption.from(it) }
 
     fun list(filter: AdminEventStatusFilter, pageable: Pageable): Page<AdminEventListRow> {
         val today = LocalDate.now()
@@ -41,6 +47,7 @@ class AdminEventService(
             eventType = event.eventType,
             startDate = event.startDate,
             endDate = event.endDate,
+            placeId = event.place?.id,
             locationText = event.locationText,
             description = event.description,
             lat = event.lat,
@@ -52,11 +59,13 @@ class AdminEventService(
     @Transactional
     fun createBulk(forms: List<EventCreateForm>): List<Long> =
         forms.map { form ->
+            val place = form.placeId?.let { placeRepository.findById(it).orElse(null) }
             val event = Event(
                 title = form.title,
                 eventType = form.eventType,
                 startDate = form.startDate,
                 endDate = form.endDate,
+                place = place,
                 locationText = form.locationText,
                 description = form.description,
                 lat = form.lat,
@@ -69,6 +78,7 @@ class AdminEventService(
     @Transactional
     fun update(id: Long, form: EventCreateForm) {
         val event = getEntity(id)
+        event.place = form.placeId?.let { placeRepository.findById(it).orElse(null) }
         event.update(form)
     }
 

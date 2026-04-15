@@ -34,6 +34,7 @@ class AdminPlaceService(
         val place = getEntity(id)
         return PlaceCreateForm(
             name = place.name,
+            status = place.status,
             region = place.region,
             district = place.district,
             address = place.address,
@@ -56,6 +57,7 @@ class AdminPlaceService(
         return forms.map { form ->
             val place = Place(
                 name = form.name,
+                status = form.status,
                 region = form.region,
                 district = form.district,
                 address = form.address,

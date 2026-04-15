@@ -4,6 +4,7 @@ import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.event.domain.Event
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.event.repository.EventRepository
+import com.taraethreads.tarae.place.repository.PlaceRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -16,7 +17,8 @@ import java.util.Optional
 class AdminEventServiceTest {
 
     private val eventRepository: EventRepository = mockk()
-    private val service = AdminEventService(eventRepository)
+    private val placeRepository: PlaceRepository = mockk()
+    private val service = AdminEventService(eventRepository, placeRepository)
 
     private fun event() = Event(
         title = "이벤트",

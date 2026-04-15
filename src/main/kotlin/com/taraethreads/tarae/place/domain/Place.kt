@@ -105,6 +105,7 @@ class Place(
 
     fun update(form: PlaceCreateForm) {
         name = form.name
+        status = form.status
         region = form.region
         district = form.district
         address = form.address
