@@ -79,10 +79,7 @@ class AdminPlaceService(
     fun update(id: Long, form: PlaceCreateForm) {
         val place = getEntity(id)
         place.update(form)
-        place.placeCategories.clear()
-        place.placeTags.clear()
-        place.placeBrands.clear()
-        attachAssociations(place, form)
+        syncAssociations(place, form)
     }
 
     @Transactional
@@ -106,6 +103,36 @@ class AdminPlaceService(
         }
         if (form.brandIds.isNotEmpty()) {
             brandRepository.findAllById(form.brandIds).forEach { place.addBrand(it) }
+        }
+    }
+
+    private fun syncAssociations(place: Place, form: PlaceCreateForm) {
+        val newCatIds = form.categoryIds.toSet()
+        val newTagIds = form.tagIds.toSet()
+        val newBrandIds = form.brandIds.toSet()
+
+        // 제거: 새 목록에 없는 기존 연관
+        place.placeCategories.removeIf { it.category.id !in newCatIds }
+        place.placeTags.removeIf { it.tag.id !in newTagIds }
+        place.placeBrands.removeIf { it.brand.id !in newBrandIds }
+
+        // 추가: 기존에 없는 새 연관
+        val existingCatIds = place.placeCategories.map { it.category.id }.toSet()
+        val existingTagIds = place.placeTags.map { it.tag.id }.toSet()
+        val existingBrandIds = place.placeBrands.map { it.brand.id }.toSet()
+
+        val catsToAdd = newCatIds - existingCatIds
+        val tagsToAdd = newTagIds - existingTagIds
+        val brandsToAdd = newBrandIds - existingBrandIds
+
+        if (catsToAdd.isNotEmpty()) {
+            categoryRepository.findAllById(catsToAdd).forEach { place.addCategory(it) }
+        }
+        if (tagsToAdd.isNotEmpty()) {
+            tagRepository.findAllById(tagsToAdd).forEach { place.addTag(it) }
+        }
+        if (brandsToAdd.isNotEmpty()) {
+            brandRepository.findAllById(brandsToAdd).forEach { place.addBrand(it) }
         }
     }
 }
