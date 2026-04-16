@@ -1,6 +1,7 @@
 package com.taraethreads.tarae.admin.controller
 
 import com.ninjasquad.springmockk.MockkBean
+import com.taraethreads.tarae.admin.service.AdminEventService
 import com.taraethreads.tarae.admin.service.AdminRequestService
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.place.dto.BrandResponse
@@ -39,6 +40,9 @@ class AdminRequestControllerTest {
 
     @MockkBean
     lateinit var adminRequestService: AdminRequestService
+
+    @MockkBean
+    lateinit var adminEventService: AdminEventService
 
     @MockkBean
     lateinit var categoryService: CategoryService
@@ -219,6 +223,7 @@ class AdminRequestControllerTest {
                 eventType = EventType.EVENT_POPUP,
                 startDate = LocalDate.of(2026, 5, 1),
             )
+            every { adminEventService.placeOptions() } returns emptyList()
 
             // when & then
             mockMvc.get("/admin/requests/event/1").andExpect {
@@ -226,6 +231,7 @@ class AdminRequestControllerTest {
                 model { attributeExists("request") }
                 model { attributeExists("form") }
                 model { attributeExists("eventTypes") }
+                model { attributeExists("places") }
             }
         }
     }

@@ -52,7 +52,9 @@ class AdminEventService(
             description = event.description,
             lat = event.lat,
             lng = event.lng,
-            links = event.links,
+            instagramUrl = event.instagramUrl,
+            websiteUrl = event.websiteUrl,
+            naverMapUrl = event.naverMapUrl,
         )
     }
 
@@ -70,7 +72,9 @@ class AdminEventService(
                 description = form.description,
                 lat = form.lat,
                 lng = form.lng,
-                links = form.links,
+                instagramUrl = form.instagramUrl,
+                websiteUrl = form.websiteUrl,
+                naverMapUrl = form.naverMapUrl,
             )
             eventRepository.save(event).id
         }

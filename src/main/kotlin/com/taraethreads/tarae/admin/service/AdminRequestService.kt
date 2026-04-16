@@ -97,16 +97,20 @@ class AdminRequestService(
         val eventRequest = getEventRequest(id)
         eventRequest.approve()
 
+        val place = form.placeId?.let { placeRepository.findById(it).orElse(null) }
         val event = Event(
             title = form.title,
             eventType = form.eventType,
             startDate = form.startDate,
             endDate = form.endDate,
+            place = place,
             locationText = form.locationText,
             description = form.description,
             lat = form.lat,
             lng = form.lng,
-            links = form.links,
+            instagramUrl = form.instagramUrl,
+            websiteUrl = form.websiteUrl,
+            naverMapUrl = form.naverMapUrl,
         )
 
         eventRepository.save(event)

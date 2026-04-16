@@ -4,6 +4,7 @@ import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.request.domain.EventRequest
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import java.math.BigDecimal
 import java.time.LocalDate
 
 data class EventRequestInput(
@@ -16,6 +17,11 @@ data class EventRequestInput(
     val endDate: LocalDate? = null,
     val locationText: String? = null,
     val description: String? = null,
+    val lat: BigDecimal? = null,
+    val lng: BigDecimal? = null,
+    val instagramUrl: String? = null,
+    val websiteUrl: String? = null,
+    val naverMapUrl: String? = null,
 ) {
     fun toEntity() = EventRequest(
         title = title!!,
@@ -24,5 +30,10 @@ data class EventRequestInput(
         endDate = endDate,
         locationText = locationText,
         description = description,
+        lat = lat,
+        lng = lng,
+        instagramUrl = instagramUrl,
+        websiteUrl = websiteUrl,
+        naverMapUrl = naverMapUrl,
     )
 }

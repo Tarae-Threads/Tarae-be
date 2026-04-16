@@ -15,6 +15,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class RequestServiceTest {
@@ -66,6 +67,36 @@ class RequestServiceTest {
             verify { eventRequestRepository.save(any()) }
             assertThat(slot.captured.title).isEqualTo("뜨개 팝업")
             assertThat(slot.captured.eventType).isEqualTo(EventType.EVENT_POPUP)
+        }
+
+        @Test
+        fun `위치 및 링크 필드가 엔티티에 매핑된다`() {
+            // given
+            val input = EventRequestInput(
+                title = "뜨개 팝업",
+                eventType = EventType.EVENT_POPUP,
+                startDate = LocalDate.of(2026, 5, 1),
+                lat = BigDecimal("37.5665350"),
+                lng = BigDecimal("126.9780150"),
+                instagramUrl = "https://instagram.com/test",
+                websiteUrl = "https://example.com",
+                naverMapUrl = "https://naver.me/test",
+            )
+            val slot = slot<EventRequest>()
+            val saved = EventRequest(title = "뜨개 팝업", eventType = EventType.EVENT_POPUP, startDate = LocalDate.of(2026, 5, 1))
+            every { eventRequestRepository.save(capture(slot)) } returns saved
+
+            // when
+            requestService.requestEvent(input)
+
+            // then
+            with(slot.captured) {
+                assertThat(lat).isEqualByComparingTo(BigDecimal("37.5665350"))
+                assertThat(lng).isEqualByComparingTo(BigDecimal("126.9780150"))
+                assertThat(instagramUrl).isEqualTo("https://instagram.com/test")
+                assertThat(websiteUrl).isEqualTo("https://example.com")
+                assertThat(naverMapUrl).isEqualTo("https://naver.me/test")
+            }
         }
     }
 }

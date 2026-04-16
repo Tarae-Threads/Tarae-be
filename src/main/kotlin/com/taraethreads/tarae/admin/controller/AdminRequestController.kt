@@ -2,6 +2,7 @@ package com.taraethreads.tarae.admin.controller
 
 import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
+import com.taraethreads.tarae.admin.service.AdminEventService
 import com.taraethreads.tarae.admin.service.AdminRequestService
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.place.service.BrandService
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/admin/requests")
 class AdminRequestController(
     private val adminRequestService: AdminRequestService,
+    private val adminEventService: AdminEventService,
     private val categoryService: CategoryService,
     private val tagService: TagService,
     private val brandService: BrandService,
@@ -127,8 +129,14 @@ class AdminRequestController(
             endDate = eventRequest.endDate,
             locationText = eventRequest.locationText,
             description = eventRequest.description,
+            lat = eventRequest.lat,
+            lng = eventRequest.lng,
+            instagramUrl = eventRequest.instagramUrl,
+            websiteUrl = eventRequest.websiteUrl,
+            naverMapUrl = eventRequest.naverMapUrl,
         ))
         model.addAttribute("eventTypes", EventType.entries)
+        model.addAttribute("places", adminEventService.placeOptions())
         return "admin/requests/event-detail"
     }
 

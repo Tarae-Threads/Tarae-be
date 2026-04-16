@@ -30,5 +30,7 @@ data class PlaceEventDto(
     @Schema(description = "시작일", example = "2026-04-15") val startDate: LocalDate,
     @Schema(description = "종료일", example = "2026-05-10") val endDate: LocalDate?,
     @Schema(description = "활성 여부", example = "true") val active: Boolean,
-    @Schema(description = "관련 링크") val links: String?,
+    @Schema(description = "인스타그램 URL") val instagramUrl: String?,
+    @Schema(description = "웹사이트 URL") val websiteUrl: String?,
+    @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
 )

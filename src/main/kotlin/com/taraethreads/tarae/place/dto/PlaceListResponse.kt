@@ -18,6 +18,7 @@ data class PlaceListResponse(
     @Schema(description = "태그 목록") val tags: List<TagDto>,
     @Schema(description = "브랜드 목록") val brands: List<BrandDto>,
     @Schema(description = "인스타그램 URL") val instagramUrl: String?,
+    @Schema(description = "웹사이트 URL") val websiteUrl: String?,
     @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
 ) {
     companion object {
@@ -34,6 +35,7 @@ data class PlaceListResponse(
             tags = place.placeTags.map { TagDto(it.tag.id, it.tag.name) },
             brands = place.placeBrands.map { BrandDto(it.brand.id, it.brand.name, it.brand.type.name) },
             instagramUrl = place.instagramUrl,
+            websiteUrl = place.websiteUrl,
             naverMapUrl = place.naverMapUrl,
         )
     }

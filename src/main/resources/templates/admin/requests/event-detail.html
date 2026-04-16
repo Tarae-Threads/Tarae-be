@@ -40,6 +40,26 @@
             <div class="field-group__label">설명</div>
             <div class="field-group__value" th:text="${request.description ?: '-'}">-</div>
         </div>
+        <div class="field-group">
+            <div class="field-group__label">위도</div>
+            <div class="field-group__value" th:text="${request.lat ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">경도</div>
+            <div class="field-group__value" th:text="${request.lng ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">인스타그램 URL</div>
+            <div class="field-group__value" th:text="${request.instagramUrl ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">웹사이트 URL</div>
+            <div class="field-group__value" th:text="${request.websiteUrl ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">네이버 지도 URL</div>
+            <div class="field-group__value" th:text="${request.naverMapUrl ?: '-'}">-</div>
+        </div>
     </div>
 
     <!-- 우측: Event 입력 폼 -->
@@ -73,6 +93,15 @@
                        th:value="${form.endDate != null ? #temporals.format(form.endDate, 'yyyy-MM-dd') : ''}"/>
             </div>
             <div class="form-group">
+                <label>연결 장소</label>
+                <select name="placeId">
+                    <option value="">없음</option>
+                    <option th:each="p : ${places}" th:value="${p.id}"
+                            th:text="${p.name + ' (' + p.region + ' ' + p.district + ')'}"
+                            th:selected="${form.placeId == p.id}"></option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>장소 (텍스트)</label>
                 <input type="text" name="locationText" th:value="${form.locationText}"/>
             </div>
@@ -89,8 +118,16 @@
                 <input type="text" name="lng" th:value="${form.lng}"/>
             </div>
             <div class="form-group">
-                <label>링크 (JSON)</label>
-                <textarea name="links" th:text="${form.links}"></textarea>
+                <label>인스타그램 URL</label>
+                <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>웹사이트 URL</label>
+                <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>네이버 지도 URL</label>
+                <input type="text" name="naverMapUrl" th:value="${form.naverMapUrl}"/>
             </div>
 
             <div class="form-actions" th:if="${request.status == T(com.taraethreads.tarae.request.domain.RequestStatus).PENDING}">

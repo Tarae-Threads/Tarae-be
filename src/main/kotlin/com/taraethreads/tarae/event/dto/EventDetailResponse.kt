@@ -18,7 +18,9 @@ data class EventDetailResponse(
     @Schema(description = "위도") val lat: BigDecimal?,
     @Schema(description = "경도") val lng: BigDecimal?,
     @Schema(description = "활성 여부") val active: Boolean,
-    @Schema(description = "관련 링크") val links: String?,
+    @Schema(description = "인스타그램 URL") val instagramUrl: String?,
+    @Schema(description = "웹사이트 URL") val websiteUrl: String?,
+    @Schema(description = "네이버 지도 URL") val naverMapUrl: String?,
 ) {
     companion object {
         fun from(event: Event) = EventDetailResponse(
@@ -33,7 +35,9 @@ data class EventDetailResponse(
             lat = event.lat,
             lng = event.lng,
             active = event.active,
-            links = event.links,
+            instagramUrl = event.instagramUrl,
+            websiteUrl = event.websiteUrl,
+            naverMapUrl = event.naverMapUrl,
         )
     }
 }

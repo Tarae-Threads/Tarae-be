@@ -53,8 +53,16 @@
                     <input type="text" name="events[0].lng"/>
                 </div>
                 <div class="form-group">
-                    <label>링크</label>
-                    <input type="text" name="events[0].links"/>
+                    <label>인스타그램 URL</label>
+                    <input type="text" name="events[0].instagramUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>웹사이트 URL</label>
+                    <input type="text" name="events[0].websiteUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>네이버 지도 URL</label>
+                    <input type="text" name="events[0].naverMapUrl"/>
                 </div>
             </div>
         </div>
@@ -112,8 +120,16 @@
                 <input type="text" name="lng" th:value="${form.lng}"/>
             </div>
             <div class="form-group">
-                <label>링크</label>
-                <input type="text" name="links" th:value="${form.links}"/>
+                <label>인스타그램 URL</label>
+                <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>웹사이트 URL</label>
+                <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>네이버 지도 URL</label>
+                <input type="text" name="naverMapUrl" th:value="${form.naverMapUrl}"/>
             </div>
         </div>
         <div class="form-actions">
@@ -174,7 +190,9 @@ function addRow() {
         <div class="form-group"><label>설명</label><textarea name="events[${idx}].description"></textarea></div>
         <div class="form-group"><label>위도</label><input type="text" name="events[${idx}].lat"/></div>
         <div class="form-group"><label>경도</label><input type="text" name="events[${idx}].lng"/></div>
-        <div class="form-group"><label>링크</label><input type="text" name="events[${idx}].links"/></div>
+        <div class="form-group"><label>인스타그램 URL</label><input type="text" name="events[${idx}].instagramUrl"/></div>
+        <div class="form-group"><label>웹사이트 URL</label><input type="text" name="events[${idx}].websiteUrl"/></div>
+        <div class="form-group"><label>네이버 지도 URL</label><input type="text" name="events[${idx}].naverMapUrl"/></div>
     `;
     container.appendChild(div);
 }

@@ -48,8 +48,14 @@ class Event(
     @Column(precision = 10, scale = 7)
     var lng: BigDecimal? = null,
 
-    @Column(columnDefinition = "TEXT")
-    var links: String? = null,
+    @Column(length = 255)
+    var instagramUrl: String? = null,
+
+    @Column(length = 255)
+    var websiteUrl: String? = null,
+
+    @Column(length = 255)
+    var naverMapUrl: String? = null,
 
     @Column(nullable = false)
     var active: Boolean = true,
@@ -68,7 +74,9 @@ class Event(
         description = form.description
         lat = form.lat
         lng = form.lng
-        links = form.links
+        instagramUrl = form.instagramUrl
+        websiteUrl = form.websiteUrl
+        naverMapUrl = form.naverMapUrl
     }
 
     fun activate() {

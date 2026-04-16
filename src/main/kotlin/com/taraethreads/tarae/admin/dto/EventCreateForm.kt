@@ -17,5 +17,7 @@ data class EventCreateForm(
     val description: String? = null,
     val lat: BigDecimal? = null,
     val lng: BigDecimal? = null,
-    val links: String? = null,
+    val instagramUrl: String? = null,
+    val websiteUrl: String? = null,
+    val naverMapUrl: String? = null,
 )

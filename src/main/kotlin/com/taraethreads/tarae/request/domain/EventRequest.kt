@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Entity
@@ -34,6 +35,21 @@ class EventRequest(
 
     @Column(columnDefinition = "TEXT")
     val description: String? = null,
+
+    @Column(precision = 10, scale = 7)
+    val lat: BigDecimal? = null,
+
+    @Column(precision = 10, scale = 7)
+    val lng: BigDecimal? = null,
+
+    @Column(length = 255)
+    val instagramUrl: String? = null,
+
+    @Column(length = 255)
+    val websiteUrl: String? = null,
+
+    @Column(length = 255)
+    val naverMapUrl: String? = null,
 ) : BaseEntity() {
 
     @Id

@@ -20,6 +20,7 @@ import com.taraethreads.tarae.request.repository.EventRequestRepository
 import com.taraethreads.tarae.request.repository.PlaceRequestRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -287,6 +288,30 @@ class AdminRequestServiceTest {
             // then
             assertThat(request.status).isEqualTo(RequestStatus.APPROVED)
             verify { eventRepository.save(any()) }
+        }
+
+        @Test
+        fun `placeId가 있으면 Place를 연결한다`() {
+            // given
+            val request = eventRequest()
+            val place = Place(name = "실과 바늘", region = "서울", district = "성수", address = "서울 성동구")
+            every { eventRequestRepository.findById(3L) } returns Optional.of(request)
+            every { placeRepository.findById(10L) } returns Optional.of(place)
+            val eventSlot = slot<Event>()
+            every { eventRepository.save(capture(eventSlot)) } answers { eventSlot.captured }
+
+            val form = EventCreateForm(
+                title = "뜨개 팝업",
+                eventType = EventType.EVENT_POPUP,
+                startDate = LocalDate.of(2026, 5, 1),
+                placeId = 10L,
+            )
+
+            // when
+            adminRequestService.approveEventRequest(3L, form)
+
+            // then
+            assertThat(eventSlot.captured.place).isEqualTo(place)
         }
 
         @Test

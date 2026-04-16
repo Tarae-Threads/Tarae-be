@@ -48,6 +48,7 @@ class PlaceControllerTest {
         tags = emptyList(),
         brands = emptyList(),
         instagramUrl = null,
+        websiteUrl = null,
         naverMapUrl = null,
     )
 
@@ -94,6 +95,9 @@ class PlaceControllerTest {
                 jsonPath("$.data[0].categories") { isArray() }
                 jsonPath("$.data[0].tags") { isArray() }
                 jsonPath("$.data[0].brands") { isArray() }
+                jsonPath("$.data[0].instagramUrl") { value(null) }
+                jsonPath("$.data[0].websiteUrl") { value(null) }
+                jsonPath("$.data[0].naverMapUrl") { value(null) }
             }
         }
 
@@ -164,7 +168,9 @@ class PlaceControllerTest {
                 startDate = LocalDate.of(2026, 4, 15),
                 endDate = LocalDate.of(2026, 5, 10),
                 active = true,
-                links = "https://forms.gle/xxxx",
+                instagramUrl = null,
+                websiteUrl = "https://forms.gle/xxxx",
+                naverMapUrl = null,
             )
             every { placeService.getPlace(1L) } returns placeDetailResponse().copy(events = listOf(event))
 

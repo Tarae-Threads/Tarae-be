@@ -43,6 +43,29 @@ class AdminEventServiceTest {
     }
 
     @Test
+    fun `createBulk 는 URL 필드를 매핑한다`() {
+        val saved = slot<Event>()
+        every { eventRepository.save(capture(saved)) } answers { saved.captured }
+
+        service.createBulk(
+            listOf(
+                EventCreateForm(
+                    title = "URL 테스트",
+                    eventType = EventType.SALE,
+                    startDate = LocalDate.now(),
+                    instagramUrl = "https://instagram.com/test",
+                    websiteUrl = "https://example.com",
+                    naverMapUrl = "https://naver.me/test",
+                ),
+            )
+        )
+
+        assertThat(saved.captured.instagramUrl).isEqualTo("https://instagram.com/test")
+        assertThat(saved.captured.websiteUrl).isEqualTo("https://example.com")
+        assertThat(saved.captured.naverMapUrl).isEqualTo("https://naver.me/test")
+    }
+
+    @Test
     fun `toggleActive 는 active 상태를 뒤집는다`() {
         val event = event()
         every { eventRepository.findById(1L) } returns Optional.of(event)

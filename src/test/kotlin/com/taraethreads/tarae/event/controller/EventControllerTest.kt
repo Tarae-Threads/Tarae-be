@@ -41,7 +41,9 @@ class EventControllerTest {
         lat = null,
         lng = null,
         active = true,
-        links = null,
+        instagramUrl = null,
+        websiteUrl = null,
+        naverMapUrl = null,
     )
 
     private fun eventDetailResponse(title: String = "뜨개 팝업") = EventDetailResponse(
@@ -56,7 +58,9 @@ class EventControllerTest {
         lat = null,
         lng = null,
         active = true,
-        links = null,
+        instagramUrl = null,
+        websiteUrl = null,
+        naverMapUrl = null,
     )
 
     @Nested

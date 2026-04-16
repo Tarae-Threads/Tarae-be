@@ -46,6 +46,8 @@ class PlaceService(
         startDate = startDate,
         endDate = endDate,
         active = active,
-        links = links,
+        instagramUrl = instagramUrl,
+        websiteUrl = websiteUrl,
+        naverMapUrl = naverMapUrl,
     )
 }
