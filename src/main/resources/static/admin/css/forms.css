@@ -287,3 +287,28 @@ textarea {
     font-size: 13px;
     cursor: pointer;
 }
+
+/* Quick-add inline form */
+.quick-add {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--outline-light);
+}
+
+.quick-add__input {
+    flex: 1;
+    min-width: 0;
+}
+
+.quick-add__select {
+    width: auto;
+    flex-shrink: 0;
+}
+
+.quick-add .btn--outline {
+    flex-shrink: 0;
+    white-space: nowrap;
+}

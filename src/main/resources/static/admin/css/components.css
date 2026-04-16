@@ -106,6 +106,17 @@ tr:hover td {
     font-size: 12px;
 }
 
+.btn--outline {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn--outline:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
 /* Status Badge */
 .badge {
     display: inline-block;

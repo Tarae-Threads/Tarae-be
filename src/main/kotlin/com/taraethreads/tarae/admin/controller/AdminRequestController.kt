@@ -94,10 +94,24 @@ class AdminRequestController(
         }
 
         model.addAttribute("form", form)
-        model.addAttribute("categories", categoryService.getCategories())
+
+        val allCategories = categoryService.getCategories()
+        val allBrands = brandService.getAll()
+        model.addAttribute("categories", allCategories)
         model.addAttribute("tags", tagService.getAll())
-        model.addAttribute("brands", brandService.getAll())
+        model.addAttribute("brands", allBrands)
         model.addAttribute("brandGroups", brandService.getBrandsGroupedByType())
+
+        // 제보 원본에서 선택된 ID → 이름 resolve
+        val categoryIdSet = placeRequest.categoryIds.toSet()
+        model.addAttribute("selectedCategoryNames", allCategories.filter { it.id in categoryIdSet }.map { it.name })
+
+        val brandMap = allBrands.associateBy { it.id }
+        model.addAttribute("selectedBrandYarnNames", placeRequest.brandYarnIds.mapNotNull { brandMap[it]?.name })
+        model.addAttribute("selectedBrandNeedleNames", placeRequest.brandNeedleIds.mapNotNull { brandMap[it]?.name })
+        model.addAttribute("selectedBrandNotionsNames", placeRequest.brandNotionsIds.mapNotNull { brandMap[it]?.name })
+        model.addAttribute("selectedBrandPatternbookNames", placeRequest.brandPatternbookIds.mapNotNull { brandMap[it]?.name })
+
         return "admin/requests/place-detail"
     }
 

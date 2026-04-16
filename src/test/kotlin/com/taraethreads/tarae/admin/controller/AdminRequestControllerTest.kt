@@ -145,6 +145,71 @@ class AdminRequestControllerTest {
         }
 
         @Test
+        fun `NEW 장소 제보 상세에서 선택된 카테고리와 브랜드 이름이 모델에 포함된다`() {
+            // given
+            every { adminRequestService.getPlaceRequest(1L) } returns
+                PlaceRequest(
+                    requestType = RequestType.NEW,
+                    name = "실과 바늘",
+                    categoryIds = listOf(1L, 2L),
+                    brandYarnIds = listOf(10L),
+                    brandNeedleIds = listOf(20L),
+                    brandNotionsIds = listOf(30L),
+                    brandPatternbookIds = listOf(40L),
+                )
+            every { categoryService.getCategories() } returns listOf(
+                CategoryResponse(id = 1L, name = "뜨개샵"),
+                CategoryResponse(id = 2L, name = "부자재"),
+                CategoryResponse(id = 99L, name = "기타"),
+            )
+            every { tagService.getAll() } returns emptyList()
+            every { brandService.getAll() } returns listOf(
+                BrandResponse(id = 10L, name = "산네스간", type = "YARN"),
+                BrandResponse(id = 20L, name = "치아오궁", type = "NEEDLE"),
+                BrandResponse(id = 30L, name = "클로버", type = "NOTIONS"),
+                BrandResponse(id = 40L, name = "로완", type = "PATTERNBOOK"),
+            )
+            every { brandService.getBrandsGroupedByType() } returns emptyList()
+
+            // when & then
+            mockMvc.get("/admin/requests/place/1").andExpect {
+                status { isOk() }
+                model { attribute("selectedCategoryNames", listOf("뜨개샵", "부자재")) }
+                model { attribute("selectedBrandYarnNames", listOf("산네스간")) }
+                model { attribute("selectedBrandNeedleNames", listOf("치아오궁")) }
+                model { attribute("selectedBrandNotionsNames", listOf("클로버")) }
+                model { attribute("selectedBrandPatternbookNames", listOf("로완")) }
+            }
+        }
+
+        @Test
+        fun `제보에 존재하지 않는 카테고리 ID가 포함되면 해당 이름은 빈 리스트로 resolve된다`() {
+            // given
+            every { adminRequestService.getPlaceRequest(1L) } returns
+                PlaceRequest(
+                    requestType = RequestType.NEW,
+                    name = "실과 바늘",
+                    categoryIds = listOf(999L),
+                    brandYarnIds = listOf(888L),
+                )
+            every { categoryService.getCategories() } returns listOf(
+                CategoryResponse(id = 1L, name = "뜨개샵"),
+            )
+            every { tagService.getAll() } returns emptyList()
+            every { brandService.getAll() } returns listOf(
+                BrandResponse(id = 10L, name = "산네스간", type = "YARN"),
+            )
+            every { brandService.getBrandsGroupedByType() } returns emptyList()
+
+            // when & then
+            mockMvc.get("/admin/requests/place/1").andExpect {
+                status { isOk() }
+                model { attribute("selectedCategoryNames", emptyList<String>()) }
+                model { attribute("selectedBrandYarnNames", emptyList<String>()) }
+            }
+        }
+
+        @Test
         fun `UPDATE 장소 제보 상세에서는 기존 Place 데이터가 폼에 채워진다`() {
             // given
             val existingPlace = Place(

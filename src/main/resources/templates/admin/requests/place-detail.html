@@ -50,23 +50,43 @@
             <div class="field-group__value" th:text="${request.closedDays ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-group__label">카테고리 (자유입력)</div>
+            <div class="field-group__label">선택한 카테고리</div>
+            <div class="field-group__value" th:text="${#lists.isEmpty(selectedCategoryNames) ? '-' : #strings.listJoin(selectedCategoryNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">카테고리 (직접입력)</div>
             <div class="field-group__value" th:text="${request.categoryText ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-group__label">취급 실 브랜드</div>
+            <div class="field-group__label">선택한 실 브랜드</div>
+            <div class="field-group__value" th:text="${#lists.isEmpty(selectedBrandYarnNames) ? '-' : #strings.listJoin(selectedBrandYarnNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">실 브랜드 (직접입력)</div>
             <div class="field-group__value" th:text="${request.brandsYarn ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-group__label">취급 바늘 브랜드</div>
+            <div class="field-group__label">선택한 바늘 브랜드</div>
+            <div class="field-group__value" th:text="${#lists.isEmpty(selectedBrandNeedleNames) ? '-' : #strings.listJoin(selectedBrandNeedleNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">바늘 브랜드 (직접입력)</div>
             <div class="field-group__value" th:text="${request.brandsNeedle ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-group__label">취급 도구 브랜드</div>
+            <div class="field-group__label">선택한 도구 브랜드</div>
+            <div class="field-group__value" th:text="${#lists.isEmpty(selectedBrandNotionsNames) ? '-' : #strings.listJoin(selectedBrandNotionsNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">도구 브랜드 (직접입력)</div>
             <div class="field-group__value" th:text="${request.brandsNotions ?: '-'}">-</div>
         </div>
         <div class="field-group">
-            <div class="field-group__label">취급 도안집 브랜드</div>
+            <div class="field-group__label">선택한 도안집 브랜드</div>
+            <div class="field-group__value" th:text="${#lists.isEmpty(selectedBrandPatternbookNames) ? '-' : #strings.listJoin(selectedBrandPatternbookNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">도안집 브랜드 (직접입력)</div>
             <div class="field-group__value" th:text="${request.brandsPatternbook ?: '-'}">-</div>
         </div>
         <div class="field-group">
@@ -169,6 +189,11 @@
                                     <span class="chip-label" th:text="${cat.name}">카테고리</span>
                                 </label>
                             </div>
+                            <div class="quick-add">
+                                <input type="text" class="quick-add__input" placeholder="새 카테고리명"/>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAdd(this, '/admin/api/categories', 'categoryIds')">+ 추가</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -197,6 +222,11 @@
                                 </label>
                             </div>
                             <div class="chip-no-results">검색 결과가 없습니다</div>
+                            <div class="quick-add">
+                                <input type="text" class="quick-add__input" placeholder="새 태그명"/>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAdd(this, '/admin/api/tags', 'tagIds')">+ 추가</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -215,7 +245,7 @@
                     <div class="selector-body-wrap">
                         <div class="selected-summary"></div>
                         <div class="selector-body-inner">
-                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup">
+                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup" th:data-brand-type="${group.type}">
                                 <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
                                 <div class="chip-grid">
                                     <label th:each="brand : ${group.brands}" class="chip-toggle">
@@ -225,6 +255,17 @@
                                         <span class="chip-label" th:text="${brand.name}">브랜드</span>
                                     </label>
                                 </div>
+                            </div>
+                            <div class="quick-add quick-add--brand">
+                                <input type="text" class="quick-add__input" placeholder="새 브랜드명"/>
+                                <select class="quick-add__select">
+                                    <option value="YARN">실</option>
+                                    <option value="NEEDLE">바늘</option>
+                                    <option value="NOTIONS">도구</option>
+                                    <option value="PATTERNBOOK">도안집</option>
+                                </select>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAddBrand(this)">+ 추가</button>
                             </div>
                         </div>
                     </div>
@@ -296,6 +337,97 @@ function filterChips(input) {
     if (noResults) {
         noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     }
+}
+
+/* ── Quick Add ── */
+function createChipLabel(fieldName, id, name) {
+    var label = document.createElement('label');
+    label.className = 'chip-toggle';
+    label.dataset.name = name;
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = fieldName;
+    checkbox.value = id;
+    checkbox.checked = true;
+    checkbox.onchange = function() { updateSelector(this); };
+    var span = document.createElement('span');
+    span.className = 'chip-label';
+    span.textContent = name;
+    label.appendChild(checkbox);
+    label.appendChild(span);
+    return label;
+}
+
+function handleFetchError(res) {
+    if (!res.ok) {
+        return res.json().catch(function() { return { message: '서버 오류' }; }).then(function(body) {
+            throw new Error(body.message || '요청 실패');
+        });
+    }
+    return res.json();
+}
+
+function quickAdd(btn, url, fieldName) {
+    var container = btn.closest('.quick-add');
+    var input = container.querySelector('.quick-add__input');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    btn.disabled = true;
+    var body = new URLSearchParams();
+    body.append('name', name);
+
+    fetch(url, { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var chipGrid = btn.closest('.selector-body-inner').querySelector('.chip-grid');
+            var label = createChipLabel(fieldName, data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
+}
+
+function quickAddBrand(btn) {
+    var container = btn.closest('.quick-add--brand');
+    var input = container.querySelector('.quick-add__input');
+    var select = container.querySelector('.quick-add__select');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    btn.disabled = true;
+    var body = new URLSearchParams();
+    body.append('name', name);
+    body.append('type', select.value);
+
+    fetch('/admin/api/brands', { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var sectionInner = btn.closest('.selector-body-inner');
+            var subgroup = sectionInner.querySelector('[data-brand-type="' + data.type + '"]');
+            if (!subgroup) {
+                subgroup = document.createElement('div');
+                subgroup.className = 'chip__subgroup';
+                subgroup.dataset.brandType = data.type;
+                var title = document.createElement('div');
+                title.className = 'chip__subgroup-title';
+                title.textContent = data.type;
+                var grid = document.createElement('div');
+                grid.className = 'chip-grid';
+                subgroup.appendChild(title);
+                subgroup.appendChild(grid);
+                sectionInner.insertBefore(subgroup, container);
+            }
+            var chipGrid = subgroup.querySelector('.chip-grid');
+            var label = createChipLabel('brandIds', data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
 }
 
 // Initialize counts on page load
