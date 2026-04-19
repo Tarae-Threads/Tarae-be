@@ -38,6 +38,7 @@ dependencies {
     kapt("jakarta.persistence:jakarta.persistence-api")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

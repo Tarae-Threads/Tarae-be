@@ -17,9 +17,11 @@ enum class ErrorCode(val status: Int, val message: String) {
     CATEGORY_NOT_FOUND(404, "존재하지 않는 카테고리입니다"),
     TAG_NOT_FOUND(404, "존재하지 않는 태그입니다"),
     BRAND_NOT_FOUND(404, "존재하지 않는 브랜드입니다"),
+    INQUIRY_NOT_FOUND(404, "존재하지 않는 문의입니다"),
 
     // 409
     REQUEST_ALREADY_PROCESSED(409, "이미 처리된 제보입니다"),
+    INQUIRY_ALREADY_PROCESSED(409, "이미 처리된 문의입니다"),
 
     // 500
     INTERNAL_ERROR(500, "서버 오류가 발생했습니다"),
