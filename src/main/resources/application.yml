@@ -1,3 +1,11 @@
+server:
+  servlet:
+    session:
+      timeout: 3h
+      cookie:
+        http-only: true
+        secure: false
+
 spring:
   application:
     name: tarae
@@ -17,6 +25,18 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-  security:
-    user:
-      name: dummy  # Security 자동 설정 비활성화용 (임시)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}

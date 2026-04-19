@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('문의 관리', ~{::body})}">
+<body>
+
+<!-- 상태 필터 -->
+<div class="filter-bar">
+    <a th:href="@{/admin/inquiries}"
+       th:classappend="${status == null} ? 'active'"
+       class="filter-btn">전체</a>
+    <a th:each="s : ${allStatuses}"
+       th:href="@{/admin/inquiries(status=${s})}"
+       th:classappend="${status == s} ? 'active'"
+       th:text="${s}"
+       class="filter-btn">STATUS</a>
+</div>
+
+<!-- 목록 테이블 -->
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(inquiries)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>이메일</th>
+            <th>상태</th>
+            <th>등록일</th>
+            <th>상세</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="inquiry : ${inquiries}">
+            <td th:text="${inquiry.id}">1</td>
+            <td th:text="${inquiry.title}">제목</td>
+            <td th:text="${inquiry.email}">user@example.com</td>
+            <td>
+                <span th:classappend="'badge--' + ${#strings.toLowerCase(inquiry.status)}"
+                      th:text="${inquiry.status}"
+                      class="badge">PENDING</span>
+            </td>
+            <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">2026-01-01</td>
+            <td>
+                <a th:href="@{/admin/inquiries/{id}(id=${inquiry.id})}"
+                   class="btn btn--secondary btn--sm">보기</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(inquiries)}" class="empty-state">
+        문의가 없습니다.
+    </p>
+</div>
+
+</body>
+</html>

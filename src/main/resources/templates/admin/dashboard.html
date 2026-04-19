@@ -1,38 +1,238 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout/base :: layout('대시보드', ~{::body})}">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>홈 | Tarae Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/admin.css}"/>
+    <style>
+        body {
+            min-height: 100vh;
+            background: var(--surface-container);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 32px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--outline-light);
+        }
+
+        .dashboard-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .dashboard-logo span {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--on-surface-muted);
+            margin-left: 8px;
+        }
+
+        .btn-logout {
+            font-size: 12px;
+            color: var(--on-surface-muted);
+            background: none;
+            border: 1px solid var(--outline-light);
+            border-radius: 6px;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--outline);
+            color: var(--on-surface);
+        }
+
+        .dashboard-body {
+            flex: 1;
+            padding: 40px 32px;
+            max-width: 960px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .dashboard-title {
+            font-size: 13px;
+            color: var(--on-surface-muted);
+            margin-bottom: 20px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .nav-card {
+            background: var(--surface);
+            border: 1px solid var(--outline-light);
+            border-radius: 12px;
+            padding: 28px 24px;
+            text-decoration: none;
+            color: var(--on-surface);
+            transition: all 0.15s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .nav-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .nav-card__emoji {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .nav-card__name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav-card__desc {
+            font-size: 12px;
+            color: var(--on-surface-muted);
+        }
+
+        .nav-card__badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 20px;
+            padding: 2px 8px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--outline-light);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .stat-card__label {
+            font-size: 11px;
+            color: var(--on-surface-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-card__value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+    </style>
+</head>
 <body>
-<div class="card-grid">
-    <div class="card stat">
-        <div class="stat__label">등록 장소</div>
-        <div class="stat__value" th:text="${placeCount}">0</div>
+
+<header class="dashboard-header">
+    <div class="dashboard-logo">
+        🧶 Tarae <span>관리자</span>
     </div>
-    <div class="card stat">
-        <div class="stat__label">등록 이벤트</div>
-        <div class="stat__value" th:text="${eventCount}">0</div>
+    <form method="post" th:action="@{/admin/logout}">
+        <button type="submit" class="btn-logout">로그아웃</button>
+    </form>
+</header>
+
+<div class="dashboard-body">
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-card__label">등록 장소</div>
+            <div class="stat-card__value" th:text="${placeCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">등록 이벤트</div>
+            <div class="stat-card__value" th:text="${eventCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">장소 제보 대기</div>
+            <div class="stat-card__value" th:text="${pendingPlaceRequestCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">이벤트 제보 대기</div>
+            <div class="stat-card__value" th:text="${pendingEventRequestCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">리뷰</div>
+            <div class="stat-card__value" th:text="${reviewCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">만료 임박 이벤트 (D-7)</div>
+            <div class="stat-card__value" th:text="${expiringSoonEventCount}">0</div>
+        </div>
     </div>
-    <div class="card stat">
-        <div class="stat__label">장소 제보 대기</div>
-        <div class="stat__value" th:text="${pendingPlaceRequestCount}">0</div>
-    </div>
-    <div class="card stat">
-        <div class="stat__label">이벤트 제보 대기</div>
-        <div class="stat__value" th:text="${pendingEventRequestCount}">0</div>
-    </div>
-    <div class="card stat">
-        <div class="stat__label">리뷰</div>
-        <div class="stat__value" th:text="${reviewCount}">0</div>
-    </div>
-    <div class="card stat">
-        <div class="stat__label">만료 임박 이벤트 (D-7)</div>
-        <div class="stat__value" th:text="${expiringSoonEventCount}">0</div>
+
+    <div class="dashboard-title">관리할 항목을 선택하세요</div>
+
+    <div class="nav-grid">
+
+        <a th:href="@{/admin/places}" class="nav-card">
+            <div class="nav-card__emoji">📍</div>
+            <div class="nav-card__name">장소 관리</div>
+            <div class="nav-card__desc" th:text="${placeCount} + '개 등록됨'">0개 등록됨</div>
+        </a>
+
+        <a th:href="@{/admin/events}" class="nav-card">
+            <div class="nav-card__emoji">🎪</div>
+            <div class="nav-card__name">이벤트 관리</div>
+            <div class="nav-card__desc" th:text="${eventCount} + '개 등록됨'">0개 등록됨</div>
+            <span class="nav-card__badge" th:if="${expiringSoonEventCount > 0}"
+                  th:text="'만료임박 ' + ${expiringSoonEventCount} + '개'">만료임박 0개</span>
+        </a>
+
+        <a th:href="@{/admin/requests(type='place',status='PENDING')}" class="nav-card"
+           th:with="pendingTotal=${pendingPlaceRequestCount + pendingEventRequestCount}">
+            <div class="nav-card__emoji">📬</div>
+            <div class="nav-card__name">제보 관리</div>
+            <div class="nav-card__desc" th:text="${pendingTotal} + '건 대기 중'">0건 대기 중</div>
+            <span class="nav-card__badge" th:if="${pendingTotal > 0}" th:text="${pendingTotal}">0</span>
+        </a>
+
+        <a th:href="@{/admin/reviews(type='place')}" class="nav-card">
+            <div class="nav-card__emoji">⭐</div>
+            <div class="nav-card__name">리뷰 관리</div>
+            <div class="nav-card__desc" th:text="${reviewCount} + '개'">0개</div>
+        </a>
+
+        <a th:href="@{/admin/inquiries}" class="nav-card">
+            <div class="nav-card__emoji">💬</div>
+            <div class="nav-card__name">문의 관리</div>
+            <div class="nav-card__desc"
+                 th:text="${pendingInquiryCount} + '건 미답변'">0건 미답변</div>
+            <span class="nav-card__badge"
+                  th:if="${pendingInquiryCount > 0}"
+                  th:text="${pendingInquiryCount}">0</span>
+        </a>
+
+        <a th:href="@{/admin/masters(type='categories')}" class="nav-card">
+            <div class="nav-card__emoji">🗂️</div>
+            <div class="nav-card__name">마스터 데이터</div>
+            <div class="nav-card__desc">카테고리 · 태그 · 브랜드</div>
+        </a>
+
     </div>
 </div>
 
-<div class="card">
-    <p class="empty-state">
-        제보 관리를 시작하려면 사이드바의 <strong>제보 관리</strong>를 클릭하세요.
-    </p>
-</div>
 </body>
 </html>

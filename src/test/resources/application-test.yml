@@ -8,3 +8,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  mail:
+    username: test@example.com
+    password: test-pass
+
+admin:
+  username: test-admin
+  password: test-password

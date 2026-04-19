@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>로그인 | Tarae Admin</title>
+    <link rel="stylesheet" th:href="@{/admin/admin.css}"/>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--surface-container);
+        }
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--outline-light);
+            border-radius: 12px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 360px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .login-logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .login-subtitle {
+            font-size: 12px;
+            color: var(--on-surface-muted);
+            margin-top: 4px;
+        }
+        .login-error {
+            background: #fdf2f2;
+            border: 1px solid var(--destructive);
+            border-radius: 6px;
+            color: var(--destructive);
+            font-size: 13px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--outline-light);
+            border-radius: 6px;
+            font-size: 13px;
+            background: var(--surface);
+            color: var(--on-surface);
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        input[type="password"]:focus {
+            border-color: var(--primary);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.15s;
+        }
+        .btn-login:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="login-header">
+        <div class="login-logo">🧶 Tarae</div>
+        <div class="login-subtitle">관리자 페이지</div>
+    </div>
+
+    <div class="login-error" th:if="${param.error}">
+        아이디 또는 비밀번호가 올바르지 않습니다.
+    </div>
+
+    <form method="post" th:action="@{/admin/login}">
+        <div class="form-group">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" autocomplete="username" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required/>
+        </div>
+
+        <button type="submit" class="btn-login">로그인</button>
+    </form>
+</div>
+</body>
+</html>

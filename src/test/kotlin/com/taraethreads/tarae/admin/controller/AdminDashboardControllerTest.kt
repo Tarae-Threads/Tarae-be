@@ -36,6 +36,7 @@ class AdminDashboardControllerTest {
             every { adminDashboardService.getPendingEventRequestCount() } returns 2L
             every { adminDashboardService.getReviewCount() } returns 7L
             every { adminDashboardService.getExpiringSoonEventCount() } returns 4L
+            every { adminDashboardService.getPendingInquiryCount() } returns 1L
 
             // when & then
             mockMvc.get("/admin").andExpect {
@@ -45,6 +46,8 @@ class AdminDashboardControllerTest {
                 model { attribute("pendingPlaceRequestCount", 3L) }
                 model { attribute("pendingEventRequestCount", 2L) }
                 model { attribute("reviewCount", 7L) }
+                model { attribute("expiringSoonEventCount", 4L) }
+                model { attribute("pendingInquiryCount", 1L) }
             }
         }
     }

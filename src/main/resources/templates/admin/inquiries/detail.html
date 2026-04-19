@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('문의 상세', ~{::body})}">
+<body>
+
+<!-- 기본 정보 -->
+<div class="card" style="margin-bottom: 1.5rem;">
+    <div class="form-group">
+        <label>상태</label>
+        <span th:classappend="'badge--' + ${#strings.toLowerCase(inquiry.status)}"
+              th:text="${inquiry.status}"
+              class="badge">PENDING</span>
+    </div>
+    <div class="form-group">
+        <label>제목</label>
+        <p th:text="${inquiry.title}">제목</p>
+    </div>
+    <div class="form-group">
+        <label>내용</label>
+        <p style="white-space: pre-wrap;" th:text="${inquiry.body}">본문 내용</p>
+    </div>
+    <div class="form-group">
+        <label>답변받을 이메일</label>
+        <p th:text="${inquiry.email}">user@example.com</p>
+    </div>
+    <div class="form-group">
+        <label>등록일</label>
+        <p th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd HH:mm')}">2026-01-01</p>
+    </div>
+    <div th:if="${inquiry.replyBody != null}" class="form-group">
+        <label>저장된 답변</label>
+        <p style="white-space: pre-wrap;" th:text="${inquiry.replyBody}">답변 내용</p>
+    </div>
+    <div th:if="${inquiry.repliedAt != null}" class="form-group">
+        <label>답변 발송일</label>
+        <p th:text="${#temporals.format(inquiry.repliedAt, 'yyyy-MM-dd HH:mm')}">2026-01-01</p>
+    </div>
+</div>
+
+<!-- PENDING: 답변 작성 폼 -->
+<div th:if="${inquiry.pending}" class="card" style="margin-bottom: 1.5rem;">
+    <h3 style="margin-bottom: 1rem;">답변 작성</h3>
+    <div th:if="${replyError != null}" style="color:#dc2626;margin-bottom:0.75rem;" th:text="${replyError}"></div>
+    <form th:action="@{/admin/inquiries/{id}/reply(id=${inquiry.id})}" method="post">
+        <div class="form-group">
+            <label for="replyBody">답변 내용</label>
+            <textarea id="replyBody" name="replyBody" rows="6" required
+                      style="width:100%;resize:vertical;"></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary">답변 발송</button>
+    </form>
+</div>
+
+<!-- SEND_FAILED: 재발송 버튼 -->
+<div th:if="${inquiry.sendFailed}" class="card" style="margin-bottom: 1.5rem;">
+    <p style="color:#dc2626;margin-bottom:1rem;">
+        ⚠ 답변이 저장되었으나 이메일 발송에 실패했습니다. 재발송해 주세요.
+    </p>
+    <form th:action="@{/admin/inquiries/{id}/resend(id=${inquiry.id})}" method="post"
+          style="display:inline;">
+        <button type="submit" class="btn btn--primary">재발송</button>
+    </form>
+</div>
+
+<!-- 닫기 버튼 (PENDING, SEND_FAILED에서 가능) -->
+<div th:if="${inquiry.closeable}" style="margin-bottom: 1.5rem;">
+    <form th:action="@{/admin/inquiries/{id}/close(id=${inquiry.id})}" method="post"
+          style="display:inline;">
+        <button type="submit" class="btn btn--secondary"
+                onclick="return confirm('이 문의를 닫겠습니까?')">닫기 (무시)</button>
+    </form>
+</div>
+
+<!-- 관리자 메모 -->
+<div class="card" style="margin-bottom: 1.5rem;">
+    <h3 style="margin-bottom: 1rem;">관리자 메모</h3>
+    <form th:action="@{/admin/inquiries/{id}/memo(id=${inquiry.id})}" method="post">
+        <div class="form-group">
+            <textarea name="memo" rows="4"
+                      style="width:100%;resize:vertical;"
+                      placeholder="내부용 메모 (발신자에게 노출되지 않음)"
+                      th:text="${inquiry.memo}"></textarea>
+        </div>
+        <button type="submit" class="btn btn--secondary">메모 저장</button>
+    </form>
+</div>
+
+<div>
+    <a th:href="@{/admin/inquiries}" class="btn btn--secondary">목록으로</a>
+</div>
+
+</body>
+</html>

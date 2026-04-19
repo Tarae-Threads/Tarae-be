@@ -16,6 +16,7 @@
 | 기존 장소 업데이트 제보 시 현재 정보 프리필 | "기존 장소 업데이트" 선택 후 장소 검색 시 현재 DB 값을 필드에 미리 채워줘야 함 — 사용자가 변경 전/후 비교하며 입력 가능. 장소 선택 시 API 호출 필요 | 2026-04-05 | 전달 필요 |
 | API 응답 포맷 변경 | 모든 정상 응답은 `{ "data": T }` 래퍼로 반환. 에러는 `{ "code": "...", "status": 404, "message": "..." }`. 프론트 API 클라이언트 공통 처리 필요 | 2026-04-05 | 전달 필요 |
 | 제보 API 경로 변경 | 제보 기능명 submission → request 변경. `POST /api/requests/places`, `POST /api/requests/events` | 2026-04-05 | 전달 필요 |
+| 문의하기 API 추가 | `POST /api/inquiries` — body: `{ title, body, email }`, 응답: `{ data: { id } }`. 인증 불필요. | 2026-04-19 | 전달 필요 |
 
 ## 🎨 기획 · UX
 

@@ -1,6 +1,8 @@
 package com.taraethreads.tarae.admin.service
 
 import com.taraethreads.tarae.event.repository.EventRepository
+import com.taraethreads.tarae.inquiry.domain.InquiryStatus
+import com.taraethreads.tarae.inquiry.repository.InquiryRepository
 import com.taraethreads.tarae.place.repository.PlaceRepository
 import com.taraethreads.tarae.request.domain.RequestStatus
 import com.taraethreads.tarae.request.repository.EventRequestRepository
@@ -18,6 +20,7 @@ class AdminDashboardService(
     private val placeRequestRepository: PlaceRequestRepository,
     private val eventRequestRepository: EventRequestRepository,
     private val reviewRepository: ReviewRepository,
+    private val inquiryRepository: InquiryRepository,
 ) {
 
     fun getPlaceCount(): Long = placeRepository.count()
@@ -36,4 +39,6 @@ class AdminDashboardService(
         val today = LocalDate.now()
         return eventRepository.countExpiringSoon(today, today.plusDays(7))
     }
+
+    fun getPendingInquiryCount(): Long = inquiryRepository.countByStatus(InquiryStatus.PENDING)
 }
