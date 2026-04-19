@@ -1,3 +1,11 @@
+server:
+  servlet:
+    session:
+      timeout: 3h
+      cookie:
+        http-only: true
+        secure: false
+
 spring:
   application:
     name: tarae
@@ -29,6 +37,6 @@ spring:
           starttls:
             enable: true
 
-  security:
-    user:
-      name: dummy  # Security 자동 설정 비활성화용 (임시)
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
