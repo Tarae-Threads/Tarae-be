@@ -50,3 +50,14 @@
     flex: 1;
     max-width: 280px;
 }
+
+/* ── 관리 버튼 셀 ── */
+.action-cell {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.action-cell .form-inline {
+    display: inline;
+}

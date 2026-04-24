@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout/base :: layout('마스터 데이터', ~{::body})}">
+      th:replace="~{admin/layout/base :: layout(${type == 'brands' ? '브랜드 관리' : (type == 'tags' ? '태그 관리' : '카테고리 관리')}, ~{::body})}">
 <body>
-
-<div class="tabs">
-    <a th:href="@{/admin/masters(type='categories')}"
-       th:classappend="${type == 'categories'} ? 'active'"
-       class="tab">카테고리</a>
-    <a th:href="@{/admin/masters(type='tags')}"
-       th:classappend="${type == 'tags'} ? 'active'"
-       class="tab">태그</a>
-    <a th:href="@{/admin/masters(type='brands')}"
-       th:classappend="${type == 'brands'} ? 'active'"
-       class="tab">브랜드</a>
-</div>
 
 <!-- 카테고리 -->
 <div th:if="${type == 'categories'}" class="card table-wrap">
@@ -30,6 +18,7 @@
         <tr>
             <th style="width: 80px;">ID</th>
             <th>이름</th>
+            <th style="width: 120px;">사용 장소</th>
             <th style="width: 200px;">관리</th>
         </tr>
         </thead>
@@ -47,8 +36,16 @@
                 </form>
             </td>
             <td>
+                <span th:text="${c.placeCount} + '개'">0개</span>
+            </td>
+            <td class="action-cell">
                 <button type="button" class="btn btn--secondary btn--sm"
                         th:attr="data-toggle-target='category-' + ${c.id}">수정</button>
+                <form th:action="@{/admin/masters/categories/{id}/delete(id=${c.id})}"
+                      method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm btn--delete"
+                            th:data-place-count="${c.placeCount}">삭제</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -73,6 +70,7 @@
         <tr>
             <th style="width: 80px;">ID</th>
             <th>이름</th>
+            <th style="width: 120px;">사용 장소</th>
             <th style="width: 200px;">관리</th>
         </tr>
         </thead>
@@ -90,8 +88,16 @@
                 </form>
             </td>
             <td>
+                <span th:text="${t.placeCount} + '개'">0개</span>
+            </td>
+            <td class="action-cell">
                 <button type="button" class="btn btn--secondary btn--sm"
                         th:attr="data-toggle-target='tag-' + ${t.id}">수정</button>
+                <form th:action="@{/admin/masters/tags/{id}/delete(id=${t.id})}"
+                      method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm btn--delete"
+                            th:data-place-count="${t.placeCount}">삭제</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -120,6 +126,7 @@
             <th style="width: 80px;">ID</th>
             <th>이름</th>
             <th style="width: 140px;">타입</th>
+            <th style="width: 120px;">사용 장소</th>
             <th style="width: 200px;">관리</th>
         </tr>
         </thead>
@@ -144,8 +151,16 @@
             </td>
             <td th:text="${b.type}">YARN</td>
             <td>
+                <span th:text="${b.placeCount} + '개'">0개</span>
+            </td>
+            <td class="action-cell">
                 <button type="button" class="btn btn--secondary btn--sm"
                         th:attr="data-toggle-target='brand-' + ${b.id}">수정</button>
+                <form th:action="@{/admin/masters/brands/{id}/delete(id=${b.id})}"
+                      method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm btn--delete"
+                            th:data-place-count="${b.placeCount}">삭제</button>
+                </form>
             </td>
         </tr>
         </tbody>

@@ -10,12 +10,23 @@ window.confirmSubmit = function (message, formSelector) {
     return true;
 };
 
+// ── 마스터 데이터 삭제 확인 (이벤트 위임) ──
+document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.btn--delete[data-place-count]');
+    if (!btn) return;
+    var count = parseInt(btn.dataset.placeCount, 10) || 0;
+    var message = count > 0
+        ? count + '개 장소에서 사용 중입니다. 연결이 해제됩니다. 정말 삭제하시겠습니까?'
+        : '정말 삭제하시겠습니까?';
+    if (!confirm(message)) e.preventDefault();
+});
+
 // ── 사이드바 현재 페이지 하이라이트 ──
 (function highlightActiveNav() {
-    var path = window.location.pathname;
+    var url = window.location.pathname + window.location.search;
     document.querySelectorAll('.nav-item[data-match]').forEach(function (el) {
         var re = new RegExp(el.getAttribute('data-match'));
-        if (re.test(path)) el.classList.add('active');
+        if (re.test(url)) el.classList.add('active');
     });
 })();
 

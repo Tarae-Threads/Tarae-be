@@ -8,6 +8,7 @@ import com.taraethreads.tarae.place.domain.BrandType
 import com.taraethreads.tarae.place.dto.BrandGroupResponse
 import com.taraethreads.tarae.place.dto.BrandResponse
 import com.taraethreads.tarae.place.repository.BrandRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,10 +20,12 @@ class BrandService(
 
     fun getAll(): List<BrandResponse> = brandRepository.findAll().map { BrandResponse.from(it) }
 
-    fun getAllForAdmin(): List<AdminBrandRow> =
-        brandRepository.findAll()
-            .sortedBy { it.id }
-            .map { AdminBrandRow.from(it) }
+    fun getAllForAdmin(): List<AdminBrandRow> {
+        val usageMap = brandRepository.countPlaceUsagesGrouped()
+            .associate { (it[0] as Long) to (it[1] as Long) }
+        return brandRepository.findAllByOrderById()
+            .map { AdminBrandRow.from(it, usageMap[it.id] ?: 0) }
+    }
 
     fun getBrandsGroupedByType(): List<BrandGroupResponse.BrandTypeGroup> {
         val grouped = brandRepository.findAll().groupBy { it.type }
@@ -45,12 +48,22 @@ class BrandService(
 
     @Transactional
     fun update(id: Long, name: String, type: BrandType) {
-        val brand = brandRepository.findById(id)
-            .orElseThrow { CustomException(ErrorCode.BRAND_NOT_FOUND) }
+        val brand = brandRepository.findByIdOrNull(id)
+            ?: throw CustomException(ErrorCode.BRAND_NOT_FOUND)
         val trimmed = name.trim()
         if (trimmed != brand.name && brandRepository.existsByName(trimmed)) {
             throw CustomException(ErrorCode.DUPLICATE_MASTER_NAME)
         }
         brand.update(trimmed, type)
+    }
+
+    fun countPlaceUsages(id: Long): Long = brandRepository.countPlaceUsages(id)
+
+    @Transactional
+    fun delete(id: Long) {
+        val brand = brandRepository.findByIdOrNull(id)
+            ?: throw CustomException(ErrorCode.BRAND_NOT_FOUND)
+        brandRepository.deletePlaceMappings(id)
+        brandRepository.delete(brand)
     }
 }

@@ -133,4 +133,34 @@ class AdminMasterControllerTest {
         }
     }
 
+    @Test
+    fun `POST 카테고리 삭제는 리다이렉트한다`() {
+        justRun { categoryService.delete(1L) }
+
+        mockMvc.post("/admin/masters/categories/1/delete").andExpect {
+            status { is3xxRedirection() }
+            redirectedUrl("/admin/masters?type=categories")
+        }
+    }
+
+    @Test
+    fun `POST 태그 삭제는 리다이렉트한다`() {
+        justRun { tagService.delete(1L) }
+
+        mockMvc.post("/admin/masters/tags/1/delete").andExpect {
+            status { is3xxRedirection() }
+            redirectedUrl("/admin/masters?type=tags")
+        }
+    }
+
+    @Test
+    fun `POST 브랜드 삭제는 리다이렉트한다`() {
+        justRun { brandService.delete(1L) }
+
+        mockMvc.post("/admin/masters/brands/1/delete").andExpect {
+            status { is3xxRedirection() }
+            redirectedUrl("/admin/masters?type=brands")
+        }
+    }
+
 }
