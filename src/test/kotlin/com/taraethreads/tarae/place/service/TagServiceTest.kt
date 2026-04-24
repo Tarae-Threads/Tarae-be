@@ -7,6 +7,7 @@ import com.taraethreads.tarae.place.repository.TagRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -79,5 +80,27 @@ class TagServiceTest {
         assertThatThrownBy { tagService.rename(1L, "중복") }
             .isInstanceOf(CustomException::class.java)
             .matches { (it as CustomException).errorCode == ErrorCode.DUPLICATE_MASTER_NAME }
+    }
+
+    @Test
+    fun `delete는 매핑을 제거하고 태그를 삭제한다`() {
+        val tag = Tag(name = "삭제대상")
+        every { tagRepository.findById(1L) } returns Optional.of(tag)
+        every { tagRepository.deletePlaceMappings(1L) } returns Unit
+        every { tagRepository.delete(tag) } returns Unit
+
+        tagService.delete(1L)
+
+        verify { tagRepository.deletePlaceMappings(1L) }
+        verify { tagRepository.delete(tag) }
+    }
+
+    @Test
+    fun `delete는 존재하지 않으면 TAG_NOT_FOUND 예외가 발생한다`() {
+        every { tagRepository.findById(99L) } returns Optional.empty()
+
+        assertThatThrownBy { tagService.delete(99L) }
+            .isInstanceOf(CustomException::class.java)
+            .matches { (it as CustomException).errorCode == ErrorCode.TAG_NOT_FOUND }
     }
 }
