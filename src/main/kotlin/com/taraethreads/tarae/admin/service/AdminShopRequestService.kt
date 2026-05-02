@@ -44,22 +44,23 @@ class AdminShopRequestService(
 
         when (shopRequest.requestType) {
             RequestType.UPDATE -> {
-            val shopId = shopRequest.shopId ?: throw CustomException(ErrorCode.INVALID_INPUT)
-            val existing = shopRepository.findById(shopId)
-                .orElseThrow { CustomException(ErrorCode.SHOP_NOT_FOUND) }
-            existing.update(form)
-            shopAssociationSyncer.sync(existing, form)
-        }
+                val shopId = shopRequest.shopId ?: throw CustomException(ErrorCode.INVALID_INPUT)
+                val existing = shopRepository.findById(shopId)
+                    .orElseThrow { CustomException(ErrorCode.SHOP_NOT_FOUND) }
+                existing.update(form)
+                shopAssociationSyncer.sync(existing, form)
+            }
             RequestType.NEW -> {
-            val newShop = Shop(
-                name = form.name,
-                instagramUrl = form.instagramUrl,
-                naverUrl = form.naverUrl,
-                websiteUrl = form.websiteUrl,
-            )
-            shopRepository.save(newShop)
-            shopAssociationSyncer.attach(newShop, form)
-        }
+                val newShop = Shop(
+                    name = form.name,
+                    instagramUrl = form.instagramUrl,
+                    naverUrl = form.naverUrl,
+                    websiteUrl = form.websiteUrl,
+                    description = form.description,
+                )
+                shopRepository.save(newShop)
+                shopAssociationSyncer.attach(newShop, form)
+            }
         }
     }
 

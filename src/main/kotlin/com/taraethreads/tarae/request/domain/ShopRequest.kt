@@ -37,13 +37,6 @@ class ShopRequest(
 
     @Convert(converter = LongListJsonConverter::class)
     @Column(columnDefinition = "JSON")
-    val categoryIds: List<Long> = emptyList(),
-
-    @Column(length = 255)
-    val categoryText: String? = null,
-
-    @Convert(converter = LongListJsonConverter::class)
-    @Column(columnDefinition = "JSON")
     val brandYarnIds: List<Long> = emptyList(),
 
     @Column(length = 255)
@@ -74,7 +67,7 @@ class ShopRequest(
     val tags: String? = null,
 
     @Column(columnDefinition = "TEXT")
-    val note: String? = null,
+    val description: String? = null,
 
     @Column(length = 100)
     val email: String? = null,

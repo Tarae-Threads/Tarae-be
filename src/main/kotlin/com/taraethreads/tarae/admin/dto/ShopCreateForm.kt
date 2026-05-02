@@ -5,7 +5,7 @@ data class ShopCreateForm(
     val instagramUrl: String? = null,
     val naverUrl: String? = null,
     val websiteUrl: String? = null,
-    val categoryIds: List<Long> = emptyList(),
+    val description: String? = null,
     val tagIds: List<Long> = emptyList(),
     val brandIds: List<Long> = emptyList(),
 )

@@ -32,7 +32,7 @@ class AdminShopService(
             instagramUrl = shop.instagramUrl,
             naverUrl = shop.naverUrl,
             websiteUrl = shop.websiteUrl,
-            categoryIds = shop.categories.map { it.id },
+            description = shop.description,
             tagIds = shop.tags.map { it.id },
             brandIds = shop.brands.map { it.id },
         )
@@ -46,6 +46,7 @@ class AdminShopService(
                 instagramUrl = form.instagramUrl,
                 naverUrl = form.naverUrl,
                 websiteUrl = form.websiteUrl,
+                description = form.description,
             )
             shopAssociationSyncer.attach(shop, form)
             shopRepository.save(shop).id

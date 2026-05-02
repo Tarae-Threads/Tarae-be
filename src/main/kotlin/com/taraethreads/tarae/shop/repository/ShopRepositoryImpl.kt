@@ -3,11 +3,9 @@ package com.taraethreads.tarae.shop.repository
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taraethreads.tarae.place.domain.QBrand
-import com.taraethreads.tarae.place.domain.QCategory
 import com.taraethreads.tarae.place.domain.QTag
 import com.taraethreads.tarae.shop.domain.QShop.shop
 import com.taraethreads.tarae.shop.domain.QShopBrand
-import com.taraethreads.tarae.shop.domain.QShopCategory
 import com.taraethreads.tarae.shop.domain.QShopTag
 import com.taraethreads.tarae.shop.domain.Shop
 import org.springframework.data.domain.Page
@@ -18,19 +16,11 @@ class ShopRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
 ) : ShopRepositoryCustom {
 
-    override fun findAllWithFilters(categoryId: Long?, tagId: Long?, keyword: String?): List<Shop> {
+    override fun findAllWithFilters(tagId: Long?, keyword: String?): List<Shop> {
         val query = queryFactory
             .selectDistinct(shop)
             .from(shop)
             .where(shop.active.isTrue)
-
-        if (categoryId != null) {
-            val shopCategory = QShopCategory.shopCategory
-            val category = QCategory.category
-            query.join(shop.shopCategories, shopCategory)
-                .join(shopCategory.category, category)
-                .where(category.id.eq(categoryId))
-        }
 
         if (tagId != null) {
             val shopTag = QShopTag.shopTag
@@ -62,46 +52,20 @@ class ShopRepositoryImpl(
     override fun findAllForAdmin(keyword: String?, pageable: Pageable): Page<Shop> {
         val tokens = keyword?.trim()?.split("\\s+".toRegex())?.filter { it.isNotEmpty() } ?: emptyList()
 
-        fun baseQuery() = queryFactory
-            .selectDistinct(shop)
-            .from(shop)
-            .let { q ->
-                if (tokens.isNotEmpty()) {
-                    val searchShopCategory = QShopCategory("adminShopCategory")
-                    val searchCategory = QCategory("adminCategory")
-                    q.leftJoin(shop.shopCategories, searchShopCategory)
-                        .leftJoin(searchShopCategory.category, searchCategory)
-                    tokens.forEach { token ->
-                        q.where(
-                            shop.name.containsIgnoreCase(token)
-                                .or(searchCategory.name.containsIgnoreCase(token))
-                        )
-                    }
-                }
-                q
-            }
+        fun applyKeyword(q: com.querydsl.jpa.impl.JPAQuery<*>) {
+            tokens.forEach { token -> q.where(shop.name.containsIgnoreCase(token)) }
+        }
 
         val totalCount = queryFactory
             .select(shop.countDistinct())
             .from(shop)
-            .let { q ->
-                if (tokens.isNotEmpty()) {
-                    val searchShopCategory = QShopCategory("adminShopCategoryCount")
-                    val searchCategory = QCategory("adminCategoryCount")
-                    q.leftJoin(shop.shopCategories, searchShopCategory)
-                        .leftJoin(searchShopCategory.category, searchCategory)
-                    tokens.forEach { token ->
-                        q.where(
-                            shop.name.containsIgnoreCase(token)
-                                .or(searchCategory.name.containsIgnoreCase(token))
-                        )
-                    }
-                }
-                q
-            }
+            .also { applyKeyword(it) }
             .fetchOne() ?: 0L
 
-        val content = baseQuery()
+        val content = queryFactory
+            .selectDistinct(shop)
+            .from(shop)
+            .also { applyKeyword(it) }
             .orderBy(shop.id.desc())
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())

@@ -5,7 +5,7 @@
 
 <div class="toolbar">
     <form method="get" th:action="@{/admin/shops}" class="toolbar__search">
-        <input type="text" name="keyword" th:value="${keyword}" placeholder="온라인샵명 / 카테고리"/>
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="온라인샵명"/>
         <button type="submit" class="btn btn--secondary">검색</button>
     </form>
     <a th:href="@{/admin/shops/new}" class="btn btn--primary">+ 온라인샵 등록</a>
@@ -17,7 +17,6 @@
         <tr>
             <th>ID</th>
             <th>온라인샵명</th>
-            <th>카테고리</th>
             <th>액션</th>
             <th>공개</th>
         </tr>
@@ -26,7 +25,6 @@
         <tr th:each="s : ${shops}">
             <td th:text="${s.id}">1</td>
             <td th:text="${s.name}">온라인샵명</td>
-            <td th:text="${#strings.listJoin(s.categoryNames, ', ')}">카테고리</td>
             <td class="td-actions">
                 <a th:href="@{/admin/shops/{id}/edit(id=${s.id})}" class="btn btn--secondary btn--sm">수정</a>
                 <form th:action="@{/admin/shops/{id}/delete(id=${s.id})}" method="post" class="form-inline">

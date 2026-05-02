@@ -14,8 +14,8 @@ class ShopService(
     private val shopRepository: ShopRepository,
 ) {
 
-    fun getShops(categoryId: Long?, tagId: Long?, keyword: String?): List<ShopListResponse> =
-        shopRepository.findAllWithFilters(categoryId, tagId, keyword)
+    fun getShops(tagId: Long?, keyword: String?): List<ShopListResponse> =
+        shopRepository.findAllWithFilters(tagId, keyword)
             .map { ShopListResponse.from(it) }
 
     fun getShop(id: Long): ShopDetailResponse {

@@ -30,10 +30,9 @@ class ShopController(
     @GetMapping
     fun getShops(
         @Parameter(description = "검색어 (온라인샵명, 태그, 브랜드 통합 검색)") @RequestParam keyword: String?,
-        @Parameter(description = "카테고리 ID") @RequestParam categoryId: Long?,
         @Parameter(description = "태그 ID") @RequestParam tagId: Long?,
     ): ResponseEntity<ApiResponse<List<ShopListResponse>>> =
-        ApiResponse.ok(shopService.getShops(categoryId, tagId, keyword))
+        ApiResponse.ok(shopService.getShops(tagId, keyword))
 
     @Operation(summary = "온라인샵 상세 조회")
     @ApiResponses(

@@ -90,6 +90,7 @@ class AdminRequestController(
                 lng = placeRequest.lng,
                 hoursText = placeRequest.hoursText,
                 closedDays = placeRequest.closedDays,
+                description = placeRequest.description,
                 instagramUrl = placeRequest.instagramUrl,
                 websiteUrl = placeRequest.websiteUrl,
                 naverMapUrl = placeRequest.naverMapUrl,

@@ -3,7 +3,6 @@ package com.taraethreads.tarae.admin.controller
 import com.taraethreads.tarae.admin.dto.ShopCreateForm
 import com.taraethreads.tarae.admin.service.AdminShopRequestService
 import com.taraethreads.tarae.place.service.BrandService
-import com.taraethreads.tarae.place.service.CategoryService
 import com.taraethreads.tarae.place.service.TagService
 import com.taraethreads.tarae.request.domain.RequestStatus
 import com.taraethreads.tarae.request.domain.RequestType
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/admin/shop-requests")
 class AdminShopRequestController(
     private val adminShopRequestService: AdminShopRequestService,
-    private val categoryService: CategoryService,
     private val tagService: TagService,
     private val brandService: BrandService,
 ) {
@@ -52,7 +50,7 @@ class AdminShopRequestController(
                 instagramUrl = existingShop.instagramUrl,
                 naverUrl = existingShop.naverUrl,
                 websiteUrl = existingShop.websiteUrl,
-                categoryIds = existingShop.categories.map { it.id },
+                description = existingShop.description,
                 tagIds = existingShop.tags.map { it.id },
                 brandIds = existingShop.brands.map { it.id },
             )
@@ -62,21 +60,15 @@ class AdminShopRequestController(
                 instagramUrl = shopRequest.instagramUrl,
                 naverUrl = shopRequest.naverUrl,
                 websiteUrl = shopRequest.websiteUrl,
-                categoryIds = shopRequest.categoryIds,
+                description = shopRequest.description,
             )
         }
 
-        model.addAttribute("form", form)
-
-        val allCategories = categoryService.getCategories()
         val allBrands = brandService.getAll()
-        model.addAttribute("categories", allCategories)
+        model.addAttribute("form", form)
         model.addAttribute("tags", tagService.getAll())
         model.addAttribute("brands", allBrands)
         model.addAttribute("brandGroups", brandService.getBrandsGroupedByType())
-
-        val categoryIdSet = shopRequest.categoryIds.toSet()
-        model.addAttribute("selectedCategoryNames", allCategories.filter { it.id in categoryIdSet }.map { it.name })
 
         val brandMap = allBrands.associateBy { it.id }
         model.addAttribute("selectedBrandYarnNames", shopRequest.brandYarnIds.mapNotNull { brandMap[it]?.name })

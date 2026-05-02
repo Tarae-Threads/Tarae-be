@@ -17,6 +17,10 @@
                     <input type="text" name="shops[0].name" required/>
                 </div>
                 <div class="form-group">
+                    <label>설명</label>
+                    <textarea name="shops[0].description"></textarea>
+                </div>
+                <div class="form-group">
                     <label>인스타그램 URL</label>
                     <input type="text" name="shops[0].instagramUrl"/>
                 </div>
@@ -27,36 +31,6 @@
                 <div class="form-group">
                     <label>웹사이트 URL</label>
                     <input type="text" name="shops[0].websiteUrl"/>
-                </div>
-
-                <!-- 카테고리 -->
-                <div class="selector-section open">
-                    <div class="selector-header" onclick="toggleSection(this)">
-                        <div class="selector-header-left">
-                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                            <span class="selector-title">카테고리</span>
-                        </div>
-                        <span class="selector-count">0</span>
-                    </div>
-                    <div class="selector-body">
-                        <div class="selector-body-wrap">
-                            <div class="selected-summary"></div>
-                            <div class="selector-body-inner">
-                                <div class="chip-grid">
-                                    <label th:each="cat : ${categories}" class="chip-toggle">
-                                        <input type="checkbox" name="shops[0].categoryIds" th:value="${cat.id}"
-                                               onchange="updateSelector(this)"/>
-                                        <span class="chip-label" th:text="${cat.name}">카테고리</span>
-                                    </label>
-                                </div>
-                                <div class="quick-add">
-                                    <input type="text" class="quick-add__input" placeholder="새 카테고리명"/>
-                                    <button type="button" class="btn btn--sm btn--outline"
-                                            onclick="quickAdd(this, '/admin/api/categories', 'shops[0].categoryIds')">+ 추가</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 태그 -->
@@ -148,6 +122,10 @@
                 <input type="text" name="name" th:value="${form.name}" required/>
             </div>
             <div class="form-group">
+                <label>설명</label>
+                <textarea name="description" th:text="${form.description}"></textarea>
+            </div>
+            <div class="form-group">
                 <label>인스타그램 URL</label>
                 <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
             </div>
@@ -158,37 +136,6 @@
             <div class="form-group">
                 <label>웹사이트 URL</label>
                 <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
-            </div>
-
-            <!-- 카테고리 -->
-            <div class="selector-section open">
-                <div class="selector-header" onclick="toggleSection(this)">
-                    <div class="selector-header-left">
-                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                        <span class="selector-title">카테고리</span>
-                    </div>
-                    <span class="selector-count">0</span>
-                </div>
-                <div class="selector-body">
-                    <div class="selector-body-wrap">
-                        <div class="selected-summary"></div>
-                        <div class="selector-body-inner">
-                            <div class="chip-grid">
-                                <label th:each="cat : ${categories}" class="chip-toggle">
-                                    <input type="checkbox" name="categoryIds" th:value="${cat.id}"
-                                           th:checked="${#lists.contains(form.categoryIds, cat.id)}"
-                                           onchange="updateSelector(this)"/>
-                                    <span class="chip-label" th:text="${cat.name}">카테고리</span>
-                                </label>
-                            </div>
-                            <div class="quick-add">
-                                <input type="text" class="quick-add__input" placeholder="새 카테고리명"/>
-                                <button type="button" class="btn btn--sm btn--outline"
-                                        onclick="quickAdd(this, '/admin/api/categories', 'categoryIds')">+ 추가</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- 태그 -->
@@ -290,7 +237,6 @@
 <script th:inline="javascript">
 const MODE = /*[[${mode}]]*/ 'create';
 const FORM_ID = MODE === 'edit' ? 'edit-form' : 'bulk-form';
-const CATEGORIES = /*[[${categories}]]*/ [];
 const TAGS = /*[[${tags}]]*/ [];
 const BRAND_GROUPS = /*[[${brandGroups}]]*/ [];
 
@@ -469,10 +415,10 @@ function addRow() {
             <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
         </div>
         <div class="form-group"><label>온라인샵명 *</label><input type="text" name="shops[${idx}].name" required/></div>
+        <div class="form-group"><label>설명</label><textarea name="shops[${idx}].description"></textarea></div>
         <div class="form-group"><label>인스타그램 URL</label><input type="text" name="shops[${idx}].instagramUrl"/></div>
         <div class="form-group"><label>네이버 스마트스토어 URL</label><input type="text" name="shops[${idx}].naverUrl"/></div>
         <div class="form-group"><label>웹사이트 URL</label><input type="text" name="shops[${idx}].websiteUrl"/></div>
-        ${buildSelectorHtml('카테고리', 'shops[' + idx + '].categoryIds', CATEGORIES, { open: true, quickAddUrl: '/admin/api/categories', placeholder: '새 카테고리명' })}
         ${buildSelectorHtml('태그', 'shops[' + idx + '].tagIds', TAGS, { search: true, quickAddUrl: '/admin/api/tags', placeholder: '새 태그명' })}
         ${buildBrandSelectorHtml('shops[' + idx + '].brandIds', BRAND_GROUPS)}
     `;

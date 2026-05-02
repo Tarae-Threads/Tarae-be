@@ -1,46 +1,110 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{admin/layout/base :: layout('온라인샵 제보 상세', ~{::body})}">
+      th:replace="~{admin/layout/base :: layout('온라인샵 제보 검수', ~{::body})}">
 <body>
 
-<div class="card">
-    <h2>제보 정보</h2>
-    <dl>
-        <dt>타입</dt><dd th:text="${request.requestType}">NEW</dd>
-        <dt>상태</dt><dd th:text="${request.status}">PENDING</dd>
-        <dt>온라인샵명</dt><dd th:text="${request.name}">이름</dd>
-        <dt>인스타그램</dt><dd th:text="${request.instagramUrl}">-</dd>
-        <dt>네이버</dt><dd th:text="${request.naverUrl}">-</dd>
-        <dt>웹사이트</dt><dd th:text="${request.websiteUrl}">-</dd>
-        <dt>카테고리 (선택)</dt>
-        <dd th:text="${#strings.listJoin(selectedCategoryNames, ', ')}">-</dd>
-        <dt>카테고리 (직접입력)</dt><dd th:text="${request.categoryText}">-</dd>
-        <dt>실 브랜드 (선택)</dt>
-        <dd th:text="${#strings.listJoin(selectedBrandYarnNames, ', ')}">-</dd>
-        <dt>실 브랜드 (직접입력)</dt><dd th:text="${request.brandsYarn}">-</dd>
-        <dt>바늘 브랜드 (선택)</dt>
-        <dd th:text="${#strings.listJoin(selectedBrandNeedleNames, ', ')}">-</dd>
-        <dt>바늘 브랜드 (직접입력)</dt><dd th:text="${request.brandsNeedle}">-</dd>
-        <dt>부자재 브랜드 (선택)</dt>
-        <dd th:text="${#strings.listJoin(selectedBrandNotionsNames, ', ')}">-</dd>
-        <dt>부자재 브랜드 (직접입력)</dt><dd th:text="${request.brandsNotions}">-</dd>
-        <dt>도안집 브랜드 (선택)</dt>
-        <dd th:text="${#strings.listJoin(selectedBrandPatternbookNames, ', ')}">-</dd>
-        <dt>도안집 브랜드 (직접입력)</dt><dd th:text="${request.brandsPatternbook}">-</dd>
-        <dt>태그</dt><dd th:text="${request.tags}">-</dd>
-        <dt>메모</dt><dd th:text="${request.note}">-</dd>
-        <dt>제보자 이메일</dt><dd th:text="${request.email ?: '-'}">-</dd>
-    </dl>
+<!-- 제보 유형 배지 -->
+<div class="request-type-badges">
+    <span th:if="${request.requestType.name() == 'NEW'}" class="badge badge--lg badge--approved">신규 등록</span>
+    <span th:if="${request.requestType.name() == 'UPDATE'}" class="badge badge--lg badge--update">수정 요청</span>
+    <span th:if="${request.status.name() != 'PENDING'}"
+          class="badge badge--lg"
+          th:classappend="${request.status.name() == 'APPROVED' ? 'badge--approved' : 'badge--rejected'}"
+          th:text="${request.status}">상태</span>
 </div>
 
-<div th:if="${request.status.name() == 'PENDING'}">
-    <!-- 승인 폼 -->
-    <form method="post" th:action="@{/admin/shop-requests/{id}/approve(id=${request.id})}">
-        <div class="card">
-            <h2>승인 후 등록될 정보</h2>
+<!-- 처리된 제보 안내 -->
+<div th:if="${request.status.name() != 'PENDING'}" class="alert alert--warning">
+    이미 <strong th:text="${request.status}">처리됨</strong> 상태인 제보입니다. 재처리할 수 없습니다.
+</div>
+
+<div class="detail-grid">
+
+    <!-- 좌측: 제보 원본 -->
+    <div class="card">
+        <div class="detail-section-title">제보 원본</div>
+
+        <div class="field-group">
+            <div class="field-group__label">온라인샵명</div>
+            <div class="field-group__value" th:text="${request.name ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">인스타그램</div>
+            <div class="field-group__value" th:text="${request.instagramUrl ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">네이버</div>
+            <div class="field-group__value" th:text="${request.naverUrl ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">웹사이트</div>
+            <div class="field-group__value" th:text="${request.websiteUrl ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">실 브랜드 (선택)</div>
+            <div class="field-group__value"
+                 th:text="${#lists.isEmpty(selectedBrandYarnNames) ? '-' : #strings.listJoin(selectedBrandYarnNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">실 브랜드 (직접입력)</div>
+            <div class="field-group__value" th:text="${request.brandsYarn ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">바늘 브랜드 (선택)</div>
+            <div class="field-group__value"
+                 th:text="${#lists.isEmpty(selectedBrandNeedleNames) ? '-' : #strings.listJoin(selectedBrandNeedleNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">바늘 브랜드 (직접입력)</div>
+            <div class="field-group__value" th:text="${request.brandsNeedle ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">부자재 브랜드 (선택)</div>
+            <div class="field-group__value"
+                 th:text="${#lists.isEmpty(selectedBrandNotionsNames) ? '-' : #strings.listJoin(selectedBrandNotionsNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">부자재 브랜드 (직접입력)</div>
+            <div class="field-group__value" th:text="${request.brandsNotions ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">도안집 브랜드 (선택)</div>
+            <div class="field-group__value"
+                 th:text="${#lists.isEmpty(selectedBrandPatternbookNames) ? '-' : #strings.listJoin(selectedBrandPatternbookNames, ', ')}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">도안집 브랜드 (직접입력)</div>
+            <div class="field-group__value" th:text="${request.brandsPatternbook ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">태그 (자유입력)</div>
+            <div class="field-group__value" th:text="${request.tags ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">설명</div>
+            <div class="field-group__value" th:text="${request.description ?: '-'}">-</div>
+        </div>
+        <div class="field-group">
+            <div class="field-group__label">제보자 이메일</div>
+            <div class="field-group__value" th:text="${request.email ?: '-'}">-</div>
+        </div>
+    </div>
+
+    <!-- 우측: 온라인샵 입력 폼 -->
+    <div class="card">
+        <div class="detail-section-title">
+            <span th:if="${request.requestType.name() == 'NEW'}">온라인샵 등록 폼</span>
+            <span th:if="${request.requestType.name() == 'UPDATE'}">온라인샵 수정 폼</span>
+        </div>
+
+        <form th:action="@{/admin/shop-requests/{id}/approve(id=${request.id})}" method="post">
             <div class="form-group">
                 <label>온라인샵명 *</label>
                 <input type="text" name="name" th:value="${form.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>설명</label>
+                <textarea name="description" th:text="${form.description}"></textarea>
             </div>
             <div class="form-group">
                 <label>인스타그램 URL</label>
@@ -55,65 +119,246 @@
                 <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
             </div>
 
-            <!-- 카테고리 -->
-            <div class="form-group">
-                <label>카테고리</label>
-                <div class="chip-grid">
-                    <label th:each="cat : ${categories}" class="chip-toggle">
-                        <input type="checkbox" name="categoryIds" th:value="${cat.id}"
-                               th:checked="${#lists.contains(form.categoryIds, cat.id)}"/>
-                        <span class="chip-label" th:text="${cat.name}">카테고리</span>
-                    </label>
-                </div>
-            </div>
-
             <!-- 태그 -->
-            <div class="form-group">
-                <label>태그</label>
-                <div class="chip-grid">
-                    <label th:each="tag : ${tags}" class="chip-toggle">
-                        <input type="checkbox" name="tagIds" th:value="${tag.id}"
-                               th:checked="${#lists.contains(form.tagIds, tag.id)}"/>
-                        <span class="chip-label" th:text="${tag.name}">태그</span>
-                    </label>
+            <div class="selector-section">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">태그</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
+                            <div class="chip-grid">
+                                <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
+                                    <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                                           th:checked="${#lists.contains(form.tagIds, tag.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${tag.name}">태그</span>
+                                </label>
+                            </div>
+                            <div class="chip-no-results">검색 결과가 없습니다</div>
+                            <div class="quick-add">
+                                <input type="text" class="quick-add__input" placeholder="새 태그명"/>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAdd(this, '/admin/api/tags', 'tagIds')">+ 추가</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- 브랜드 -->
-            <div class="form-group">
-                <label>브랜드</label>
-                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}">
-                    <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
-                    <div class="chip-grid">
-                        <label th:each="brand : ${group.brands}" class="chip-toggle">
-                            <input type="checkbox" name="brandIds" th:value="${brand.id}"
-                                   th:checked="${#lists.contains(form.brandIds, brand.id)}"/>
-                            <span class="chip-label" th:text="${brand.name}">브랜드</span>
-                        </label>
+            <div class="selector-section">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">브랜드</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup" th:data-brand-type="${group.type}">
+                                <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
+                                <div class="chip-grid">
+                                    <label th:each="brand : ${group.brands}" class="chip-toggle">
+                                        <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                               th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                               onchange="updateSelector(this)"/>
+                                        <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="quick-add quick-add--brand">
+                                <input type="text" class="quick-add__input" placeholder="새 브랜드명"/>
+                                <select class="quick-add__select">
+                                    <option value="YARN">YARN</option>
+                                    <option value="NEEDLE">NEEDLE</option>
+                                    <option value="NOTIONS">NOTIONS</option>
+                                    <option value="PATTERNBOOK">PATTERNBOOK</option>
+                                </select>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAddBrand(this)">+ 추가</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <a th:href="@{/admin/shop-requests}" class="btn btn--secondary">목록으로</a>
-            <button type="submit" class="btn btn--primary"
-                    onclick="return confirm('승인하시겠습니까?')">승인</button>
-        </div>
-    </form>
+            <div class="form-actions" th:if="${request.status.name() == 'PENDING'}">
+                <button th:if="${request.requestType.name() == 'NEW'}" type="submit" class="btn btn--primary">승인 (신규 등록)</button>
+                <button th:if="${request.requestType.name() == 'UPDATE'}" type="submit" class="btn btn--primary">승인 (수정 반영)</button>
+            </div>
+        </form>
 
-    <!-- 거절 폼 -->
-    <form method="post" th:action="@{/admin/shop-requests/{id}/reject(id=${request.id})}"
-          style="margin-top: 8px;">
-        <button type="submit" class="btn btn--destructive"
-                onclick="return confirm('거절하시겠습니까?')">거절</button>
-    </form>
+        <!-- 거절 폼 -->
+        <form th:if="${request.status.name() == 'PENDING'}"
+              th:action="@{/admin/shop-requests/{id}/reject(id=${request.id})}"
+              method="post"
+              class="reject-form">
+            <button type="submit" class="btn btn--destructive"
+                    onclick="return confirm('정말 거절하시겠습니까?')">거절</button>
+        </form>
+    </div>
 </div>
 
-<div th:if="${request.status.name() != 'PENDING'}" class="form-actions">
-    <a th:href="@{/admin/shop-requests}" class="btn btn--secondary">목록으로</a>
-    <span class="badge" th:text="${request.status}">처리됨</span>
-</div>
+<script>
+/* ── Selector UI ── */
+function toggleSection(header) {
+    header.closest('.selector-section').classList.toggle('open');
+}
+
+function updateSelector(checkbox) {
+    var section = checkbox.closest('.selector-section');
+    var checked = section.querySelectorAll('input[type="checkbox"]:checked');
+    var countBadge = section.querySelector('.selector-count');
+    var summary = section.querySelector('.selected-summary');
+
+    countBadge.textContent = checked.length;
+    countBadge.classList.toggle('visible', checked.length > 0);
+
+    summary.innerHTML = '';
+    checked.forEach(function(cb) {
+        var chip = document.createElement('span');
+        chip.className = 'selected-chip';
+        chip.textContent = cb.nextElementSibling.textContent;
+        chip.onclick = function(e) {
+            e.stopPropagation();
+            cb.checked = false;
+            updateSelector(cb);
+        };
+        summary.appendChild(chip);
+    });
+}
+
+function filterChips(input) {
+    var query = input.value.toLowerCase().trim();
+    var body = input.closest('.selector-body-inner');
+    var chips = body.querySelectorAll('.chip-toggle');
+    var noResults = body.querySelector('.chip-no-results');
+    var visibleCount = 0;
+
+    chips.forEach(function(chip) {
+        var name = (chip.dataset.name || chip.querySelector('.chip-label').textContent).toLowerCase();
+        var match = !query || name.indexOf(query) !== -1;
+        chip.classList.toggle('hidden', !match);
+        if (match) visibleCount++;
+    });
+
+    if (noResults) {
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+}
+
+/* ── Quick Add ── */
+function createChipLabel(fieldName, id, name) {
+    var label = document.createElement('label');
+    label.className = 'chip-toggle';
+    label.dataset.name = name;
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = fieldName;
+    checkbox.value = id;
+    checkbox.checked = true;
+    checkbox.onchange = function() { updateSelector(this); };
+    var span = document.createElement('span');
+    span.className = 'chip-label';
+    span.textContent = name;
+    label.appendChild(checkbox);
+    label.appendChild(span);
+    return label;
+}
+
+function handleFetchError(res) {
+    if (!res.ok) {
+        return res.json().catch(function() { return { message: '서버 오류' }; }).then(function(body) {
+            throw new Error(body.message || '요청 실패');
+        });
+    }
+    return res.json();
+}
+
+function quickAdd(btn, url, fieldName) {
+    var container = btn.closest('.quick-add');
+    var input = container.querySelector('.quick-add__input');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    btn.disabled = true;
+    var body = new URLSearchParams();
+    body.append('name', name);
+
+    fetch(url, { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var chipGrid = btn.closest('.selector-body-inner').querySelector('.chip-grid');
+            var label = createChipLabel(fieldName, data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
+}
+
+function quickAddBrand(btn) {
+    var container = btn.closest('.quick-add--brand');
+    var input = container.querySelector('.quick-add__input');
+    var select = container.querySelector('.quick-add__select');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    btn.disabled = true;
+    var body = new URLSearchParams();
+    body.append('name', name);
+    body.append('type', select.value);
+
+    fetch('/admin/api/brands', { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var sectionInner = btn.closest('.selector-body-inner');
+            var subgroup = sectionInner.querySelector('[data-brand-type="' + data.type + '"]');
+            if (!subgroup) {
+                subgroup = document.createElement('div');
+                subgroup.className = 'chip__subgroup';
+                subgroup.dataset.brandType = data.type;
+                var title = document.createElement('div');
+                title.className = 'chip__subgroup-title';
+                title.textContent = data.type;
+                var grid = document.createElement('div');
+                grid.className = 'chip-grid';
+                subgroup.appendChild(title);
+                subgroup.appendChild(grid);
+                sectionInner.insertBefore(subgroup, container);
+            }
+            var chipGrid = subgroup.querySelector('.chip-grid');
+            var label = createChipLabel('brandIds', data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
+}
+
+// Initialize counts on page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.selector-section').forEach(function(section) {
+        var firstChecked = section.querySelector('input[type="checkbox"]:checked');
+        if (firstChecked) {
+            updateSelector(firstChecked);
+            section.classList.add('open');
+        }
+    });
+});
+</script>
 
 </body>
 </html>

@@ -93,7 +93,7 @@ class PlaceRequest(
     val tags: String? = null,
 
     @Column(columnDefinition = "TEXT")
-    val note: String? = null,
+    val description: String? = null,
 
     @Column(length = 100)
     val email: String? = null,

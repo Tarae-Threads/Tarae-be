@@ -3,7 +3,6 @@ package com.taraethreads.tarae.shop.domain
 import com.taraethreads.tarae.admin.dto.ShopCreateForm
 import com.taraethreads.tarae.global.common.BaseEntity
 import com.taraethreads.tarae.place.domain.Brand
-import com.taraethreads.tarae.place.domain.Category
 import com.taraethreads.tarae.place.domain.Tag
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -30,6 +29,9 @@ class Shop(
     @Column(length = 255)
     var websiteUrl: String? = null,
 
+    @Column(columnDefinition = "TEXT")
+    var description: String? = null,
+
     @Column(nullable = false)
     var active: Boolean = true,
 ) : BaseEntity() {
@@ -40,19 +42,11 @@ class Shop(
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "shop", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val shopCategories: MutableList<ShopCategory> = mutableListOf()
-
-    @BatchSize(size = 100)
-    @OneToMany(mappedBy = "shop", cascade = [CascadeType.ALL], orphanRemoval = true)
     val shopTags: MutableList<ShopTag> = mutableListOf()
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "shop", cascade = [CascadeType.ALL], orphanRemoval = true)
     val shopBrands: MutableList<ShopBrand> = mutableListOf()
-
-    fun addCategory(category: Category) {
-        shopCategories.add(ShopCategory(shop = this, category = category))
-    }
 
     fun addTag(tag: Tag) {
         shopTags.add(ShopTag(shop = this, tag = tag))
@@ -62,7 +56,6 @@ class Shop(
         shopBrands.add(ShopBrand(shop = this, brand = brand))
     }
 
-    val categories: List<Category> get() = shopCategories.map { it.category }
     val tags: List<Tag> get() = shopTags.map { it.tag }
     val brands: List<Brand> get() = shopBrands.map { it.brand }
 
@@ -79,6 +72,7 @@ class Shop(
         instagramUrl = form.instagramUrl
         naverUrl = form.naverUrl
         websiteUrl = form.websiteUrl
+        description = form.description
     }
 
     override fun equals(other: Any?): Boolean {

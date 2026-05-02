@@ -13,8 +13,6 @@ data class ShopRequestInput(
     val instagramUrl: String? = null,
     val naverUrl: String? = null,
     val websiteUrl: String? = null,
-    val categoryIds: List<Long>? = null,
-    val categoryText: String? = null,
     val brandYarnIds: List<Long>? = null,
     val brandsYarn: String? = null,
     val brandNeedleIds: List<Long>? = null,
@@ -24,7 +22,7 @@ data class ShopRequestInput(
     val brandPatternbookIds: List<Long>? = null,
     val brandsPatternbook: String? = null,
     val tags: String? = null,
-    val note: String? = null,
+    val description: String? = null,
     @field:Email
     val email: String? = null,
 ) {
@@ -35,8 +33,6 @@ data class ShopRequestInput(
         instagramUrl = instagramUrl,
         naverUrl = naverUrl,
         websiteUrl = websiteUrl,
-        categoryIds = categoryIds ?: emptyList(),
-        categoryText = categoryText,
         brandYarnIds = brandYarnIds ?: emptyList(),
         brandsYarn = brandsYarn,
         brandNeedleIds = brandNeedleIds ?: emptyList(),
@@ -46,7 +42,7 @@ data class ShopRequestInput(
         brandPatternbookIds = brandPatternbookIds ?: emptyList(),
         brandsPatternbook = brandsPatternbook,
         tags = tags,
-        note = note,
+        description = description,
         email = email,
     )
 }

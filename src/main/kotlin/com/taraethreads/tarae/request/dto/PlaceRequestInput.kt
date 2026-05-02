@@ -31,7 +31,7 @@ data class PlaceRequestInput(
     val websiteUrl: String? = null,
     val naverMapUrl: String? = null,
     val tags: String? = null,
-    val note: String? = null,
+    val description: String? = null,
     @field:Email
     val email: String? = null,
 ) {
@@ -59,7 +59,7 @@ data class PlaceRequestInput(
         websiteUrl = websiteUrl,
         naverMapUrl = naverMapUrl,
         tags = tags,
-        note = note,
+        description = description,
         email = email,
     )
 }

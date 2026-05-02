@@ -28,24 +28,24 @@ class ShopServiceTest {
         @Test
         fun `필터 파라미터를 repository에 그대로 전달하고 ShopListResponse 목록을 반환한다`() {
             // given
-            every { shopRepository.findAllWithFilters(1L, null, null) } returns listOf(shop())
+            every { shopRepository.findAllWithFilters(tagId = 1L, keyword = null) } returns listOf(shop())
 
             // when
-            val result: List<ShopListResponse> = shopService.getShops(categoryId = 1L, tagId = null, keyword = null)
+            val result: List<ShopListResponse> = shopService.getShops(tagId = 1L, keyword = null)
 
             // then
             assertThat(result).hasSize(1)
             assertThat(result[0].name).isEqualTo("실뭉치샵")
-            verify { shopRepository.findAllWithFilters(1L, null, null) }
+            verify { shopRepository.findAllWithFilters(tagId = 1L, keyword = null) }
         }
 
         @Test
         fun `필터 없이 전체 조회한다`() {
             // given
-            every { shopRepository.findAllWithFilters(null, null, null) } returns emptyList()
+            every { shopRepository.findAllWithFilters(null, null) } returns emptyList()
 
             // when
-            val result: List<ShopListResponse> = shopService.getShops(null, null, null)
+            val result: List<ShopListResponse> = shopService.getShops(null, null)
 
             // then
             assertThat(result).isEmpty()
