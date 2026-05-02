@@ -72,4 +72,22 @@ class AdminMasterController(
         brandService.update(id, request.name, request.type)
         return "redirect:/admin/masters?type=brands"
     }
+
+    @PostMapping("/categories/{id}/delete")
+    fun deleteCategory(@PathVariable id: Long): String {
+        categoryService.delete(id)
+        return "redirect:/admin/masters?type=categories"
+    }
+
+    @PostMapping("/tags/{id}/delete")
+    fun deleteTag(@PathVariable id: Long): String {
+        tagService.delete(id)
+        return "redirect:/admin/masters?type=tags"
+    }
+
+    @PostMapping("/brands/{id}/delete")
+    fun deleteBrand(@PathVariable id: Long): String {
+        brandService.delete(id)
+        return "redirect:/admin/masters?type=brands"
+    }
 }

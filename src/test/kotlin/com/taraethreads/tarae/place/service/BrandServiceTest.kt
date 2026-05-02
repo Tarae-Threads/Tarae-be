@@ -8,6 +8,7 @@ import com.taraethreads.tarae.place.repository.BrandRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -86,5 +87,27 @@ class BrandServiceTest {
         assertThatThrownBy { brandService.update(1L, "중복", BrandType.YARN) }
             .isInstanceOf(CustomException::class.java)
             .matches { (it as CustomException).errorCode == ErrorCode.DUPLICATE_MASTER_NAME }
+    }
+
+    @Test
+    fun `delete는 매핑을 제거하고 브랜드를 삭제한다`() {
+        val brand = Brand(name = "삭제대상", type = BrandType.YARN)
+        every { brandRepository.findById(1L) } returns Optional.of(brand)
+        every { brandRepository.deletePlaceMappings(1L) } returns Unit
+        every { brandRepository.delete(brand) } returns Unit
+
+        brandService.delete(1L)
+
+        verify { brandRepository.deletePlaceMappings(1L) }
+        verify { brandRepository.delete(brand) }
+    }
+
+    @Test
+    fun `delete는 존재하지 않으면 BRAND_NOT_FOUND 예외가 발생한다`() {
+        every { brandRepository.findById(99L) } returns Optional.empty()
+
+        assertThatThrownBy { brandService.delete(99L) }
+            .isInstanceOf(CustomException::class.java)
+            .matches { (it as CustomException).errorCode == ErrorCode.BRAND_NOT_FOUND }
     }
 }

@@ -7,12 +7,14 @@ data class AdminBrandRow(
     val id: Long,
     val name: String,
     val type: BrandType,
+    val placeCount: Long = 0,
 ) {
     companion object {
-        fun from(brand: Brand) = AdminBrandRow(
+        fun from(brand: Brand, placeCount: Long = 0) = AdminBrandRow(
             id = brand.id,
             name = brand.name,
             type = brand.type,
+            placeCount = placeCount,
         )
     }
 }

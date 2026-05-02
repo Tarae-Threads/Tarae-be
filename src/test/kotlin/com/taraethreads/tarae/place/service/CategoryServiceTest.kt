@@ -83,4 +83,26 @@ class CategoryServiceTest {
             .isInstanceOf(CustomException::class.java)
             .matches { (it as CustomException).errorCode == ErrorCode.DUPLICATE_MASTER_NAME }
     }
+
+    @Test
+    fun `delete는 매핑을 제거하고 카테고리를 삭제한다`() {
+        val category = Category(name = "삭제대상")
+        every { categoryRepository.findById(1L) } returns Optional.of(category)
+        every { categoryRepository.deletePlaceMappings(1L) } returns Unit
+        every { categoryRepository.delete(category) } returns Unit
+
+        categoryService.delete(1L)
+
+        verify { categoryRepository.deletePlaceMappings(1L) }
+        verify { categoryRepository.delete(category) }
+    }
+
+    @Test
+    fun `delete는 존재하지 않으면 CATEGORY_NOT_FOUND 예외가 발생한다`() {
+        every { categoryRepository.findById(99L) } returns Optional.empty()
+
+        assertThatThrownBy { categoryService.delete(99L) }
+            .isInstanceOf(CustomException::class.java)
+            .matches { (it as CustomException).errorCode == ErrorCode.CATEGORY_NOT_FOUND }
+    }
 }
