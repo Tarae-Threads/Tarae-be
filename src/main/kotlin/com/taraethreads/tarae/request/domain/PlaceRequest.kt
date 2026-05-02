@@ -94,6 +94,9 @@ class PlaceRequest(
 
     @Column(columnDefinition = "TEXT")
     val note: String? = null,
+
+    @Column(length = 100)
+    val email: String? = null,
 ) : BaseEntity() {
 
     @Id

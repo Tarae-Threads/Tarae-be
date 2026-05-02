@@ -109,6 +109,10 @@
             <div class="field-group__label">메모</div>
             <div class="field-group__value" th:text="${request.note ?: '-'}">-</div>
         </div>
+        <div class="field-group">
+            <div class="field-group__label">제보자 이메일</div>
+            <div class="field-group__value" th:text="${request.email ?: '-'}">-</div>
+        </div>
     </div>
 
     <!-- 우측: Place 입력 폼 -->

@@ -20,6 +20,10 @@
 | `V3__create_request_tables.sql` | place_requests, event_requests |
 | `V4__refactor_place_join_tables.sql` | 매핑 테이블 id 컬럼 추가 (PK 전환) |
 | `V5__alter_place_requests_add_brand_fields.sql` | place_requests 브랜드 ID 리스트/텍스트 필드 추가, brands.type에 PATTERNBOOK 추가 |
+| `V6__split_event_links_and_add_event_request_fields.sql` | events 링크 분리, event_requests 위치/링크 필드 추가 |
+| `V7__create_inquiry_tables.sql` | inquiries 테이블 생성 |
+| `V8__create_shop_tables.sql` | shops, shop_requests 테이블 생성 |
+| `V9__add_email_to_request_tables.sql` | place_requests, event_requests, shop_requests에 email 컬럼 추가 |
 
 ---
 
@@ -145,6 +149,7 @@
 | naver_map_url | VARCHAR(255) | nullable |
 | tags | VARCHAR(500) | nullable, 쉼표 구분 |
 | note | TEXT | nullable |
+| email | VARCHAR(100) | nullable, 제보자 이메일 |
 | status | ENUM(PENDING, APPROVED, REJECTED) | DEFAULT PENDING |
 | created_at | DATETIME | BaseEntity |
 | updated_at | DATETIME | BaseEntity |
@@ -160,6 +165,35 @@
 | end_date | DATE | nullable |
 | location_text | VARCHAR(255) | nullable |
 | description | TEXT | nullable |
+| email | VARCHAR(100) | nullable, 제보자 이메일 |
+| status | ENUM(PENDING, APPROVED, REJECTED) | DEFAULT PENDING |
+| created_at | DATETIME | BaseEntity |
+| updated_at | DATETIME | BaseEntity |
+
+### shop_requests (온라인샵 등록 요청)
+
+| 컬럼 | 타입 | 비고 |
+|------|------|------|
+| id | BIGINT AUTO_INCREMENT | PK |
+| request_type | ENUM(NEW, UPDATE) | 새 샵 / 기존 샵 업데이트 |
+| shop_id | BIGINT | FK → shops, UPDATE일 때만 |
+| name | VARCHAR(100) | nullable |
+| instagram_url | VARCHAR(255) | nullable |
+| naver_url | VARCHAR(255) | nullable |
+| website_url | VARCHAR(255) | nullable |
+| category_ids | JSON | nullable |
+| category_text | VARCHAR(255) | nullable |
+| brand_yarn_ids | JSON | nullable |
+| brands_yarn | VARCHAR(255) | nullable |
+| brand_needle_ids | JSON | nullable |
+| brands_needle | VARCHAR(255) | nullable |
+| brand_notions_ids | JSON | nullable |
+| brands_notions | VARCHAR(255) | nullable |
+| brand_patternbook_ids | JSON | nullable |
+| brands_patternbook | VARCHAR(255) | nullable |
+| tags | VARCHAR(500) | nullable |
+| note | TEXT | nullable |
+| email | VARCHAR(100) | nullable, 제보자 이메일 |
 | status | ENUM(PENDING, APPROVED, REJECTED) | DEFAULT PENDING |
 | created_at | DATETIME | BaseEntity |
 | updated_at | DATETIME | BaseEntity |

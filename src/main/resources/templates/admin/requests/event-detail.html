@@ -60,6 +60,10 @@
             <div class="field-group__label">네이버 지도 URL</div>
             <div class="field-group__value" th:text="${request.naverMapUrl ?: '-'}">-</div>
         </div>
+        <div class="field-group">
+            <div class="field-group__label">제보자 이메일</div>
+            <div class="field-group__value" th:text="${request.email ?: '-'}">-</div>
+        </div>
     </div>
 
     <!-- 우측: Event 입력 폼 -->

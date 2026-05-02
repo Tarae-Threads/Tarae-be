@@ -2,6 +2,7 @@ package com.taraethreads.tarae.request.dto
 
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestType
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
 
@@ -31,9 +32,11 @@ data class PlaceRequestInput(
     val naverMapUrl: String? = null,
     val tags: String? = null,
     val note: String? = null,
+    @field:Email
+    val email: String? = null,
 ) {
     fun toEntity() = PlaceRequest(
-        requestType = requestType!!,
+        requestType = requireNotNull(requestType) { "requestType은 필수입니다" },
         placeId = placeId,
         name = name,
         address = address,
@@ -57,5 +60,6 @@ data class PlaceRequestInput(
         naverMapUrl = naverMapUrl,
         tags = tags,
         note = note,
+        email = email,
     )
 }

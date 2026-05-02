@@ -66,6 +66,22 @@ class RequestControllerTest {
                 status { isBadRequest() }
             }
         }
+
+        @Test
+        fun `이메일 형식이 잘못된 경우 400을 반환한다`() {
+            // given
+            val body = objectMapper.writeValueAsString(
+                mapOf("requestType" to "NEW", "email" to "not-an-email")
+            )
+
+            // when & then
+            mockMvc.post("/api/requests/places") {
+                contentType = MediaType.APPLICATION_JSON
+                content = body
+            }.andExpect {
+                status { isBadRequest() }
+            }
+        }
     }
 
     @Nested

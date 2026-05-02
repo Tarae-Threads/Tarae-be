@@ -2,6 +2,7 @@ package com.taraethreads.tarae.request.dto
 
 import com.taraethreads.tarae.request.domain.RequestType
 import com.taraethreads.tarae.request.domain.ShopRequest
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 
 data class ShopRequestInput(
@@ -24,6 +25,8 @@ data class ShopRequestInput(
     val brandsPatternbook: String? = null,
     val tags: String? = null,
     val note: String? = null,
+    @field:Email
+    val email: String? = null,
 ) {
     fun toEntity() = ShopRequest(
         requestType = requireNotNull(requestType) { "requestType은 필수입니다" },
@@ -44,5 +47,6 @@ data class ShopRequestInput(
         brandsPatternbook = brandsPatternbook,
         tags = tags,
         note = note,
+        email = email,
     )
 }

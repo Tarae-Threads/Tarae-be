@@ -29,6 +29,7 @@
         <dt>도안집 브랜드 (직접입력)</dt><dd th:text="${request.brandsPatternbook}">-</dd>
         <dt>태그</dt><dd th:text="${request.tags}">-</dd>
         <dt>메모</dt><dd th:text="${request.note}">-</dd>
+        <dt>제보자 이메일</dt><dd th:text="${request.email ?: '-'}">-</dd>
     </dl>
 </div>
 

@@ -2,6 +2,7 @@ package com.taraethreads.tarae.request.dto
 
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.request.domain.EventRequest
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.math.BigDecimal
@@ -22,11 +23,13 @@ data class EventRequestInput(
     val instagramUrl: String? = null,
     val websiteUrl: String? = null,
     val naverMapUrl: String? = null,
+    @field:Email
+    val email: String? = null,
 ) {
     fun toEntity() = EventRequest(
-        title = title!!,
-        eventType = eventType!!,
-        startDate = startDate!!,
+        title = requireNotNull(title) { "title은 필수입니다" },
+        eventType = requireNotNull(eventType) { "eventType은 필수입니다" },
+        startDate = requireNotNull(startDate) { "startDate는 필수입니다" },
         endDate = endDate,
         locationText = locationText,
         description = description,
@@ -35,5 +38,6 @@ data class EventRequestInput(
         instagramUrl = instagramUrl,
         websiteUrl = websiteUrl,
         naverMapUrl = naverMapUrl,
+        email = email,
     )
 }

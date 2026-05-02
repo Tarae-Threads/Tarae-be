@@ -61,5 +61,32 @@ class PlaceRequestInputTest {
             assertThat(entity.brandPatternbookIds).isEmpty()
             assertThat(entity.brandsPatternbook).isNull()
         }
+
+        @Test
+        fun `이메일 포함 시 엔티티에 매핑된다`() {
+            // given
+            val input = PlaceRequestInput(
+                requestType = RequestType.NEW,
+                email = "user@example.com",
+            )
+
+            // when
+            val entity = input.toEntity()
+
+            // then
+            assertThat(entity.email).isEqualTo("user@example.com")
+        }
+
+        @Test
+        fun `이메일 미포함 시 null로 매핑된다`() {
+            // given
+            val input = PlaceRequestInput(requestType = RequestType.NEW)
+
+            // when
+            val entity = input.toEntity()
+
+            // then
+            assertThat(entity.email).isNull()
+        }
     }
 }

@@ -50,6 +50,9 @@ class EventRequest(
 
     @Column(length = 255)
     val naverMapUrl: String? = null,
+
+    @Column(length = 100)
+    val email: String? = null,
 ) : BaseEntity() {
 
     @Id
