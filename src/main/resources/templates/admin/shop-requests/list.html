@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('온라인샵 제보 관리', ~{::body})}">
+<body>
+
+<div class="toolbar">
+    <form method="get" th:action="@{/admin/shop-requests}" class="toolbar__search">
+        <select name="status" onchange="this.form.submit()">
+            <option value="" th:selected="${status == null}">전체 상태</option>
+            <option th:each="s : ${allStatuses}" th:value="${s}" th:text="${s}"
+                    th:selected="${status == s}"></option>
+        </select>
+    </form>
+</div>
+
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(requests)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>타입</th>
+            <th>온라인샵명</th>
+            <th>상태</th>
+            <th>등록일</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requests}">
+            <td th:text="${req.id}">1</td>
+            <td th:text="${req.requestType}">NEW</td>
+            <td th:text="${req.name}">온라인샵명</td>
+            <td><span class="badge" th:text="${req.status}">PENDING</span></td>
+            <td th:text="${#temporals.format(req.createdAt, 'yyyy-MM-dd')}">날짜</td>
+            <td class="td-actions">
+                <a th:href="@{/admin/shop-requests/{id}(id=${req.id})}" class="btn btn--secondary btn--sm">상세</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(requests)}" class="empty-state">
+        제보가 없습니다.
+    </p>
+</div>
+
+</body>
+</html>

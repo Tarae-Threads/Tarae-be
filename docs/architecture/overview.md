@@ -34,6 +34,7 @@ com.taraethreads.tarae.
 |--------|------|------------|
 | place | 뜨개 관련 장소 | Place, Category, Tag, Brand |
 | event | 뜨개 관련 이벤트/팝업/세일 | Event, EventType |
-| request | 사용자 등록 요청 (관리자 승인 대기) | PlaceRequest, EventRequest |
+| shop | 뜨개 관련 온라인샵 | Shop, ShopCategory, ShopTag, ShopBrand |
+| request | 사용자 등록 요청 (관리자 승인 대기) | PlaceRequest, EventRequest, ShopRequest |
 | inquiry | 사용자 문의 접수 및 관리자 이메일 답변 | Inquiry, InquiryStatus |
-| admin | 관리자 페이지 (Thymeleaf SSR) — 대시보드, 장소/이벤트 직접 CRUD, 제보 검수, 문의 관리 | — (place/event/request/inquiry 도메인 활용) |
+| admin | 관리자 페이지 (Thymeleaf SSR) — 대시보드, 장소/이벤트/온라인샵 직접 CRUD, 제보 검수, 문의 관리 | — (place/event/shop/request/inquiry 도메인 활용) |

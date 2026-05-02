@@ -70,6 +70,28 @@ class ReviewController(
     ): ResponseEntity<ApiResponse<List<ReviewResponse>>> =
         ApiResponse.ok(reviewService.getReviews(ReviewTargetType.EVENT, eventId))
 
+    @Operation(summary = "온라인샵 리뷰 작성")
+    @ApiResponses(
+        SwaggerApiResponse(responseCode = "201", description = "작성 성공"),
+        SwaggerApiResponse(responseCode = "404", description = "존재하지 않는 온라인샵"),
+    )
+    @PostMapping("/api/shops/{shopId}/reviews")
+    fun createShopReview(
+        @Parameter(description = "온라인샵 ID") @PathVariable shopId: Long,
+        @Valid @RequestBody request: ReviewCreateRequest,
+    ): ResponseEntity<ApiResponse<ReviewResponse>> =
+        ApiResponse.created(reviewService.createReview(ReviewTargetType.SHOP, shopId, request))
+
+    @Operation(summary = "온라인샵 리뷰 목록 조회")
+    @ApiResponses(
+        SwaggerApiResponse(responseCode = "200", description = "조회 성공"),
+    )
+    @GetMapping("/api/shops/{shopId}/reviews")
+    fun getShopReviews(
+        @Parameter(description = "온라인샵 ID") @PathVariable shopId: Long,
+    ): ResponseEntity<ApiResponse<List<ReviewResponse>>> =
+        ApiResponse.ok(reviewService.getReviews(ReviewTargetType.SHOP, shopId))
+
     @Operation(summary = "리뷰 삭제 (비밀번호 검증)")
     @ApiResponses(
         SwaggerApiResponse(responseCode = "200", description = "삭제 성공"),

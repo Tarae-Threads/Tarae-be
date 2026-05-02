@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('온라인샵 ' + (${mode == 'edit'} ? '수정' : '등록'), ~{::body})}">
+<body>
+
+<!-- ========== 등록 (다건 입력) ========== -->
+<div th:if="${mode == 'create'}">
+    <form id="bulk-form" method="post" th:action="@{/admin/shops}" onsubmit="return false;">
+        <div id="rows-container">
+            <div class="card row-input">
+                <div class="row-input__header">
+                    <strong>온라인샵 #1</strong>
+                    <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
+                </div>
+                <div class="form-group">
+                    <label>온라인샵명 *</label>
+                    <input type="text" name="shops[0].name" required/>
+                </div>
+                <div class="form-group">
+                    <label>인스타그램 URL</label>
+                    <input type="text" name="shops[0].instagramUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>네이버 스마트스토어 URL</label>
+                    <input type="text" name="shops[0].naverUrl"/>
+                </div>
+                <div class="form-group">
+                    <label>웹사이트 URL</label>
+                    <input type="text" name="shops[0].websiteUrl"/>
+                </div>
+
+                <!-- 카테고리 -->
+                <div class="selector-section open">
+                    <div class="selector-header" onclick="toggleSection(this)">
+                        <div class="selector-header-left">
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                            <span class="selector-title">카테고리</span>
+                        </div>
+                        <span class="selector-count">0</span>
+                    </div>
+                    <div class="selector-body">
+                        <div class="selector-body-wrap">
+                            <div class="selected-summary"></div>
+                            <div class="selector-body-inner">
+                                <div class="chip-grid">
+                                    <label th:each="cat : ${categories}" class="chip-toggle">
+                                        <input type="checkbox" name="shops[0].categoryIds" th:value="${cat.id}"
+                                               onchange="updateSelector(this)"/>
+                                        <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                                    </label>
+                                </div>
+                                <div class="quick-add">
+                                    <input type="text" class="quick-add__input" placeholder="새 카테고리명"/>
+                                    <button type="button" class="btn btn--sm btn--outline"
+                                            onclick="quickAdd(this, '/admin/api/categories', 'shops[0].categoryIds')">+ 추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 태그 -->
+                <div class="selector-section">
+                    <div class="selector-header" onclick="toggleSection(this)">
+                        <div class="selector-header-left">
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                            <span class="selector-title">태그</span>
+                        </div>
+                        <span class="selector-count">0</span>
+                    </div>
+                    <div class="selector-body">
+                        <div class="selector-body-wrap">
+                            <div class="selected-summary"></div>
+                            <div class="selector-body-inner">
+                                <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
+                                <div class="chip-grid">
+                                    <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
+                                        <input type="checkbox" name="shops[0].tagIds" th:value="${tag.id}"
+                                               onchange="updateSelector(this)"/>
+                                        <span class="chip-label" th:text="${tag.name}">태그</span>
+                                    </label>
+                                </div>
+                                <div class="chip-no-results">검색 결과가 없습니다</div>
+                                <div class="quick-add">
+                                    <input type="text" class="quick-add__input" placeholder="새 태그명"/>
+                                    <button type="button" class="btn btn--sm btn--outline"
+                                            onclick="quickAdd(this, '/admin/api/tags', 'shops[0].tagIds')">+ 추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 브랜드 -->
+                <div class="selector-section">
+                    <div class="selector-header" onclick="toggleSection(this)">
+                        <div class="selector-header-left">
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                            <span class="selector-title">브랜드</span>
+                        </div>
+                        <span class="selector-count">0</span>
+                    </div>
+                    <div class="selector-body">
+                        <div class="selector-body-wrap">
+                            <div class="selected-summary"></div>
+                            <div class="selector-body-inner">
+                                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup" th:data-brand-type="${group.type}">
+                                    <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
+                                    <div class="chip-grid">
+                                        <label th:each="brand : ${group.brands}" class="chip-toggle">
+                                            <input type="checkbox" name="shops[0].brandIds" th:value="${brand.id}"
+                                                   onchange="updateSelector(this)"/>
+                                            <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="quick-add quick-add--brand">
+                                    <input type="text" class="quick-add__input" placeholder="새 브랜드명"/>
+                                    <select class="quick-add__select">
+                                        <option value="YARN">YARN</option>
+                                        <option value="NEEDLE">NEEDLE</option>
+                                        <option value="NOTIONS">NOTIONS</option>
+                                        <option value="PATTERNBOOK">PATTERNBOOK</option>
+                                    </select>
+                                    <button type="button" class="btn btn--sm btn--outline"
+                                            onclick="quickAddBrand(this, 'shops[0].brandIds')">+ 추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-input__actions">
+            <button type="button" class="row-input__add-btn btn btn--secondary" onclick="addRow()">+ 행 추가</button>
+            <button type="button" class="btn btn--primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<!-- ========== 수정 (단건) ========== -->
+<div th:if="${mode == 'edit'}">
+    <form id="edit-form" method="post" th:action="@{/admin/shops/{id}(id=${shopId})}" onsubmit="return false;">
+        <div class="card">
+            <div class="form-group">
+                <label>온라인샵명 *</label>
+                <input type="text" name="name" th:value="${form.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>인스타그램 URL</label>
+                <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>네이버 스마트스토어 URL</label>
+                <input type="text" name="naverUrl" th:value="${form.naverUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>웹사이트 URL</label>
+                <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
+            </div>
+
+            <!-- 카테고리 -->
+            <div class="selector-section open">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">카테고리</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <div class="chip-grid">
+                                <label th:each="cat : ${categories}" class="chip-toggle">
+                                    <input type="checkbox" name="categoryIds" th:value="${cat.id}"
+                                           th:checked="${#lists.contains(form.categoryIds, cat.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                                </label>
+                            </div>
+                            <div class="quick-add">
+                                <input type="text" class="quick-add__input" placeholder="새 카테고리명"/>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAdd(this, '/admin/api/categories', 'categoryIds')">+ 추가</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 태그 -->
+            <div class="selector-section">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">태그</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>
+                            <div class="chip-grid">
+                                <label th:each="tag : ${tags}" class="chip-toggle" th:data-name="${tag.name}">
+                                    <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                                           th:checked="${#lists.contains(form.tagIds, tag.id)}"
+                                           onchange="updateSelector(this)"/>
+                                    <span class="chip-label" th:text="${tag.name}">태그</span>
+                                </label>
+                            </div>
+                            <div class="chip-no-results">검색 결과가 없습니다</div>
+                            <div class="quick-add">
+                                <input type="text" class="quick-add__input" placeholder="새 태그명"/>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAdd(this, '/admin/api/tags', 'tagIds')">+ 추가</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 브랜드 -->
+            <div class="selector-section">
+                <div class="selector-header" onclick="toggleSection(this)">
+                    <div class="selector-header-left">
+                        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                        <span class="selector-title">브랜드</span>
+                    </div>
+                    <span class="selector-count">0</span>
+                </div>
+                <div class="selector-body">
+                    <div class="selector-body-wrap">
+                        <div class="selected-summary"></div>
+                        <div class="selector-body-inner">
+                            <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}" class="chip__subgroup" th:data-brand-type="${group.type}">
+                                <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
+                                <div class="chip-grid">
+                                    <label th:each="brand : ${group.brands}" class="chip-toggle">
+                                        <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                               th:checked="${#lists.contains(form.brandIds, brand.id)}"
+                                               onchange="updateSelector(this)"/>
+                                        <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="quick-add quick-add--brand">
+                                <input type="text" class="quick-add__input" placeholder="새 브랜드명"/>
+                                <select class="quick-add__select">
+                                    <option value="YARN">YARN</option>
+                                    <option value="NEEDLE">NEEDLE</option>
+                                    <option value="NOTIONS">NOTIONS</option>
+                                    <option value="PATTERNBOOK">PATTERNBOOK</option>
+                                </select>
+                                <button type="button" class="btn btn--sm btn--outline"
+                                        onclick="quickAddBrand(this, 'brandIds')">+ 추가</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/admin/shops}" class="btn btn--secondary">취소</a>
+            <button type="button" class="btn btn--primary" onclick="openPreview()">프리뷰 후 저장</button>
+        </div>
+    </form>
+</div>
+
+<!-- 프리뷰 모달 -->
+<div id="preview-modal" class="preview-modal__backdrop">
+    <div class="preview-modal">
+        <div class="preview-modal__header">
+            <strong>프리뷰</strong>
+            <button type="button" class="btn btn--secondary btn--sm" onclick="AdminPreview.close()">닫기</button>
+        </div>
+        <div class="preview-modal__body" id="preview-body"></div>
+        <div class="preview-modal__footer">
+            <button type="button" class="btn btn--secondary" onclick="AdminPreview.close()">취소</button>
+            <button type="button" class="btn btn--primary" onclick="confirmPreviewSubmit()">확인 저장</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+const MODE = /*[[${mode}]]*/ 'create';
+const FORM_ID = MODE === 'edit' ? 'edit-form' : 'bulk-form';
+const CATEGORIES = /*[[${categories}]]*/ [];
+const TAGS = /*[[${tags}]]*/ [];
+const BRAND_GROUPS = /*[[${brandGroups}]]*/ [];
+
+function toggleSection(header) {
+    header.closest('.selector-section').classList.toggle('open');
+}
+
+function updateSelector(checkbox) {
+    var section = checkbox.closest('.selector-section');
+    var checked = section.querySelectorAll('input[type="checkbox"]:checked');
+    var countBadge = section.querySelector('.selector-count');
+    var summary = section.querySelector('.selected-summary');
+    countBadge.textContent = checked.length;
+    countBadge.classList.toggle('visible', checked.length > 0);
+    summary.innerHTML = '';
+    checked.forEach(function(cb) {
+        var chip = document.createElement('span');
+        chip.className = 'selected-chip';
+        chip.textContent = cb.nextElementSibling.textContent;
+        chip.onclick = function(e) { e.stopPropagation(); cb.checked = false; updateSelector(cb); };
+        summary.appendChild(chip);
+    });
+}
+
+function filterChips(input) {
+    var query = input.value.toLowerCase().trim();
+    var body = input.closest('.selector-body-inner');
+    var chips = body.querySelectorAll('.chip-toggle');
+    var noResults = body.querySelector('.chip-no-results');
+    var visibleCount = 0;
+    chips.forEach(function(chip) {
+        var name = (chip.dataset.name || chip.querySelector('.chip-label').textContent).toLowerCase();
+        var match = !query || name.indexOf(query) !== -1;
+        chip.classList.toggle('hidden', !match);
+        if (match) visibleCount++;
+    });
+    if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+function createChipLabel(fieldName, id, name) {
+    var label = document.createElement('label');
+    label.className = 'chip-toggle';
+    label.dataset.name = name;
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox'; checkbox.name = fieldName; checkbox.value = id; checkbox.checked = true;
+    checkbox.onchange = function() { updateSelector(this); };
+    var span = document.createElement('span');
+    span.className = 'chip-label'; span.textContent = name;
+    label.appendChild(checkbox); label.appendChild(span);
+    return label;
+}
+
+function handleFetchError(res) {
+    if (!res.ok) {
+        return res.json().catch(function() { return { message: '서버 오류' }; }).then(function(body) {
+            throw new Error(body.message || '요청 실패');
+        });
+    }
+    return res.json();
+}
+
+function quickAdd(btn, url, fieldName) {
+    var container = btn.closest('.quick-add');
+    var input = container.querySelector('.quick-add__input');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+    btn.disabled = true;
+    var body = new URLSearchParams(); body.append('name', name);
+    fetch(url, { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var chipGrid = btn.closest('.selector-body-inner').querySelector('.chip-grid');
+            var label = createChipLabel(fieldName, data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
+}
+
+function quickAddBrand(btn, fieldName) {
+    var container = btn.closest('.quick-add--brand');
+    var input = container.querySelector('.quick-add__input');
+    var select = container.querySelector('.quick-add__select');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+    btn.disabled = true;
+    var body = new URLSearchParams(); body.append('name', name); body.append('type', select.value);
+    fetch('/admin/api/brands', { method: 'POST', body: body })
+        .then(handleFetchError)
+        .then(function(data) {
+            var sectionInner = btn.closest('.selector-body-inner');
+            var subgroup = sectionInner.querySelector('[data-brand-type="' + data.type + '"]');
+            if (!subgroup) {
+                subgroup = document.createElement('div');
+                subgroup.className = 'chip__subgroup'; subgroup.dataset.brandType = data.type;
+                var title = document.createElement('div');
+                title.className = 'chip__subgroup-title'; title.textContent = data.type;
+                var grid = document.createElement('div');
+                grid.className = 'chip-grid';
+                subgroup.appendChild(title); subgroup.appendChild(grid);
+                sectionInner.insertBefore(subgroup, container);
+            }
+            var chipGrid = subgroup.querySelector('.chip-grid');
+            var label = createChipLabel(fieldName, data.id, data.name);
+            chipGrid.appendChild(label);
+            updateSelector(label.querySelector('input'));
+            input.value = '';
+        })
+        .catch(function(err) { alert('추가 실패: ' + err.message); })
+        .finally(function() { btn.disabled = false; });
+}
+
+function buildSelectorHtml(title, fieldName, items, options) {
+    const esc = AdminPreview.escapeHtml;
+    const open = options && options.open ? ' open' : '';
+    const search = options && options.search
+        ? '<input type="text" class="selector-search" placeholder="태그 검색..." oninput="filterChips(this)"/>' : '';
+    const noResults = options && options.search
+        ? '<div class="chip-no-results">검색 결과가 없습니다</div>' : '';
+    const chips = (items || []).map(item =>
+        `<label class="chip-toggle" data-name="${esc(item.name)}"><input type="checkbox" name="${fieldName}" value="${item.id}" onchange="updateSelector(this)"/><span class="chip-label">${esc(item.name)}</span></label>`
+    ).join('');
+    const quickAddHtml = options && options.quickAddUrl
+        ? `<div class="quick-add"><input type="text" class="quick-add__input" placeholder="${esc(options.placeholder || '')}"/><button type="button" class="btn btn--sm btn--outline" onclick="quickAdd(this, '${options.quickAddUrl}', '${fieldName}')">+ 추가</button></div>` : '';
+    return `<div class="selector-section${open}">
+        <div class="selector-header" onclick="toggleSection(this)">
+            <div class="selector-header-left">
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="selector-title">${esc(title)}</span>
+            </div>
+            <span class="selector-count">0</span>
+        </div>
+        <div class="selector-body"><div class="selector-body-wrap"><div class="selected-summary"></div>
+            <div class="selector-body-inner">${search}<div class="chip-grid">${chips}</div>${noResults}${quickAddHtml}</div>
+        </div></div>
+    </div>`;
+}
+
+function buildBrandSelectorHtml(fieldName, groups) {
+    const esc = AdminPreview.escapeHtml;
+    let subgroupsHtml = '';
+    (groups || []).forEach(group => {
+        if (group.brands && group.brands.length > 0) {
+            const chips = group.brands.map(b =>
+                `<label class="chip-toggle"><input type="checkbox" name="${fieldName}" value="${b.id}" onchange="updateSelector(this)"/><span class="chip-label">${esc(b.name)}</span></label>`
+            ).join('');
+            subgroupsHtml += `<div class="chip__subgroup" data-brand-type="${esc(group.type)}"><div class="chip__subgroup-title">${esc(group.type)}</div><div class="chip-grid">${chips}</div></div>`;
+        }
+    });
+    const quickAddHtml = `<div class="quick-add quick-add--brand"><input type="text" class="quick-add__input" placeholder="새 브랜드명"/><select class="quick-add__select"><option value="YARN">YARN</option><option value="NEEDLE">NEEDLE</option><option value="NOTIONS">NOTIONS</option><option value="PATTERNBOOK">PATTERNBOOK</option></select><button type="button" class="btn btn--sm btn--outline" onclick="quickAddBrand(this, '${fieldName}')">+ 추가</button></div>`;
+    return `<div class="selector-section">
+        <div class="selector-header" onclick="toggleSection(this)">
+            <div class="selector-header-left">
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="selector-title">브랜드</span>
+            </div>
+            <span class="selector-count">0</span>
+        </div>
+        <div class="selector-body"><div class="selector-body-wrap"><div class="selected-summary"></div>
+            <div class="selector-body-inner">${subgroupsHtml}${quickAddHtml}</div>
+        </div></div>
+    </div>`;
+}
+
+let rowCount = 1;
+function addRow() {
+    const container = document.getElementById('rows-container');
+    const idx = rowCount++;
+    const div = document.createElement('div');
+    div.className = 'card row-input';
+    div.innerHTML = `
+        <div class="row-input__header">
+            <strong>온라인샵 #${idx + 1}</strong>
+            <button type="button" class="row-input__remove-btn" onclick="removeRow(this)">제거</button>
+        </div>
+        <div class="form-group"><label>온라인샵명 *</label><input type="text" name="shops[${idx}].name" required/></div>
+        <div class="form-group"><label>인스타그램 URL</label><input type="text" name="shops[${idx}].instagramUrl"/></div>
+        <div class="form-group"><label>네이버 스마트스토어 URL</label><input type="text" name="shops[${idx}].naverUrl"/></div>
+        <div class="form-group"><label>웹사이트 URL</label><input type="text" name="shops[${idx}].websiteUrl"/></div>
+        ${buildSelectorHtml('카테고리', 'shops[' + idx + '].categoryIds', CATEGORIES, { open: true, quickAddUrl: '/admin/api/categories', placeholder: '새 카테고리명' })}
+        ${buildSelectorHtml('태그', 'shops[' + idx + '].tagIds', TAGS, { search: true, quickAddUrl: '/admin/api/tags', placeholder: '새 태그명' })}
+        ${buildBrandSelectorHtml('shops[' + idx + '].brandIds', BRAND_GROUPS)}
+    `;
+    container.appendChild(div);
+}
+
+function removeRow(btn) {
+    const row = btn.closest('.row-input');
+    if (document.querySelectorAll('.row-input').length > 1) row.remove();
+}
+
+function openPreview() {
+    AdminPreview.open(FORM_ID, function (body) {
+        const form = document.getElementById(FORM_ID);
+        if (MODE === 'edit') {
+            body.appendChild(buildPreviewCard({ name: form.querySelector('[name=name]').value }));
+        } else {
+            document.querySelectorAll('.row-input').forEach(row => {
+                body.appendChild(buildPreviewCard({ name: row.querySelector('[name$=".name"]').value }));
+            });
+        }
+    });
+}
+
+function confirmPreviewSubmit() {
+    AdminPreview.submit(FORM_ID);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.selector-section').forEach(function(section) {
+        var firstChecked = section.querySelector('input[type="checkbox"]:checked');
+        if (firstChecked) {
+            updateSelector(firstChecked);
+            section.classList.add('open');
+        }
+    });
+});
+
+function buildPreviewCard(data) {
+    const esc = AdminPreview.escapeHtml;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div class="preview-card__title">${esc(data.name)}</div>`;
+    return card;
+}
+</script>
+
+</body>
+</html>

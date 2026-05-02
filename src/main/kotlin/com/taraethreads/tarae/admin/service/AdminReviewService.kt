@@ -5,6 +5,7 @@ import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.repository.PlaceRepository
+import com.taraethreads.tarae.shop.repository.ShopRepository
 import com.taraethreads.tarae.review.domain.ReviewTargetType
 import com.taraethreads.tarae.review.repository.ReviewRepository
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ class AdminReviewService(
     private val reviewRepository: ReviewRepository,
     private val placeRepository: PlaceRepository,
     private val eventRepository: EventRepository,
+    private val shopRepository: ShopRepository,
 ) {
 
     fun getReviews(targetType: ReviewTargetType): List<AdminReviewResponse> {
@@ -40,5 +42,6 @@ class AdminReviewService(
         when (targetType) {
             ReviewTargetType.PLACE -> placeRepository.findAllById(targetIds).associate { it.id to it.name }
             ReviewTargetType.EVENT -> eventRepository.findAllById(targetIds).associate { it.id to it.title }
+            ReviewTargetType.SHOP -> shopRepository.findAllById(targetIds).associate { it.id to it.name }
         }
 }

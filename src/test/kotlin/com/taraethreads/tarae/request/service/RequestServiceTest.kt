@@ -8,6 +8,7 @@ import com.taraethreads.tarae.request.dto.EventRequestInput
 import com.taraethreads.tarae.request.dto.PlaceRequestInput
 import com.taraethreads.tarae.request.repository.EventRequestRepository
 import com.taraethreads.tarae.request.repository.PlaceRequestRepository
+import com.taraethreads.tarae.request.repository.ShopRequestRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -22,7 +23,8 @@ class RequestServiceTest {
 
     private val placeRequestRepository: PlaceRequestRepository = mockk()
     private val eventRequestRepository: EventRequestRepository = mockk()
-    private val requestService = RequestService(placeRequestRepository, eventRequestRepository)
+    private val shopRequestRepository: ShopRequestRepository = mockk()
+    private val requestService = RequestService(placeRequestRepository, eventRequestRepository, shopRequestRepository)
 
     @Nested
     inner class `장소 등록 요청` {

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('온라인샵 관리', ~{::body})}">
+<body>
+
+<div class="toolbar">
+    <form method="get" th:action="@{/admin/shops}" class="toolbar__search">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="온라인샵명 / 카테고리"/>
+        <button type="submit" class="btn btn--secondary">검색</button>
+    </form>
+    <a th:href="@{/admin/shops/new}" class="btn btn--primary">+ 온라인샵 등록</a>
+</div>
+
+<div class="card table-wrap">
+    <table th:if="${not #lists.isEmpty(shops)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>온라인샵명</th>
+            <th>카테고리</th>
+            <th>액션</th>
+            <th>공개</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${shops}">
+            <td th:text="${s.id}">1</td>
+            <td th:text="${s.name}">온라인샵명</td>
+            <td th:text="${#strings.listJoin(s.categoryNames, ', ')}">카테고리</td>
+            <td class="td-actions">
+                <a th:href="@{/admin/shops/{id}/edit(id=${s.id})}" class="btn btn--secondary btn--sm">수정</a>
+                <form th:action="@{/admin/shops/{id}/delete(id=${s.id})}" method="post" class="form-inline">
+                    <button type="submit" class="btn btn--destructive btn--sm"
+                            onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </td>
+            <td>
+                <th:block th:replace="~{admin/layout/fragments :: toggleSwitch(
+                    actionUrl=@{/admin/shops/{id}/toggle-active(id=${s.id})},
+                    checked=${s.active},
+                    label='공개 상태 토글')}"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(shops)}" class="empty-state">
+        온라인샵이 없습니다.
+    </p>
+</div>
+
+<div class="pagination" th:if="${page.totalPages > 1}">
+    <a th:if="${!page.first}" th:href="@{/admin/shops(keyword=${keyword}, page=${page.number - 1})}">‹ 이전</a>
+    <span class="current" th:text="${page.number + 1} + ' / ' + ${page.totalPages}">1 / 1</span>
+    <a th:if="${!page.last}" th:href="@{/admin/shops(keyword=${keyword}, page=${page.number + 1})}">다음 ›</a>
+</div>
+
+</body>
+</html>

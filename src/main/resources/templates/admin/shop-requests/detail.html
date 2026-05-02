@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout/base :: layout('온라인샵 제보 상세', ~{::body})}">
+<body>
+
+<div class="card">
+    <h2>제보 정보</h2>
+    <dl>
+        <dt>타입</dt><dd th:text="${request.requestType}">NEW</dd>
+        <dt>상태</dt><dd th:text="${request.status}">PENDING</dd>
+        <dt>온라인샵명</dt><dd th:text="${request.name}">이름</dd>
+        <dt>인스타그램</dt><dd th:text="${request.instagramUrl}">-</dd>
+        <dt>네이버</dt><dd th:text="${request.naverUrl}">-</dd>
+        <dt>웹사이트</dt><dd th:text="${request.websiteUrl}">-</dd>
+        <dt>카테고리 (선택)</dt>
+        <dd th:text="${#strings.listJoin(selectedCategoryNames, ', ')}">-</dd>
+        <dt>카테고리 (직접입력)</dt><dd th:text="${request.categoryText}">-</dd>
+        <dt>실 브랜드 (선택)</dt>
+        <dd th:text="${#strings.listJoin(selectedBrandYarnNames, ', ')}">-</dd>
+        <dt>실 브랜드 (직접입력)</dt><dd th:text="${request.brandsYarn}">-</dd>
+        <dt>바늘 브랜드 (선택)</dt>
+        <dd th:text="${#strings.listJoin(selectedBrandNeedleNames, ', ')}">-</dd>
+        <dt>바늘 브랜드 (직접입력)</dt><dd th:text="${request.brandsNeedle}">-</dd>
+        <dt>부자재 브랜드 (선택)</dt>
+        <dd th:text="${#strings.listJoin(selectedBrandNotionsNames, ', ')}">-</dd>
+        <dt>부자재 브랜드 (직접입력)</dt><dd th:text="${request.brandsNotions}">-</dd>
+        <dt>도안집 브랜드 (선택)</dt>
+        <dd th:text="${#strings.listJoin(selectedBrandPatternbookNames, ', ')}">-</dd>
+        <dt>도안집 브랜드 (직접입력)</dt><dd th:text="${request.brandsPatternbook}">-</dd>
+        <dt>태그</dt><dd th:text="${request.tags}">-</dd>
+        <dt>메모</dt><dd th:text="${request.note}">-</dd>
+    </dl>
+</div>
+
+<div th:if="${request.status.name() == 'PENDING'}">
+    <!-- 승인 폼 -->
+    <form method="post" th:action="@{/admin/shop-requests/{id}/approve(id=${request.id})}">
+        <div class="card">
+            <h2>승인 후 등록될 정보</h2>
+            <div class="form-group">
+                <label>온라인샵명 *</label>
+                <input type="text" name="name" th:value="${form.name}" required/>
+            </div>
+            <div class="form-group">
+                <label>인스타그램 URL</label>
+                <input type="text" name="instagramUrl" th:value="${form.instagramUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>네이버 스마트스토어 URL</label>
+                <input type="text" name="naverUrl" th:value="${form.naverUrl}"/>
+            </div>
+            <div class="form-group">
+                <label>웹사이트 URL</label>
+                <input type="text" name="websiteUrl" th:value="${form.websiteUrl}"/>
+            </div>
+
+            <!-- 카테고리 -->
+            <div class="form-group">
+                <label>카테고리</label>
+                <div class="chip-grid">
+                    <label th:each="cat : ${categories}" class="chip-toggle">
+                        <input type="checkbox" name="categoryIds" th:value="${cat.id}"
+                               th:checked="${#lists.contains(form.categoryIds, cat.id)}"/>
+                        <span class="chip-label" th:text="${cat.name}">카테고리</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 태그 -->
+            <div class="form-group">
+                <label>태그</label>
+                <div class="chip-grid">
+                    <label th:each="tag : ${tags}" class="chip-toggle">
+                        <input type="checkbox" name="tagIds" th:value="${tag.id}"
+                               th:checked="${#lists.contains(form.tagIds, tag.id)}"/>
+                        <span class="chip-label" th:text="${tag.name}">태그</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 브랜드 -->
+            <div class="form-group">
+                <label>브랜드</label>
+                <div th:each="group : ${brandGroups}" th:if="${!group.brands.isEmpty()}">
+                    <div class="chip__subgroup-title" th:text="${group.type}">TYPE</div>
+                    <div class="chip-grid">
+                        <label th:each="brand : ${group.brands}" class="chip-toggle">
+                            <input type="checkbox" name="brandIds" th:value="${brand.id}"
+                                   th:checked="${#lists.contains(form.brandIds, brand.id)}"/>
+                            <span class="chip-label" th:text="${brand.name}">브랜드</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/admin/shop-requests}" class="btn btn--secondary">목록으로</a>
+            <button type="submit" class="btn btn--primary"
+                    onclick="return confirm('승인하시겠습니까?')">승인</button>
+        </div>
+    </form>
+
+    <!-- 거절 폼 -->
+    <form method="post" th:action="@{/admin/shop-requests/{id}/reject(id=${request.id})}"
+          style="margin-top: 8px;">
+        <button type="submit" class="btn btn--destructive"
+                onclick="return confirm('거절하시겠습니까?')">거절</button>
+    </form>
+</div>
+
+<div th:if="${request.status.name() != 'PENDING'}" class="form-actions">
+    <a th:href="@{/admin/shop-requests}" class="btn btn--secondary">목록으로</a>
+    <span class="badge" th:text="${request.status}">처리됨</span>
+</div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.repository.PlaceRepository
+import com.taraethreads.tarae.shop.repository.ShopRepository
 import com.taraethreads.tarae.review.domain.Review
 import com.taraethreads.tarae.review.domain.ReviewTargetType
 import com.taraethreads.tarae.review.dto.ReviewCreateRequest
@@ -27,9 +28,10 @@ class ReviewServiceTest {
     private val reviewRepository: ReviewRepository = mockk()
     private val placeRepository: PlaceRepository = mockk()
     private val eventRepository: EventRepository = mockk()
+    private val shopRepository: ShopRepository = mockk()
     private val passwordEncoder = BCryptPasswordEncoder()
     private val reviewService = ReviewService(
-        reviewRepository, placeRepository, eventRepository, passwordEncoder,
+        reviewRepository, placeRepository, eventRepository, shopRepository, passwordEncoder,
     )
 
     private fun request(

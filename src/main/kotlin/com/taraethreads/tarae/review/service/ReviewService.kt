@@ -4,6 +4,7 @@ import com.taraethreads.tarae.event.repository.EventRepository
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
 import com.taraethreads.tarae.place.repository.PlaceRepository
+import com.taraethreads.tarae.shop.repository.ShopRepository
 import com.taraethreads.tarae.review.domain.Review
 import com.taraethreads.tarae.review.domain.ReviewTargetType
 import com.taraethreads.tarae.review.dto.ReviewCreateRequest
@@ -19,6 +20,7 @@ class ReviewService(
     private val reviewRepository: ReviewRepository,
     private val placeRepository: PlaceRepository,
     private val eventRepository: EventRepository,
+    private val shopRepository: ShopRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
 
@@ -56,12 +58,14 @@ class ReviewService(
         val exists = when (targetType) {
             ReviewTargetType.PLACE -> placeRepository.existsById(targetId)
             ReviewTargetType.EVENT -> eventRepository.existsById(targetId)
+            ReviewTargetType.SHOP -> shopRepository.existsById(targetId)
         }
         if (!exists) {
             throw CustomException(
                 when (targetType) {
                     ReviewTargetType.PLACE -> ErrorCode.PLACE_NOT_FOUND
                     ReviewTargetType.EVENT -> ErrorCode.EVENT_NOT_FOUND
+                    ReviewTargetType.SHOP -> ErrorCode.SHOP_NOT_FOUND
                 }
             )
         }
