@@ -27,8 +27,8 @@ class Review(
     @Column(nullable = false, length = 50)
     val nickname: String,
 
-    @Column(nullable = false, length = 100)
-    val email: String,
+    @Column(nullable = true, length = 100)
+    val email: String? = null,
 
     @Column(nullable = false)
     val password: String,

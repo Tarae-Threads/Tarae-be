@@ -13,11 +13,10 @@ data class ReviewCreateRequest(
     @Schema(description = "닉네임", example = "뜨개하는고양이")
     val nickname: String,
 
-    @field:NotBlank(message = "이메일을 입력해주세요")
     @field:Email(message = "올바른 이메일 형식이 아닙니다")
     @field:Size(max = 100, message = "이메일은 100자 이하여야 합니다")
-    @Schema(description = "이메일", example = "cat@example.com")
-    val email: String,
+    @Schema(description = "이메일 (선택)", example = "cat@example.com")
+    val email: String? = null,
 
     @field:NotBlank(message = "비밀번호를 입력해주세요")
     @field:Size(min = 4, max = 20, message = "비밀번호는 4~20자여야 합니다")
