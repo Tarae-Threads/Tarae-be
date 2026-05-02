@@ -11,17 +11,20 @@
     <a th:href="@{/admin/requests(type='event')}"
        th:classappend="${type == 'event'} ? 'active'"
        class="tab">이벤트 제보</a>
+    <a th:href="@{/admin/requests(type='shop')}"
+       th:classappend="${type == 'shop'} ? 'active'"
+       class="tab">온라인샵 제보</a>
 </div>
 
-<!-- 장소 제보 서브탭: 전체 / 신규 / 수정 -->
-<div th:if="${type == 'place'}" class="filter-bar filter-bar--sub">
-    <a th:href="@{/admin/requests(type='place', status=${status})}"
+<!-- 장소/온라인샵 제보 서브탭: 전체 / 신규 / 수정 -->
+<div th:if="${type == 'place' or type == 'shop'}" class="filter-bar filter-bar--sub">
+    <a th:href="@{/admin/requests(type=${type}, status=${status})}"
        th:classappend="${requestType == null} ? 'active'"
        class="filter-btn">전체</a>
-    <a th:href="@{/admin/requests(type='place', status=${status}, requestType='NEW')}"
+    <a th:href="@{/admin/requests(type=${type}, status=${status}, requestType='NEW')}"
        th:classappend="${requestType != null && requestType.name() == 'NEW'} ? 'active'"
        class="filter-btn">신규</a>
-    <a th:href="@{/admin/requests(type='place', status=${status}, requestType='UPDATE')}"
+    <a th:href="@{/admin/requests(type=${type}, status=${status}, requestType='UPDATE')}"
        th:classappend="${requestType != null && requestType.name() == 'UPDATE'} ? 'active'"
        class="filter-btn">수정</a>
 </div>
@@ -46,7 +49,8 @@
             <th>ID</th>
             <th th:if="${type == 'place'}">장소명</th>
             <th th:if="${type == 'event'}">이벤트명</th>
-            <th th:if="${type == 'place'}">유형</th>
+            <th th:if="${type == 'shop'}">온라인샵명</th>
+            <th th:if="${type == 'place' or type == 'shop'}">유형</th>
             <th>상태</th>
             <th>등록일</th>
             <th>상세</th>
@@ -57,7 +61,8 @@
             <td th:text="${req.id}">1</td>
             <td th:if="${type == 'place'}" th:text="${req.name ?: '-'}">장소명</td>
             <td th:if="${type == 'event'}" th:text="${req.title}">이벤트명</td>
-            <td th:if="${type == 'place'}">
+            <td th:if="${type == 'shop'}" th:text="${req.name ?: '-'}">온라인샵명</td>
+            <td th:if="${type == 'place' or type == 'shop'}">
                 <span th:if="${req.requestType.name() == 'NEW'}" class="badge badge--approved">신규</span>
                 <span th:if="${req.requestType.name() == 'UPDATE'}" class="badge badge--update">수정</span>
             </td>
@@ -73,6 +78,9 @@
                    class="btn btn--secondary btn--sm">검수</a>
                 <a th:if="${type == 'event'}"
                    th:href="@{/admin/requests/event/{id}(id=${req.id})}"
+                   class="btn btn--secondary btn--sm">검수</a>
+                <a th:if="${type == 'shop'}"
+                   th:href="@{/admin/shop-requests/{id}(id=${req.id})}"
                    class="btn btn--secondary btn--sm">검수</a>
             </td>
         </tr>

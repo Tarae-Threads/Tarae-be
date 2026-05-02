@@ -2,8 +2,10 @@ package com.taraethreads.tarae.admin.controller
 
 import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
+import com.taraethreads.tarae.admin.dto.ShopCreateForm
 import com.taraethreads.tarae.admin.service.AdminEventService
 import com.taraethreads.tarae.admin.service.AdminRequestService
+import com.taraethreads.tarae.admin.service.AdminShopRequestService
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.place.service.BrandService
 import com.taraethreads.tarae.place.service.CategoryService
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/admin/requests")
 class AdminRequestController(
     private val adminRequestService: AdminRequestService,
+    private val adminShopRequestService: AdminShopRequestService,
     private val adminEventService: AdminEventService,
     private val categoryService: CategoryService,
     private val tagService: TagService,
@@ -44,6 +47,7 @@ class AdminRequestController(
         when (type.lowercase()) {
             "event" -> model.addAttribute("requests", adminRequestService.getEventRequests(status))
             "place" -> model.addAttribute("requests", adminRequestService.getPlaceRequests(status, requestType))
+            "shop" -> model.addAttribute("requests", adminShopRequestService.getShopRequests(status, requestType))
             else -> model.addAttribute("requests", emptyList<Any>())
         }
 

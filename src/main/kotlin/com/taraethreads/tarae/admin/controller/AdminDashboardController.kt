@@ -14,8 +14,10 @@ class AdminDashboardController(
     fun dashboard(model: Model): String {
         model.addAttribute("placeCount", adminDashboardService.getPlaceCount())
         model.addAttribute("eventCount", adminDashboardService.getEventCount())
+        model.addAttribute("shopCount", adminDashboardService.getShopCount())
         model.addAttribute("pendingPlaceRequestCount", adminDashboardService.getPendingPlaceRequestCount())
         model.addAttribute("pendingEventRequestCount", adminDashboardService.getPendingEventRequestCount())
+        model.addAttribute("pendingShopRequestCount", adminDashboardService.getPendingShopRequestCount())
         model.addAttribute("reviewCount", adminDashboardService.getReviewCount())
         model.addAttribute("expiringSoonEventCount", adminDashboardService.getExpiringSoonEventCount())
         model.addAttribute("pendingInquiryCount", adminDashboardService.getPendingInquiryCount())
