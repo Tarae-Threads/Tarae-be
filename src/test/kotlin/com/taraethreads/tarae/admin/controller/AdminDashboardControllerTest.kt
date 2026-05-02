@@ -32,8 +32,10 @@ class AdminDashboardControllerTest {
             // given
             every { adminDashboardService.getPlaceCount() } returns 10L
             every { adminDashboardService.getEventCount() } returns 5L
+            every { adminDashboardService.getShopCount() } returns 8L
             every { adminDashboardService.getPendingPlaceRequestCount() } returns 3L
             every { adminDashboardService.getPendingEventRequestCount() } returns 2L
+            every { adminDashboardService.getPendingShopRequestCount() } returns 1L
             every { adminDashboardService.getReviewCount() } returns 7L
             every { adminDashboardService.getExpiringSoonEventCount() } returns 4L
             every { adminDashboardService.getPendingInquiryCount() } returns 1L
@@ -43,8 +45,10 @@ class AdminDashboardControllerTest {
                 status { isOk() }
                 model { attribute("placeCount", 10L) }
                 model { attribute("eventCount", 5L) }
+                model { attribute("shopCount", 8L) }
                 model { attribute("pendingPlaceRequestCount", 3L) }
                 model { attribute("pendingEventRequestCount", 2L) }
+                model { attribute("pendingShopRequestCount", 1L) }
                 model { attribute("reviewCount", 7L) }
                 model { attribute("expiringSoonEventCount", 4L) }
                 model { attribute("pendingInquiryCount", 1L) }

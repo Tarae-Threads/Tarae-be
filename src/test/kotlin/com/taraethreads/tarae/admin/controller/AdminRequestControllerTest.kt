@@ -3,6 +3,7 @@ package com.taraethreads.tarae.admin.controller
 import com.ninjasquad.springmockk.MockkBean
 import com.taraethreads.tarae.admin.service.AdminEventService
 import com.taraethreads.tarae.admin.service.AdminRequestService
+import com.taraethreads.tarae.admin.service.AdminShopRequestService
 import com.taraethreads.tarae.event.domain.EventType
 import com.taraethreads.tarae.place.dto.BrandResponse
 import com.taraethreads.tarae.place.dto.CategoryResponse
@@ -15,6 +16,7 @@ import com.taraethreads.tarae.place.domain.Place
 import com.taraethreads.tarae.request.domain.PlaceRequest
 import com.taraethreads.tarae.request.domain.RequestStatus
 import com.taraethreads.tarae.request.domain.RequestType
+import com.taraethreads.tarae.request.domain.ShopRequest
 import io.mockk.every
 import io.mockk.justRun
 import org.junit.jupiter.api.Nested
@@ -40,6 +42,9 @@ class AdminRequestControllerTest {
 
     @MockkBean
     lateinit var adminRequestService: AdminRequestService
+
+    @MockkBean
+    lateinit var adminShopRequestService: AdminShopRequestService
 
     @MockkBean
     lateinit var adminEventService: AdminEventService
@@ -118,6 +123,36 @@ class AdminRequestControllerTest {
             mockMvc.get("/admin/requests?type=event").andExpect {
                 status { isOk() }
                 model { attribute("type", "event") }
+            }
+        }
+
+        @Test
+        fun `type=shop이면 온라인샵 제보 목록을 반환한다`() {
+            // given
+            every { adminShopRequestService.getShopRequests(null, null) } returns emptyList()
+
+            // when & then
+            mockMvc.get("/admin/requests?type=shop").andExpect {
+                status { isOk() }
+                model { attribute("type", "shop") }
+            }
+        }
+
+        @Test
+        fun `type=shop&status=PENDING이면 대기 중인 온라인샵 제보만 반환한다`() {
+            // given
+            val sr = ShopRequest(requestType = RequestType.NEW, name = "뜨개마켓")
+            sr.javaClass.superclass.getDeclaredField("createdAt").apply {
+                isAccessible = true
+                set(sr, LocalDateTime.of(2026, 5, 1, 0, 0))
+            }
+            every { adminShopRequestService.getShopRequests(RequestStatus.PENDING, null) } returns listOf(sr)
+
+            // when & then
+            mockMvc.get("/admin/requests?type=shop&status=PENDING").andExpect {
+                status { isOk() }
+                model { attribute("type", "shop") }
+                model { attribute("status", RequestStatus.PENDING) }
             }
         }
     }
