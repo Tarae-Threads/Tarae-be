@@ -227,6 +227,8 @@
             <div class="nav-card__emoji">⭐</div>
             <div class="nav-card__name">리뷰 관리</div>
             <div class="nav-card__desc" th:text="${reviewCount} + '개'">0개</div>
+            <span class="nav-card__badge" th:if="${todayReviewCount > 0}"
+                  th:text="'오늘 ' + ${todayReviewCount} + '개'">오늘 0개</span>
         </a>
 
         <a th:href="@{/admin/inquiries}" class="nav-card">

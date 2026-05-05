@@ -37,6 +37,7 @@ class AdminDashboardControllerTest {
             every { adminDashboardService.getPendingEventRequestCount() } returns 2L
             every { adminDashboardService.getPendingShopRequestCount() } returns 1L
             every { adminDashboardService.getReviewCount() } returns 7L
+            every { adminDashboardService.getTodayReviewCount() } returns 2L
             every { adminDashboardService.getExpiringSoonEventCount() } returns 4L
             every { adminDashboardService.getPendingInquiryCount() } returns 1L
 
@@ -50,6 +51,7 @@ class AdminDashboardControllerTest {
                 model { attribute("pendingEventRequestCount", 2L) }
                 model { attribute("pendingShopRequestCount", 1L) }
                 model { attribute("reviewCount", 7L) }
+                model { attribute("todayReviewCount", 2L) }
                 model { attribute("expiringSoonEventCount", 4L) }
                 model { attribute("pendingInquiryCount", 1L) }
             }
