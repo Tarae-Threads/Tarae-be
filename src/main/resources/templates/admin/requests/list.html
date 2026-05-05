@@ -47,9 +47,7 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th th:if="${type == 'place'}">장소명</th>
-            <th th:if="${type == 'event'}">이벤트명</th>
-            <th th:if="${type == 'shop'}">온라인샵명</th>
+            <th>이름</th>
             <th th:if="${type == 'place' or type == 'shop'}">유형</th>
             <th>상태</th>
             <th>등록일</th>
@@ -59,9 +57,7 @@
         <tbody>
         <tr th:each="req : ${requests}">
             <td th:text="${req.id}">1</td>
-            <td th:if="${type == 'place'}" th:text="${req.name ?: '-'}">장소명</td>
-            <td th:if="${type == 'event'}" th:text="${req.title}">이벤트명</td>
-            <td th:if="${type == 'shop'}" th:text="${req.name ?: '-'}">온라인샵명</td>
+            <td th:text="${req.name}">이름</td>
             <td th:if="${type == 'place' or type == 'shop'}">
                 <span th:if="${req.requestType.name() == 'NEW'}" class="badge badge--approved">신규</span>
                 <span th:if="${req.requestType.name() == 'UPDATE'}" class="badge badge--update">수정</span>

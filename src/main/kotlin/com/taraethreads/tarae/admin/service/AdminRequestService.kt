@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.admin.service
 
+import com.taraethreads.tarae.admin.dto.AdminRequestListRow
 import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.event.domain.Event
@@ -29,14 +30,14 @@ class AdminRequestService(
 
     // --- 장소 제보 ---
 
-    fun getPlaceRequests(status: RequestStatus?, requestType: RequestType?): List<PlaceRequest> =
+    fun getPlaceRequests(status: RequestStatus?, requestType: RequestType?): List<AdminRequestListRow> =
         when {
             status != null && requestType != null ->
                 placeRequestRepository.findAllByStatusAndRequestTypeOrderByCreatedAtDesc(status, requestType)
             status != null -> placeRequestRepository.findAllByStatusOrderByCreatedAtDesc(status)
             requestType != null -> placeRequestRepository.findAllByRequestTypeOrderByCreatedAtDesc(requestType)
             else -> placeRequestRepository.findAllByOrderByCreatedAtDesc()
-        }
+        }.map { AdminRequestListRow.from(it) }
 
     fun getPlaceRequest(id: Long): PlaceRequest =
         placeRequestRepository.findById(id)
@@ -84,9 +85,10 @@ class AdminRequestService(
 
     // --- 이벤트 제보 ---
 
-    fun getEventRequests(status: RequestStatus?): List<EventRequest> =
-        if (status == null) eventRequestRepository.findAllByOrderByCreatedAtDesc()
-        else eventRequestRepository.findAllByStatusOrderByCreatedAtDesc(status)
+    fun getEventRequests(status: RequestStatus?): List<AdminRequestListRow> =
+        (if (status == null) eventRequestRepository.findAllByOrderByCreatedAtDesc()
+        else eventRequestRepository.findAllByStatusOrderByCreatedAtDesc(status))
+            .map { AdminRequestListRow.from(it) }
 
     fun getEventRequest(id: Long): EventRequest =
         eventRequestRepository.findById(id)

@@ -1,6 +1,7 @@
 package com.taraethreads.tarae.admin.controller
 
 import com.ninjasquad.springmockk.MockkBean
+import com.taraethreads.tarae.admin.dto.AdminRequestListRow
 import com.taraethreads.tarae.admin.service.AdminEventService
 import com.taraethreads.tarae.admin.service.AdminRequestService
 import com.taraethreads.tarae.admin.service.AdminShopRequestService
@@ -61,15 +62,16 @@ class AdminRequestControllerTest {
     @Nested
     inner class `GET 제보 목록` {
 
+        private fun placeRow(name: String = "실과 바늘", requestType: RequestType = RequestType.NEW) =
+            AdminRequestListRow(id = 1L, name = name, requestType = requestType, status = RequestStatus.PENDING, createdAt = LocalDateTime.of(2026, 4, 5, 0, 0))
+
+        private fun shopRow(name: String = "뜨개마켓") =
+            AdminRequestListRow(id = 2L, name = name, requestType = RequestType.NEW, status = RequestStatus.PENDING, createdAt = LocalDateTime.of(2026, 5, 1, 0, 0))
+
         @Test
         fun `type=place이면 장소 제보 목록을 반환한다`() {
             // given
-            val pr = PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")
-            pr.javaClass.superclass.getDeclaredField("createdAt").apply {
-                isAccessible = true
-                set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
-            }
-            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, null) } returns listOf(pr)
+            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, null) } returns listOf(placeRow())
 
             // when & then
             mockMvc.get("/admin/requests?type=place&status=PENDING").andExpect {
@@ -81,12 +83,7 @@ class AdminRequestControllerTest {
         @Test
         fun `requestType=NEW이면 신규 제보만 반환한다`() {
             // given
-            val pr = PlaceRequest(requestType = RequestType.NEW, name = "실과 바늘")
-            pr.javaClass.superclass.getDeclaredField("createdAt").apply {
-                isAccessible = true
-                set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
-            }
-            every { adminRequestService.getPlaceRequests(null, RequestType.NEW) } returns listOf(pr)
+            every { adminRequestService.getPlaceRequests(null, RequestType.NEW) } returns listOf(placeRow())
 
             // when & then
             mockMvc.get("/admin/requests?type=place&requestType=NEW").andExpect {
@@ -99,12 +96,7 @@ class AdminRequestControllerTest {
         @Test
         fun `status와 requestType 모두 지정하면 교집합 목록을 반환한다`() {
             // given
-            val pr = PlaceRequest(requestType = RequestType.UPDATE, name = "수정 요청")
-            pr.javaClass.superclass.getDeclaredField("createdAt").apply {
-                isAccessible = true
-                set(pr, LocalDateTime.of(2026, 4, 5, 0, 0))
-            }
-            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, RequestType.UPDATE) } returns listOf(pr)
+            every { adminRequestService.getPlaceRequests(RequestStatus.PENDING, RequestType.UPDATE) } returns listOf(placeRow(requestType = RequestType.UPDATE))
 
             // when & then
             mockMvc.get("/admin/requests?type=place&status=PENDING&requestType=UPDATE").andExpect {
@@ -141,12 +133,7 @@ class AdminRequestControllerTest {
         @Test
         fun `type=shop&status=PENDING이면 대기 중인 온라인샵 제보만 반환한다`() {
             // given
-            val sr = ShopRequest(requestType = RequestType.NEW, name = "뜨개마켓")
-            sr.javaClass.superclass.getDeclaredField("createdAt").apply {
-                isAccessible = true
-                set(sr, LocalDateTime.of(2026, 5, 1, 0, 0))
-            }
-            every { adminShopRequestService.getShopRequests(RequestStatus.PENDING, null) } returns listOf(sr)
+            every { adminShopRequestService.getShopRequests(RequestStatus.PENDING, null) } returns listOf(shopRow())
 
             // when & then
             mockMvc.get("/admin/requests?type=shop&status=PENDING").andExpect {

@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.admin.service
 
+import com.taraethreads.tarae.admin.dto.AdminRequestListRow
 import com.taraethreads.tarae.admin.dto.EventCreateForm
 import com.taraethreads.tarae.admin.dto.PlaceCreateForm
 import com.taraethreads.tarae.event.domain.Event
@@ -59,7 +60,7 @@ class AdminRequestServiceTest {
     inner class `장소 제보 목록 조회` {
 
         @Test
-        fun `status와 requestType이 모두 null이면 전체 목록을 반환한다`() {
+        fun `status와 requestType이 모두 null이면 전체 목록을 AdminRequestListRow로 반환한다`() {
             // given
             every { placeRequestRepository.findAllByOrderByCreatedAtDesc() } returns listOf(placeRequest())
 
@@ -68,6 +69,10 @@ class AdminRequestServiceTest {
 
             // then
             assertThat(result).hasSize(1)
+            assertThat(result[0]).isInstanceOf(AdminRequestListRow::class.java)
+            assertThat(result[0].name).isEqualTo("실과 바늘")
+            assertThat(result[0].requestType).isEqualTo(RequestType.NEW)
+            assertThat(result[0].status).isEqualTo(RequestStatus.PENDING)
         }
 
         @Test
@@ -111,7 +116,7 @@ class AdminRequestServiceTest {
     inner class `이벤트 제보 목록 조회` {
 
         @Test
-        fun `status가 null이면 전체 목록을 반환한다`() {
+        fun `status가 null이면 전체 목록을 AdminRequestListRow로 반환한다`() {
             // given
             every { eventRequestRepository.findAllByOrderByCreatedAtDesc() } returns listOf(eventRequest())
 
@@ -120,6 +125,10 @@ class AdminRequestServiceTest {
 
             // then
             assertThat(result).hasSize(1)
+            assertThat(result[0]).isInstanceOf(AdminRequestListRow::class.java)
+            assertThat(result[0].name).isEqualTo("뜨개 팝업")
+            assertThat(result[0].requestType).isNull()
+            assertThat(result[0].status).isEqualTo(RequestStatus.PENDING)
         }
 
         @Test

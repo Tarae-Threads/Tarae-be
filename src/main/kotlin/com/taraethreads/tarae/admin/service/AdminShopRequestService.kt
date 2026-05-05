@@ -1,5 +1,6 @@
 package com.taraethreads.tarae.admin.service
 
+import com.taraethreads.tarae.admin.dto.AdminRequestListRow
 import com.taraethreads.tarae.admin.dto.ShopCreateForm
 import com.taraethreads.tarae.global.exception.CustomException
 import com.taraethreads.tarae.global.exception.ErrorCode
@@ -20,14 +21,14 @@ class AdminShopRequestService(
     private val shopAssociationSyncer: ShopAssociationSyncer,
 ) {
 
-    fun getShopRequests(status: RequestStatus?, requestType: RequestType?): List<ShopRequest> =
+    fun getShopRequests(status: RequestStatus?, requestType: RequestType?): List<AdminRequestListRow> =
         when {
             status != null && requestType != null ->
                 shopRequestRepository.findAllByStatusAndRequestTypeOrderByCreatedAtDesc(status, requestType)
             status != null -> shopRequestRepository.findAllByStatusOrderByCreatedAtDesc(status)
             requestType != null -> shopRequestRepository.findAllByRequestTypeOrderByCreatedAtDesc(requestType)
             else -> shopRequestRepository.findAllByOrderByCreatedAtDesc()
-        }
+        }.map { AdminRequestListRow.from(it) }
 
     fun getShopRequest(id: Long): ShopRequest =
         shopRequestRepository.findById(id)
