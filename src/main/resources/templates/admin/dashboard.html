@@ -142,6 +142,27 @@
             font-weight: 700;
             color: var(--primary);
         }
+
+        @media (max-width: 640px) {
+            .dashboard-header {
+                padding: 14px 16px;
+            }
+            .dashboard-body {
+                padding: 20px 16px;
+            }
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .nav-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>

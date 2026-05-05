@@ -312,3 +312,27 @@ textarea {
     flex-shrink: 0;
     white-space: nowrap;
 }
+
+@media (max-width: 640px) {
+    .quick-add--brand {
+        flex-wrap: wrap;
+    }
+    .quick-add--brand .quick-add__input {
+        flex-basis: 100%;
+    }
+    .quick-add--brand .quick-add__select {
+        flex: 1;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+    .form-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .preview-modal__body {
+        grid-template-columns: 1fr;
+    }
+}
