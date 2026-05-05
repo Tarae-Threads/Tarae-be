@@ -31,7 +31,7 @@
             <td th:text="${req.requestType}">NEW</td>
             <td th:text="${req.name}">온라인샵명</td>
             <td><span class="badge" th:text="${req.status}">PENDING</span></td>
-            <td th:text="${#temporals.format(req.createdAt, 'yyyy-MM-dd')}">날짜</td>
+            <td th:text="${req.createdAt != null} ? ${#temporals.format(req.createdAt, 'yy/MM/dd HH:mm')} : '-'">26/01/01 09:00</td>
             <td class="td-actions">
                 <a th:href="@{/admin/shop-requests/{id}(id=${req.id})}" class="btn btn--secondary btn--sm">상세</a>
             </td>

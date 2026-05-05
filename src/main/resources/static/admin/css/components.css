@@ -301,6 +301,51 @@ tr:hover td {
     color: var(--on-surface-muted);
 }
 
+/* 반응형 */
+@media (max-width: 640px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    th, td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .tab {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .filter-bar {
+        gap: 6px;
+    }
+
+    .filter-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        font-size: 12px;
+    }
+
+    .btn--sm {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+}
+
 /* Alert */
 .alert {
     padding: 12px 16px;

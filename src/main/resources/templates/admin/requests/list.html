@@ -71,7 +71,7 @@
                       th:text="${req.status}"
                       class="badge">PENDING</span>
             </td>
-            <td th:text="${#temporals.format(req.createdAt, 'yyyy-MM-dd')}">2026-01-01</td>
+            <td th:text="${req.createdAt != null} ? ${#temporals.format(req.createdAt, 'yy/MM/dd HH:mm')} : '-'">26/01/01 09:00</td>
             <td>
                 <a th:if="${type == 'place'}"
                    th:href="@{/admin/requests/place/{id}(id=${req.id})}"

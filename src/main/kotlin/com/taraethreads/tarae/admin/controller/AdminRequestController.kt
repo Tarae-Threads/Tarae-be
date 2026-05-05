@@ -85,7 +85,10 @@ class AdminRequestController(
         } else {
             PlaceCreateForm(
                 name = placeRequest.name ?: "",
-                address = placeRequest.address ?: "",
+                address = listOfNotNull(
+                    placeRequest.address?.takeIf { it.isNotBlank() },
+                    placeRequest.addressDetail?.takeIf { it.isNotBlank() },
+                ).joinToString(", "),
                 lat = placeRequest.lat,
                 lng = placeRequest.lng,
                 hoursText = placeRequest.hoursText,

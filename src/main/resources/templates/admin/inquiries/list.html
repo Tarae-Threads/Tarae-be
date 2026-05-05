@@ -38,7 +38,7 @@
                       th:text="${inquiry.status}"
                       class="badge">PENDING</span>
             </td>
-            <td th:text="${#temporals.format(inquiry.createdAt, 'yyyy-MM-dd')}">2026-01-01</td>
+            <td th:text="${#temporals.format(inquiry.createdAt, 'yy/MM/dd HH:mm')}">26/01/01 09:00</td>
             <td>
                 <a th:href="@{/admin/inquiries/{id}(id=${inquiry.id})}"
                    class="btn btn--secondary btn--sm">보기</a>

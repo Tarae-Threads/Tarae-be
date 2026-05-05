@@ -18,6 +18,7 @@
     <table th:if="${not #lists.isEmpty(reviews)}">
         <thead>
         <tr>
+            <th>ID</th>
             <th th:if="${type == 'place'}">장소명</th>
             <th th:if="${type == 'event'}">이벤트명</th>
             <th>닉네임</th>
@@ -28,10 +29,11 @@
         </thead>
         <tbody>
         <tr th:each="review : ${reviews}">
+            <td th:text="${review.id}">1</td>
             <td th:text="${review.targetName}">대상명</td>
             <td th:text="${review.nickname}">닉네임</td>
             <td th:text="${review.contentPreview}">리뷰 내용 미리보기...</td>
-            <td th:text="${review.createdAt != null} ? ${#temporals.format(review.createdAt, 'yyyy-MM-dd')} : '-'">2026-01-01</td>
+            <td th:text="${review.createdAt != null} ? ${#temporals.format(review.createdAt, 'yy/MM/dd HH:mm')} : '-'">26/01/01 09:00</td>
             <td>
                 <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}"
                       method="post"
